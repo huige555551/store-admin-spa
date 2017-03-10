@@ -1,0 +1,93 @@
+<template>
+  <div>
+    <!-- 面包屑 -->
+    <div class="crumbs plugins-tips">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
+        <el-breadcrumb-item>新媒体管理</el-breadcrumb-item>
+        <el-breadcrumb-item>添加文章</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+
+    <!-- 创建文章 -->
+    <div class="form-box">
+      <el-form ref="form" :model="article" label-width="80px">
+        <el-form-item label="封面上传">
+          <el-upload action="" :file-list="article.cover">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="选择栏目">
+          <el-select v-model="searchKey" filterable placeholder="请输入栏目进行搜索">
+            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择作者">
+          <el-select v-model="searchKey" filterable placeholder="请输入作者进行搜索">
+            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="文章标题">
+          <el-input v-model="article.title"></el-input>
+        </el-form-item>
+        <el-form-item label="文章标签">
+          <el-select v-model="article.tags" multiple filterable allow-create placeholder="请选择/输入文章标签">
+            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="文章摘要">
+          <el-input type="textarea" :rows="4" v-model="article.description"></el-input>
+        </el-form-item>
+        <el-form-item label="文章内容" style="width: 800px">
+          <simditor :content="initContent" :options="options2" @change="change"></simditor>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">提交</el-button>
+          <el-button>取消</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script>
+import Simditor from '../../util/Simditor'
+
+export default {
+  data() {
+    return {
+      searchKey: '',
+      article: {
+        tags: []
+      },
+      options: [
+        { id: '1', value: '选项1', label: '选项1' },
+        { id: '2', value: '选项2', label: '选项2' },
+        { id: '3', value: '选项3', label: '选项3' },
+        { id: '4', value: '选项4', label: '选项4' },
+        { id: '5', value: '选项5', label: '选项5' }
+      ],
+      initContent: '<p>123456</p>',
+      options2: {
+        placeHolder: '输入文章内容',
+        toolbarFloat: false,
+        upload: true,
+        // toolbar: ['title', 'image'],
+        cleanPaste: true
+      }
+    }
+  },
+  components: {
+    Simditor
+  },
+  methods: {
+    onSubmit() {
+      this.$message.success('提交成功！')
+    },
+    change(val) {
+      console.log(val)
+    }
+  }
+}
+</script>

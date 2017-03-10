@@ -1,0 +1,119 @@
+<template>
+  <div class="sidebar">
+    <el-menu :default-active="'welcome'" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+      <!-- 用户管理 -->
+      <el-menu-item index="/user/list"><i class="el-icon-date"></i>用户管理</el-menu-item>
+
+      <!-- 首页管理 -->
+      <el-submenu index="index">
+        <template slot="title"><i class="el-icon-date"></i>首页管理</template>
+        <el-menu-item index="/index/banner">轮播管理</el-menu-item>
+        <el-menu-item index="/index/feature">精选管理</el-menu-item>
+      </el-submenu>
+
+      <!-- 固定栏目 -->
+      <el-submenu index="column">
+        <template slot="title"><i class="el-icon-date"></i>固定栏目</template>
+        <el-menu-item-group>
+          <template slot="title">封面管理</template>
+          <el-menu-item index="/magazine/list">封面列表</el-menu-item>
+          <el-menu-item index="/magazine/add">添加封面</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <template slot="title">漫画管理</template>
+          <el-menu-item index="/comics/list">漫画列表</el-menu-item>
+          <el-menu-item index="/comics/add">添加漫画</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <template slot="title">插画管理</template>
+          <el-menu-item index="/illustration/list">插画列表</el-menu-item>
+          <el-menu-item index="/illustration/add">添加插画</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+
+      <!-- 栏目文章 -->
+      <el-submenu index="article">
+        <template slot="title"><i class="el-icon-date"></i>栏目文章</template>
+        <el-menu-item index="/column/list">栏目列表</el-menu-item>
+        <el-menu-item index="/author/list">作者列表</el-menu-item>
+        <el-menu-item index="/article/list">文章列表</el-menu-item>
+        <el-menu-item index="/article/add">添加文章</el-menu-item>
+      </el-submenu>
+
+      <!-- 视频管理 -->
+      <el-submenu index="video">
+        <template slot="title"><i class="el-icon-date"></i>视频管理</template>
+        <el-menu-item index="/video/category">分类管理</el-menu-item>
+        <el-menu-item index="/video/list">视频列表</el-menu-item>
+        <el-menu-item index="/video/add">添加视频</el-menu-item>
+        <el-menu-item index="/video/banner">轮播管理</el-menu-item>
+      </el-submenu>
+
+      <!-- 音频管理 -->
+      <el-submenu index="audio">
+        <template slot="title"><i class="el-icon-date"></i>音频管理</template>
+        <el-menu-item index="/audio/category">分类管理</el-menu-item>
+        <el-menu-item index="/audio/list">音频列表</el-menu-item>
+        <el-menu-item index="/audio/add">添加音频</el-menu-item>
+      </el-submenu>
+
+      <!-- 新媒体管理 -->
+      <el-submenu index="newmedia">
+        <template slot="title"><i class="el-icon-date"></i>新媒体管理</template>
+        <el-menu-item index="/newmedia/category">分类管理</el-menu-item>
+        <el-menu-item index="/newmedia/list">文章列表</el-menu-item>
+        <el-menu-item index="/newmedia/add">添加文章</el-menu-item>
+        <el-menu-item index="/newmedia/banner">轮播管理</el-menu-item>
+      </el-submenu>
+
+      <!-- 图书管理 -->
+      <el-submenu index="book">
+        <template slot="title"><i class="el-icon-date"></i>图书管理</template>
+        <el-menu-item index="/book/list">图书列表</el-menu-item>
+        <el-menu-item index="/book/add">添加图书</el-menu-item>
+      </el-submenu>
+
+      <!-- 活动管理 -->
+      <el-submenu index="activity">
+        <template slot="title"><i class="el-icon-date"></i>活动管理</template>
+        <el-menu-item index="/activity/category">活动分类</el-menu-item>
+        <el-menu-item index="/activity/list">活动列表</el-menu-item>
+        <el-menu-item index="/activity/add">添加活动</el-menu-item>
+        <el-menu-item index="/activity/banner">轮播列表</el-menu-item>
+      </el-submenu>
+
+      <!-- 网站设置 -->
+      <el-submenu index="setting">
+        <template slot="title"><i class="el-icon-setting"></i>网站设置</template>
+        <el-menu-item index="/website/ad">广告设置</el-menu-item>
+        <el-menu-item index="/website/job">岗位列表</el-menu-item>
+        <el-menu-item index="/website/partner">合作伙伴</el-menu-item>
+      </el-submenu>
+    </el-menu>
+  </div>
+</template>
+
+<script>
+export default {
+  computed: {
+    onRoutes() {
+      return this.$route.path.replace('/', '')
+    }
+  }
+}
+</script>
+<style scoped>
+.sidebar{
+  display: block;
+  position: absolute;
+  width: 250px;
+  left: 0;
+  top: 70px;
+  bottom: 0;
+  background: #2E363F;
+  overflow-y: scroll;
+}
+.sidebar > ul {
+  min-height: 100%;
+}
+</style>
