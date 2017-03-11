@@ -13,9 +13,9 @@
     <div class="form-box">
       <el-form ref="form" :model="audio" label-width="80px">
         <el-form-item label="封面上传">
-          <el-upload action="" :file-list="audio.cover">
+          <el-upload :file-list="audio.cover">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="选择分类">
@@ -30,7 +30,10 @@
           <el-input v-model="audio.length"></el-input>
         </el-form-item>
         <el-form-item label="音频链接">
-          <el-input v-model="audio.url"></el-input>
+          <el-upload action="" :file-list="audio.cover">
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传mp3文件</div>
+          </el-upload>
         </el-form-item>
         <el-form-item label="音频摘要">
           <el-input type="textarea" :rows="4" v-model="audio.description"></el-input>

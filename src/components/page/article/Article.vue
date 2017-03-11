@@ -27,13 +27,13 @@
 
     <!-- Table -->
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="title" label="标题"></el-table-column>
-      <el-table-column prop="column" label="栏目"></el-table-column>
-      <el-table-column prop="term" label="期数"></el-table-column>
-      <el-table-column prop="author" label="作者"></el-table-column>
+      <el-table-column type="index" label="#" width="120"></el-table-column>
+      <el-table-column prop="title" label="标题" width="200"></el-table-column>
+      <el-table-column prop="column" label="栏目" width="120"></el-table-column>
+      <el-table-column prop="term" label="期数" width="120"></el-table-column>
+      <el-table-column prop="author" label="作者" width="120"></el-table-column>
       <el-table-column prop="createdAt" label="时间" width="200"></el-table-column>
-      <el-table-column label="封面">
+      <el-table-column label="封面" width="200">
         <template scope="scope">
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>

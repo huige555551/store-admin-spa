@@ -10,6 +10,21 @@
     </div>
 
     <el-tabs v-model="activeName">
+      <!-- 添加精选文章 -->
+        <el-dialog title="添加精选文章" v-model="featuredArticleParams.dialog">
+          <el-form label-position="right">
+            <el-form-item label="选择文章" label-width="120px">
+              <!-- 可调用接口搜索 TODO -->
+              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
+                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="featuredArticleParams.dialog = false">取 消</el-button>
+            <el-button type="primary" @click="featuredArticleParams.dialog = false">确 定</el-button>
+          </div>
+        </el-dialog>
       <!-- 精选文章 -->
       <el-tab-pane label="精选文章" name="first">
         <el-table :data="featuredArticles" stripe style="width: 100%">
@@ -30,21 +45,7 @@
             <el-button @click="featuredArticleParams.dialog = true">添加文章</el-button> 最多7篇
           </el-form-item>
         </el-form>
-        <!-- 添加精选文章 -->
-        <el-dialog title="添加精选文章" v-model="featuredArticleParams.dialog">
-          <el-form label-position="right">
-            <el-form-item label="选择文章" label-width="120px">
-              <!-- 可调用接口搜索 TODO -->
-              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 500px">
-                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="featuredArticleParams.dialog = false">取 消</el-button>
-            <el-button type="primary" @click="featuredArticleParams.dialog = false">确 定</el-button>
-          </div>
-        </el-dialog>
+        
       </el-tab-pane>
 
       <!-- 精选新媒体 -->
@@ -72,7 +73,7 @@
           <el-form label-position="right">
             <el-form-item label="选择文章" label-width="120px">
               <!-- 可调用接口搜索 TODO -->
-              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 500px">
+              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
                 <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
@@ -115,7 +116,7 @@
           <el-form label-position="right">
             <el-form-item label="选择视频" label-width="120px">
               <!-- 可调用接口搜索 TODO -->
-              <el-select v-model="featuredVideoParams.searchKey" filterable placeholder="请输入视频标题进行搜索" style="width: 500px">
+              <el-select v-model="featuredVideoParams.searchKey" filterable placeholder="请输入视频标题进行搜索" style="width: 70%">
                 <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
@@ -141,7 +142,7 @@
         <el-dialog title="选择精选音频" v-model="featureAudio.dialog">
           <el-form label-position="right">
             <el-form-item label="选择音频" label-width="120px">
-              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入音频标题进行搜索" style="width: 500px">
+              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入音频标题进行搜索" style="width: 70%">
                 <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
               </el-select>
             </el-form-item>

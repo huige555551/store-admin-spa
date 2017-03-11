@@ -34,7 +34,7 @@
     </el-form>
 
     <!-- 添加栏目表单 -->
-    <el-dialog title="添加轮播" v-model="dialogFormVisible" label-position="right">
+    <el-dialog title="添加栏目" v-model="dialogFormVisible" label-position="right">
       <el-form :model="newColumn" style="width: 500px">
         <el-form-item label="名字" label-width="120px">
           <el-input v-model="newColumn.name"></el-input>
@@ -42,7 +42,7 @@
         <el-form-item label="上传海报" label-width="120px">
           <el-upload action="" :file-list="newColumn.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
       </el-form>

@@ -30,7 +30,7 @@
           <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
