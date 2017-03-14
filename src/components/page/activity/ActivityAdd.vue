@@ -4,64 +4,171 @@
     <div class="crumbs plugins-tips">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>栏目文章</el-breadcrumb-item>
-        <el-breadcrumb-item>添加文章</el-breadcrumb-item>
+        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+        <el-breadcrumb-item>添加活动</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
-    <!-- 创建文章 -->
-    <div class="form-box">
-      <el-form ref="form" :model="article" label-width="80px">
-        <el-form-item label="封面上传">
-          <el-upload action="" :file-list="article.cover">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="选择栏目">
-          <el-select v-model="searchKey" filterable placeholder="请输入栏目进行搜索">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="选择作者">
-          <el-select v-model="searchKey" filterable placeholder="请输入作者进行搜索">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="文章标题">
-          <el-input v-model="article.title"></el-input>
-        </el-form-item>
-        <el-form-item label="文章标签">
-          <el-select v-model="article.tags" multiple filterable allow-create placeholder="请选择/输入文章标签">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="期数">
-          <el-input v-model="article.term"></el-input>
-        </el-form-item>
-        <el-form-item label="文章摘要">
-          <el-input type="textarea" :rows="4" v-model="article.description"></el-input>
-        </el-form-item>
-        <el-form-item label="文章内容" style="width: 800px">
-          <simditor :content="initContent" :options="options2" @change="change"></simditor>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <!-- 创建活动 -->
+    <el-tabs value="first">
+
+      <!-- 活动信息 -->
+      <el-tab-pane label="活动信息" name="first">
+        <div class="form-box">
+          <el-form ref="form" :model="activity" label-width="80px">
+            <el-form-item label="封面上传">
+              <el-upload action="" :file-list="activity.cover">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">建议尺寸 1440x320，只能上传jpg/png文件，且不超过1MB</div>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="活动标题">
+              <el-input v-model="activity.title"></el-input>
+            </el-form-item>
+            <el-form-item label="微博话题">
+              <el-input v-model="activity.title"></el-input>
+            </el-form-item>
+            <el-form-item label="选择分类">
+              <el-select v-model="searchKey" filterable placeholder="请输入栏目进行搜索">
+                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="视频连接(可选)">
+              <el-input v-model="activity.term"></el-input>
+            </el-form-item>
+            <el-form-item label="活动简介">
+              <el-input type="textarea" :rows="4" v-model="activity.description"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary">提交</el-button>
+              <el-button>取消</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-tab-pane>
+
+      <!-- 投票信息 -->
+      <el-tab-pane label="投票信息" name="second">
+        <div class="form-box">
+          <el-form ref="form" :model="activity" label-width="80px">
+            <el-form-item label="启用投票">
+              <el-switch v-model="activity.voteOn" on-color="#13ce66" off-color="#ff4949"></el-switch>
+            </el-form-item>
+            <el-form-item label="问题一">
+              <p>XXXXXXXXXXXXXXXX? <el-tag type="success">单选</el-tag><el-button type="default" style="margin-left: 10px">编辑</el-button></p>
+              <el-radio-group>
+                <el-radio disabled label="单选"></el-radio>
+                <el-radio disabled label="单选"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="问题二">
+              <p>XXXXXXXXXXXXXXXX? <el-tag type="success">多选</el-tag><el-button type="default" style="margin-left: 10px">编辑</el-button></p>
+              <el-checkbox disabled label="多选"></el-checkbox>
+              <el-checkbox disabled label="多选"></el-checkbox>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="default" @click.native.prevent="questionDialog = true">添加问题</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+
+        <!-- 添加问题 -->
+        <el-dialog title="添加问题" v-model="questionDialog">
+          <el-form label-width="100px" class="demo-dynamic">
+            <el-form-item label="问题">
+              <el-input v-model="question.title" style="width: 70%;"></el-input>
+            </el-form-item>
+            <el-form-item label="类型">
+              <el-radio-group>
+                <el-radio label="单选"></el-radio>
+                <el-radio label="多选"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-for="(option, index) in question.options" :label="'选项' + (index+1)" :key="option.key">
+              <el-input :v-model="option" style="width: 70%;"></el-input><el-button style="margin-left: 10px">删除</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="addOption">新增选项</el-button>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button>取 消</el-button>
+            <el-button type="primary">确 定</el-button>
+          </div>
+        </el-dialog>     
+      </el-tab-pane>
+
+      <!-- 合作伙伴 -->
+      <el-tab-pane label="合作伙伴" name="third">
+        <!-- Table -->
+        <el-table :data="partners" stripe style="width: 100%">
+          <el-table-column type="index" label="#"></el-table-column>
+          <el-table-column prop="name" label="名字"></el-table-column>
+          <el-table-column label="跳转链接">
+            <template scope="scope">
+              <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
+            </template>
+          </el-table-column>
+          <el-table-column label="LOGO">
+            <template scope="scope">
+              <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="200">
+            <template scope="scope">
+              <el-button type="default" size="small">编辑</el-button>
+              <el-button type="default" size="small">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!-- 添加按钮 -->
+        <el-form style="margin-top: 20px">
+          <el-form-item>
+            <el-button @click="partnerDialog = true">添加合作伙伴</el-button>
+          </el-form-item>
+        </el-form>
+
+        <!-- 添加合作伙伴 -->
+        <el-dialog title="添加合作伙伴" v-model="partnerDialog" label-position="right">
+          <el-form :model="newPartner" style="width: 500px">
+            <el-form-item label="名字" label-width="120px">
+              <el-input v-model="newPartner.name"></el-input>
+            </el-form-item>
+            <el-form-item label="跳转链接" label-width="120px">
+              <el-input v-model="newPartner.url"></el-input>
+            </el-form-item>
+            <el-form-item label="LOGO" label-width="120px">
+              <el-upload action="" :file-list="newPartner.fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+              </el-upload>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="partnerDialog = false">取 消</el-button>
+            <el-button type="primary" @click="partnerDialog = false">确 定</el-button>
+          </div>
+        </el-dialog>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
-import Simditor from '../../util/Simditor'
-
 export default {
   data() {
     return {
+      question: {
+        title: '',
+        options: []
+      },
+      newPartner: {},
+      questionDialog: false,
+      partnerDialog: false,
       searchKey: '',
-      article: {
+      activity: {
+        voteOn: true,
         tags: []
       },
       options: [
@@ -71,25 +178,20 @@ export default {
         { id: '4', value: '选项4', label: '选项4' },
         { id: '5', value: '选项5', label: '选项5' }
       ],
-      initContent: '<p>123456</p>',
-      options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: true,
-        // toolbar: ['title', 'image'],
-        cleanPaste: true
-      }
+      partners: [
+        { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { name: '合作伙伴3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { name: '合作伙伴5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { name: '合作伙伴6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
+      ]
     }
   },
-  components: {
-    Simditor
-  },
   methods: {
-    onSubmit() {
-      this.$message.success('提交成功！')
-    },
-    change(val) {
-      console.log(val)
+    addOption() {
+      console.log(1111)
+      this.question.options.push('')
     }
   }
 }

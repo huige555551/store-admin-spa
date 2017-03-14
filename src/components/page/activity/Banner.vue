@@ -22,9 +22,11 @@
           <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="order" label="顺序"></el-table-column>
+      <el-table-column label="操作" width="200">
         <template scope="scope">
-          <el-button @click.native.prevent="deleteBanner(scope.$index)" type="default" size="small">删除</el-button>
+          <el-button type="default" size="small">编辑</el-button>
+          <el-button type="default" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,6 +43,9 @@
       <el-form :model="newBanner" style="width: 500px">
         <el-form-item label="跳转链接" label-width="120px">
           <el-input v-model="newBanner.url"></el-input>
+        </el-form-item>
+        <el-form-item label="顺序" label-width="120px">
+          <el-input v-model="newBanner.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="上传图片" label-width="120px">
           <el-upload action="" :file-list="newBanner.fileList">
@@ -66,12 +71,12 @@ export default {
 
       },
       banners: [
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
       ]
     }
   },
@@ -79,18 +84,6 @@ export default {
     // 新窗口打开轮播图
     openImg(url) {
       window.open(url)
-    },
-    // 删除轮播
-    deleteBanner(index) {
-      this.$confirm('确定删除轮播?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(() => {
-        if (index >= 0 && index < this.banners.length) {
-          this.banners.splice(index, 1)
-        }
-      })
     }
   }
 }

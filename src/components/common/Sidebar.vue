@@ -79,7 +79,7 @@
         <el-menu-item index="/activity/category">活动分类</el-menu-item>
         <el-menu-item index="/activity/list">活动列表</el-menu-item>
         <el-menu-item index="/activity/add">添加活动</el-menu-item>
-        <el-menu-item index="/activity/banner">轮播列表</el-menu-item>
+        <el-menu-item index="/activity/banner">轮播管理</el-menu-item>
       </el-submenu>
 
       <!-- 网站设置 -->

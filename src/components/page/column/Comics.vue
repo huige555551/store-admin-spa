@@ -14,6 +14,9 @@
       <el-form-item label="标题">
         <el-input v-model="searchKey.title" placeholder="标题"></el-input>
       </el-form-item>
+      <el-form-item label="日期">
+        <el-date-picker v-model="searchKey.date" type="date" placeholder="选择日期"></el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary">搜索</el-button>
       </el-form-item>
@@ -24,7 +27,13 @@
       <el-table-column type="index" label="#" width="100"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
       <el-table-column prop="date" label="日期"></el-table-column>
-      <el-table-column prop="count" label="数量"></el-table-column>
+      <!-- 无组件支持
+      <el-table-column label="数量">
+        <template scope="scope">
+          <el-button type="default">查看({{scope.row.count}}张)</el-button>
+        </template>
+      </el-table-column>
+      -->
       <el-table-column label="封面">
         <template scope="scope">
           <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">

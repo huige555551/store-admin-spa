@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/common/Home'
 import Login from '@/components/page/Login'
-import Welcome from '@/components/page/Welcome'
 
 Vue.use(Router)
 
@@ -14,7 +13,7 @@ export default new Router({
       component: Home,
       /* eslint-disable */
       children: [
-        { path: '/', component: Welcome },
+        { path: '/', component: resolve => require(['@/components/page/Welcome'], resolve) },
 
         { path: '/user/list', component: resolve => require(['@/components/page/User.vue'], resolve) },
 
@@ -51,6 +50,7 @@ export default new Router({
         { path: '/book/add', component: resolve => require(['@/components/page/book/BookAdd.vue'], resolve) },
 
         { path: '/activity/list', component: resolve => require(['@/components/page/activity/Activity.vue'], resolve) },
+        { path: '/activity/add', component: resolve => require(['@/components/page/activity/ActivityAdd.vue'], resolve) },
         { path: '/activity/category', component: resolve => require(['@/components/page/activity/Category.vue'], resolve) },
         { path: '/activity/banner', component: resolve => require(['@/components/page/activity/Banner.vue'], resolve) },
 

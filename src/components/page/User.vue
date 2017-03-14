@@ -26,18 +26,21 @@
 
     <!-- Table -->
     <el-table :data="users" stripe style="width: 100%">
-      <el-table-column type="index" label="#" min-width="120" width="120"></el-table-column>
-      <el-table-column prop="nickname" label="昵称" min-width="200"></el-table-column>
-      <el-table-column prop="name" label="姓名" min-width="200"></el-table-column>
-      <el-table-column prop="phone" label="电话" min-width="200"></el-table-column>
-      <el-table-column prop="email" label="邮箱" min-width="200"></el-table-column>
+      <!-- 栏目长度 100 120 160 200 视情况而定 -->
+      <el-table-column type="index" label="#" width="100"></el-table-column>
+      <el-table-column prop="nickname" label="昵称" min-width="120"></el-table-column>
+      <el-table-column prop="name" label="姓名" min-width="120"></el-table-column>
+      <el-table-column prop="phone" label="电话" min-width="160"></el-table-column>
+      <el-table-column prop="email" label="邮箱" min-width="160"></el-table-column>
+      <el-table-column prop="company" label="公司" min-width="160"></el-table-column>
+      <el-table-column prop="position" label="职位" min-width="120"></el-table-column>
       <el-table-column label="第三方社交绑定" min-width="200">
         <template scope="scope">
           <el-tag type="success" v-if="scope.row.socials.indexOf('wechat') != -1">微信</el-tag>
           <el-tag type="primary" v-if="scope.row.socials.indexOf('sina') != -1">新浪</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createdTime" label="注册时间" min-width="200"></el-table-column>
+      <el-table-column prop="createdTime" label="注册时间" width="200"></el-table-column>
     </el-table>
 
     <!-- 分页 -->
@@ -66,16 +69,16 @@ export default {
         email: ''
       },
       users: [
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
-        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', socials: ['wechat'], createdTime: '2017-01-01 12:30' }
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
+        { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat'], createdTime: '2017-01-01 12:30' }
       ]
     }
   },

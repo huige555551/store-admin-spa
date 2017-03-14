@@ -23,8 +23,9 @@
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200">
         <template scope="scope">
+          <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -37,7 +38,7 @@
       </el-form-item>
     </el-form>
 
-    <!-- 添加栏目表单 -->
+    <!-- 添加合作伙伴 -->
     <el-dialog title="添加合作伙伴" v-model="dialogFormVisible" label-position="right">
       <el-form :model="newPartner" style="width: 500px">
         <el-form-item label="名字" label-width="120px">

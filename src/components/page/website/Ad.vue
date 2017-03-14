@@ -12,20 +12,20 @@
     <!-- Table -->
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="position" label="位置"></el-table-column>
-      <el-table-column prop="size" label="尺寸"></el-table-column>
-      <el-table-column prop="advertiser" label="广告主"></el-table-column>
-      <el-table-column label="跳转链接">
+      <el-table-column prop="position" label="位置" width="120"></el-table-column>
+      <el-table-column prop="size" label="尺寸" width="120"></el-table-column>
+      <el-table-column prop="advertiser" label="广告主" width="120"></el-table-column>
+      <el-table-column label="跳转链接" width="120">
         <template scope="scope">
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
-      <el-table-column label="图片">
+      <el-table-column label="图片" width="200">
         <template scope="scope">
           <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="上线">
+      <el-table-column label="上线" width="120">
         <template scope="scope">
           <el-switch v-model="scope.row.isOn" on-color="#13ce66" off-color="#ff4949"></el-switch>
         </template>
@@ -62,7 +62,7 @@
         <el-form-item label="上传图片" label-width="120px">
           <el-upload action="" :file-list="newAd.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+            <div slot="tip" class="el-upload__tip">建议尺寸TODO，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
       </el-form>

@@ -18,14 +18,16 @@
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
+      <el-table-column prop="order" label="顺序"></el-table-column>
       <el-table-column label="图片">
         <template scope="scope">
           <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200">
         <template scope="scope">
-          <el-button @click.native.prevent="deleteBanner(scope.$index)" type="default" size="small">删除</el-button>
+          <el-button type="default" size="small">编辑</el-button>
+          <el-button type="default" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -46,10 +48,13 @@
         <el-form-item label="跳转链接" label-width="120px">
           <el-input v-model="newBanner.url"></el-input>
         </el-form-item>
+        <el-form-item label="顺序" label-width="120px">
+          <el-input v-model="newBanner.order" placeholder="输入数字，数字越大越排前"></el-input>
+        </el-form-item>
         <el-form-item label="上传图片" label-width="120px">
           <el-upload action="" :file-list="newBanner.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+            <div slot="tip" class="el-upload__tip">建议尺寸1440x400，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
       </el-form>
@@ -70,12 +75,12 @@ export default {
 
       },
       banners: [
-        { title: '这是标题1', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { title: '这是标题2', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { title: '这是标题3', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { title: '这是标题4', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { title: '这是标题5', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { title: '这是标题6', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
+        { title: '这是标题1', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { title: '这是标题2', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { title: '这是标题3', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { title: '这是标题4', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { title: '这是标题5', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        { title: '这是标题6', order: 1, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
       ]
     }
   },

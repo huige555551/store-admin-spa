@@ -38,6 +38,11 @@
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
+      <el-table-column label="预览" width="100">
+        <template scope="scope">
+          <el-button type="default" @click.native.prevent = "articleDialog = true" size="small">查看</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="200">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
@@ -56,6 +61,33 @@
         :total="400">
       </el-pagination>
     </div>
+
+    <!-- 预览dialog -->
+    <el-dialog title="文章信息" v-model="articleDialog">
+      <el-form label-width="80px">
+        <el-form-item label="封面">
+          <img src="http://om4r3bojb.bkt.clouddn.com/index-banner.jpg" style="max-width: 200px; max-height: 200px">
+        </el-form-item>
+        <el-form-item label="标题">
+          <span>文章标题</span>
+        </el-form-item>
+        <el-form-item label="栏目">
+          <span>栏目</span>
+        </el-form-item>
+        <el-form-item label="期数">
+          <span>480</span>
+        </el-form-item>
+        <el-form-item label="作者">
+          <span>#新周刊</span>
+        </el-form-item>
+        <el-form-item label="发布时间">
+          <span>2017-03-03 12:30</span>
+        </el-form-item>
+        <el-form-item label="内容">
+          <p v-html="content"></p>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -63,8 +95,10 @@
 export default {
   data() {
     return {
+      articleDialog: false,
       currentPage: 1,
       searchKey: {},
+      content: '<p>123456</p><p>123456</p>',
       tableData: [
         { title: '这是标题1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', column: '栏目', author: '新周刊', term: '480', createdAt: '2017-02-02 12:30' },
         { title: '这是标题2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', column: '栏目', author: '新周刊', term: '480', createdAt: '2017-02-02 12:30' },

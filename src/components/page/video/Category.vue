@@ -13,8 +13,10 @@
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column type="index" label="#"></el-table-column>
       <el-table-column prop="name" label="名字"></el-table-column>
-      <el-table-column label="操作">
+      <el-table-column prop="order" label="顺序"></el-table-column>
+      <el-table-column label="操作" width="200">
         <template scope="scope">
+          <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -33,6 +35,9 @@
         <el-form-item label="名字" label-width="120px">
           <el-input v-model="newColumn.name"></el-input>
         </el-form-item>
+        <el-form-item label="顺序" label-width="120px">
+          <el-input v-model="newColumn.order" placeholder="输入数字，数字越大越排前"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -50,12 +55,12 @@ export default {
       newColumn: {
       },
       tableData: [
-        { name: '这是分类1' },
-        { name: '这是分类2' },
-        { name: '这是分类3' },
-        { name: '这是分类4' },
-        { name: '这是分类5' },
-        { name: '这是分类6' }
+        { order: 1, name: '这是分类1' },
+        { order: 1, name: '这是分类2' },
+        { order: 1, name: '这是分类3' },
+        { order: 1, name: '这是分类4' },
+        { order: 1, name: '这是分类5' },
+        { order: 1, name: '这是分类6' }
       ]
     }
   },

@@ -14,7 +14,7 @@
         <el-form-item label="封面上传">
           <el-upload action="" :file-list="book.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+            <div slot="tip" class="el-upload__tip">建议尺寸520x676，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="封面标题">
@@ -41,7 +41,7 @@
         <el-form-item label="介绍图片">
           <el-upload action="" :file-list="book.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+            <div slot="tip" class="el-upload__tip">建议尺寸560x440，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="图书目录">
@@ -50,7 +50,7 @@
         <el-form-item label="目录图片">
           <el-upload action="" :file-list="book.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
+            <div slot="tip" class="el-upload__tip">建议尺寸560x440，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
         <el-form-item>

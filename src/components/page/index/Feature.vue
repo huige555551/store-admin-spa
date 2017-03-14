@@ -10,32 +10,21 @@
     </div>
 
     <el-tabs v-model="activeName">
-      <!-- 添加精选文章 -->
-        <el-dialog title="添加精选文章" v-model="featuredArticleParams.dialog">
-          <el-form label-position="right">
-            <el-form-item label="选择文章" label-width="120px">
-              <!-- 可调用接口搜索 TODO -->
-              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
-                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="featuredArticleParams.dialog = false">取 消</el-button>
-            <el-button type="primary" @click="featuredArticleParams.dialog = false">确 定</el-button>
-          </div>
-        </el-dialog>
+      
       <!-- 精选文章 -->
       <el-tab-pane label="精选文章" name="first">
         <el-table :data="featuredArticles" stripe style="width: 100%">
+          <!-- 栏目长度 100 120 160 200 视情况而定 -->
           <el-table-column type="index" label="#"></el-table-column>
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="author" label="作者"></el-table-column>
           <el-table-column prop="term" label="期数"></el-table-column>
           <el-table-column prop="column" label="栏目"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column prop="order" label="次序"></el-table-column>
+          <el-table-column label="操作" width="200">
             <template scope="scope">
-              <el-button @click.native.prevent="deleteFeaturedArticle(scope.$index)" type="default" size="small">删除</el-button>
+              <el-button type="default" size="small">编辑</el-button>
+              <el-button type="default" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -45,42 +34,62 @@
             <el-button @click="featuredArticleParams.dialog = true">添加文章</el-button> 最多7篇
           </el-form-item>
         </el-form>
-        
+        <!-- 添加精选文章 -->
+        <el-dialog title="添加精选文章" v-model="featuredArticleParams.dialog" style="z-index: 999">
+          <el-form label-position="right">
+            <el-form-item label="选择文章" label-width="120px">
+              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
+                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="顺序" label-width="120px" style="width: 70%">
+              <el-input v-model="featuredArticleParams.order" placeholder="输入数字，数字越大越排前"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="featuredArticleParams.dialog = false">取 消</el-button>
+            <el-button type="primary" @click="featuredArticleParams.dialog = false">确 定</el-button>
+          </div>
+        </el-dialog>
       </el-tab-pane>
 
       <!-- 精选新媒体 -->
       <el-tab-pane label="精选新媒体" name="second">
         <el-table :data="featuredArticles" stripe style="width: 100%">
+          <!-- 栏目长度 100 120 160 200 视情况而定 -->
           <el-table-column type="index" label="#"></el-table-column>
           <el-table-column prop="title" label="标题"></el-table-column>
           <el-table-column prop="author" label="作者"></el-table-column>
           <el-table-column prop="term" label="期数"></el-table-column>
           <el-table-column prop="column" label="栏目"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template scope="scope">
-              <el-button @click.native.prevent="deleteFeaturedArticle(scope.$index)" type="default" size="small">删除</el-button>
+              <el-button type="default" size="small">编辑</el-button>
+              <el-button type="default" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <!-- 添加按钮 -->
         <el-form style="margin-top: 20px">
           <el-form-item>
-            <el-button @click="featuredArticleParams.dialog = true">添加文章</el-button> 最多8篇
+            <el-button @click="featuredNewmediaParams.dialog = true">添加文章</el-button> 最多8篇
           </el-form-item>
         </el-form>
         <!-- 添加精选文章 -->
-        <el-dialog title="添加精选文章" v-model="featuredArticleParams.dialog">
+        <el-dialog title="添加精选文章" v-model="featuredNewmediaParams.dialog">
           <el-form label-position="right">
             <el-form-item label="选择文章" label-width="120px">
-              <!-- 可调用接口搜索 TODO -->
-              <el-select v-model="featuredArticleParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
+              <el-select v-model="featuredNewmediaParams.searchKey" filterable placeholder="请输入文章标题进行搜索" style="width: 70%">
                 <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="顺序" label-width="120px" style="width: 70%">
+              <el-input v-model="featuredArticleParams.order" placeholder="输入数字，数字越大越排前"></el-input>
+            </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button @click="featuredArticleParams.dialog = false">取 消</el-button>
-            <el-button type="primary" @click="featuredArticleParams.dialog = false">确 定</el-button>
+            <el-button @click="featuredNewmediaParams.dialog = false">取 消</el-button>
+            <el-button type="primary" @click="featuredNewmediaParams.dialog = false">确 定</el-button>
           </div>
         </el-dialog>
       </el-tab-pane>
@@ -99,9 +108,10 @@
           <el-table-column label="时长">
             <template scope="scope">{{scope.row.length}}</template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="200">
             <template scope="scope">
-              <el-button @click.native.prevent="deleteFeaturedVideo(scope.$index)" type="default" size="small">删除</el-button>
+              <el-button type="default" size="small">编辑</el-button>
+              <el-button type="default" size="small">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -120,6 +130,9 @@
                 <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="顺序" label-width="120px" style="width: 70%">
+              <el-input v-model="featuredArticleParams.order" placeholder="输入数字，数字越大越排前"></el-input>
+            </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="featuredVideoParams.dialog = false">取 消</el-button>
@@ -132,7 +145,7 @@
       <el-tab-pane label="精选音频" name="fourth">
         <el-form ref="form" :model="featureAudio" label-width="80px">
           <el-form-item label="音频">
-            <el-input v-model="featureAudio.title" disabled style="width: 360px"></el-input>
+            <span>{{featureAudio.title}}</span>
           </el-form-item>
           <el-form-item>
             <el-button type="default" @click="featureAudio.dialog = true">替换</el-button>
@@ -173,13 +186,17 @@ export default {
         searchKey: '',
         dialog: false
       },
+      featuredNewmediaParams: {
+        searchKey: '',
+        dialog: false
+      },
       featuredArticles: [
-        { title: '这是标题1', author: '新周刊', term: 480, column: '生活' },
-        { title: '这是标题2', author: '新周刊', term: 480, column: '生活' },
-        { title: '这是标题3', author: '新周刊', term: 480, column: '生活' },
-        { title: '这是标题4', author: '新周刊', term: 480, column: '生活' },
-        { title: '这是标题5', author: '新周刊', term: 480, column: '生活' },
-        { title: '这是标题6', author: '新周刊', term: 480, column: '生活' }
+        { order: '1', title: '这是标题1', author: '新周刊', term: 480, column: '生活' },
+        { order: '1', title: '这是标题2', author: '新周刊', term: 480, column: '生活' },
+        { order: '1', title: '这是标题3', author: '新周刊', term: 480, column: '生活' },
+        { order: '1', title: '这是标题4', author: '新周刊', term: 480, column: '生活' },
+        { order: '1', title: '这是标题5', author: '新周刊', term: 480, column: '生活' },
+        { order: '1', title: '这是标题6', author: '新周刊', term: 480, column: '生活' }
       ],
       featuredVideoParams: {
         searchKey: '',
@@ -197,30 +214,6 @@ export default {
         title: '老屋，旧房，砖瓦',
         dialog: false
       }
-    }
-  },
-  methods: {
-    deleteFeaturedArticle(index) {
-      this.$confirm('确定删除文章?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(() => {
-        if (index >= 0 && index < this.featuredArticles.length) {
-          this.featuredArticles.splice(index, 1)
-        }
-      })
-    },
-    deleteFeaturedVideo(index) {
-      this.$confirm('确定删除视频?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(() => {
-        if (index >= 0 && index < this.featuredVideos.length) {
-          this.featuredVideos.splice(index, 1)
-        }
-      })
     }
   }
 }
