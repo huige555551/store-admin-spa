@@ -36,6 +36,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="createdAt" label="时间" width="200"></el-table-column>
+      <el-table-column label="评论管理" width="160">
+        <template scope="scope">
+          <el-button type="default" size="small">评论管理</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="200">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>

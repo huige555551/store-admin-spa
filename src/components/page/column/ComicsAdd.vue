@@ -25,11 +25,13 @@
         <el-form-item label="漫画标题">
           <el-input v-model="comics.title"></el-input>
         </el-form-item>
-        <el-form-item label="作者">
-          <el-input v-model="comics.author"></el-input>
-        </el-form-item>
         <el-form-item label="期数">
           <el-input v-model="comics.term"></el-input>
+        </el-form-item>
+        <el-form-item label="选择作者">
+          <el-select v-model="searchKey" filterable placeholder="请输入作者进行搜索">
+            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">提交</el-button>
@@ -44,6 +46,13 @@
 export default {
   data() {
     return {
+      options: [
+        { id: '1', value: '选项1', label: '选项1' },
+        { id: '2', value: '选项2', label: '选项2' },
+        { id: '3', value: '选项3', label: '选项3' },
+        { id: '4', value: '选项4', label: '选项4' },
+        { id: '5', value: '选项5', label: '选项5' }
+      ],
       comics: {
         title: '',
         term: '',

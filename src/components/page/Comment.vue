@@ -25,6 +25,11 @@
     <!-- Table -->
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column type="index" label="#"></el-table-column>
+      <el-table-column label="头像">
+        <template scope="scope">
+          <img :src="scope.row.avatar" width="48" height="48" @click="openImg(scope.row.cover)" style="cursor: pointer">
+        </template>
+      </el-table-column>
       <el-table-column prop="user" label="用户"></el-table-column>
       <el-table-column prop="content" label="内容"></el-table-column>
       <el-table-column prop="createdAt" label="时间"></el-table-column>
@@ -56,12 +61,12 @@ export default {
       currentPage: 1,
       searchKey: {},
       tableData: [
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', content: '评论内容', createdAt: '2017-02-02 12:30' }
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' }
       ]
     }
   },
