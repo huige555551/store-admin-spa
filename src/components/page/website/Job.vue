@@ -15,6 +15,7 @@
       <el-table-column prop="title" label="名字"></el-table-column>
       <el-table-column label="操作">
         <template scope="scope">
+          <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
         </template>
       </el-table-column>
