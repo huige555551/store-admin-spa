@@ -17,8 +17,8 @@
             <div slot="tip" class="el-upload__tip">建议尺寸520x676，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
         </el-form-item>
-        <el-form-item label="年份">
-          <el-date-picker v-model="magazine.year" type="year" placeholder="选择年"></el-date-picker>
+        <el-form-item label="日期">
+          <el-date-picker v-model="magazine.year" type="date" placeholder="选择年"></el-date-picker>
         </el-form-item>
         <el-form-item label="封面标题">
           <el-input v-model="magazine.title"></el-input>

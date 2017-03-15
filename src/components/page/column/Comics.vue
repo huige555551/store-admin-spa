@@ -26,14 +26,9 @@
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column type="index" label="#" width="100"></el-table-column>
       <el-table-column prop="title" label="标题"></el-table-column>
-      <el-table-column prop="date" label="日期"></el-table-column>
-      <!-- 无组件支持
-      <el-table-column label="数量">
-        <template scope="scope">
-          <el-button type="default">查看({{scope.row.count}}张)</el-button>
-        </template>
-      </el-table-column>
-      -->
+      <el-table-column prop="date" label="日期" width="160"></el-table-column>
+      <el-table-column prop="author" label="作者"></el-table-column>
+      <el-table-column prop="term" label="期数"></el-table-column>
       <el-table-column label="封面">
         <template scope="scope">
           <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
@@ -73,16 +68,16 @@ export default {
         title: ''
       },
       tableData: [
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '漫画标题', date: '2017-02-02', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
       ]
     }
   },

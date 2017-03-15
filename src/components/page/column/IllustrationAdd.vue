@@ -25,6 +25,12 @@
         <el-form-item label="插画标题">
           <el-input v-model="comics.title"></el-input>
         </el-form-item>
+        <el-form-item label="作者">
+          <el-input v-model="comics.author"></el-input>
+        </el-form-item>
+        <el-form-item label="期数">
+          <el-input v-model="comics.term"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">提交</el-button>
           <el-button>取消</el-button>

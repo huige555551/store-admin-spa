@@ -14,6 +14,12 @@
       <el-table-column type="index" label="#"></el-table-column>
       <el-table-column prop="name" label="名字"></el-table-column>
       <el-table-column prop="order" label="顺序"></el-table-column>
+      <el-table-column label="状态">
+        <template scope="scope">
+          <el-tag v-if="scope.row.isOn" type="success">上线</el-tag>
+          <el-tag v-if="!scope.row.isOn" type="gray">下线</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="海报">
         <template scope="scope">
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
@@ -43,6 +49,9 @@
         <el-form-item label="顺序" label-width="120px">
           <el-input v-model="newColumn.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
+        <el-form-item label="是否显示" label-width="120px">
+          <el-switch v-model="newColumn.isOn" on-text="" off-text=""></el-switch>
+        </el-form-item>
         <el-form-item label="上传海报" label-width="120px">
           <el-upload action="" :file-list="newColumn.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
@@ -64,14 +73,15 @@ export default {
     return {
       dialogFormVisible: false,
       newColumn: {
+        isOn: true
       },
       tableData: [
-        { name: '这是栏目1', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        { name: '这是栏目2', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        { name: '这是栏目3', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        { name: '这是栏目4', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        { name: '这是栏目5', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        { name: '这是栏目6', order: 1, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' }
+        { name: '这是栏目1', order: 1, isOn: true, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
+        { name: '这是栏目2', order: 1, isOn: true, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
+        { name: '这是栏目3', order: 1, isOn: false, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
+        { name: '这是栏目4', order: 1, isOn: false, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
+        { name: '这是栏目5', order: 1, isOn: true, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
+        { name: '这是栏目6', order: 1, isOn: true, cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' }
       ]
     }
   },

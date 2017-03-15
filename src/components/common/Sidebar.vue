@@ -66,6 +66,9 @@
         <el-menu-item index="/newmedia/banner">轮播管理</el-menu-item>
       </el-submenu>
 
+      <!-- 评论管理 -->
+      <el-menu-item index="/comment/list"><i class="el-icon-date"></i>评论管理</el-menu-item>
+
       <!-- 图书管理 -->
       <el-submenu index="book">
         <template slot="title"><i class="el-icon-date"></i>图书管理</template>

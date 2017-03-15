@@ -16,6 +16,7 @@ export default new Router({
         { path: '/', component: resolve => require(['@/components/page/Welcome'], resolve) },
 
         { path: '/user/list', component: resolve => require(['@/components/page/User.vue'], resolve) },
+        { path: '/comment/list', component: resolve => require(['@/components/page/Comment.vue'], resolve) },
 
         { path: '/index/banner', component: resolve => require(['@/components/page/index/Banner.vue'], resolve) },
         { path: '/index/feature', component: resolve => require(['@/components/page/index/Feature.vue'], resolve) },
