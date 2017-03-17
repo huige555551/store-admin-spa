@@ -35,6 +35,7 @@
 export default {
   data() {
     return {
+      searchKey: {},
       options: [
         { id: '1', value: '选项1', label: '选项1' },
         { id: '2', value: '选项2', label: '选项2' },
@@ -51,6 +52,11 @@ export default {
         fileList: []
       }
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    // TODO 突然离开未保存，提示管理员
+    console.log('leave')
+    next()
   }
 }
 </script>

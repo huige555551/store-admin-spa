@@ -18,10 +18,10 @@
     </el-form>
 
     <!-- Table -->
-    <el-table :data="users">
+    <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="nickname" label="昵称" min-width="100"></el-table-column>
-      <el-table-column prop="name" label="姓名" min-width="100"></el-table-column>
+      <el-table-column prop="realname" label="姓名" min-width="100"></el-table-column>
       <el-table-column prop="phone" label="电话" width="140"></el-table-column>
       <el-table-column prop="email" label="邮箱" min-width="140"></el-table-column>
       <el-table-column prop="company" label="公司" min-width="120"></el-table-column>
@@ -41,26 +41,30 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="10"
+        :page-sizes="[10, 20, 50]"
+        :page-size="perPage"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+const request = require('superagent')
+
 export default {
   data() {
     return {
+      total: 0,
+      perPage: 10,
       currentPage: 1,
       searchKey: {
-        nicnickname: '',
-        phone: '',
-        email: ''
+        nicnickname: null,
+        phone: null,
+        email: null
       },
-      users: [
+      tableData: [
         { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['sina'], createdTime: '2017-01-01 12:30' },
         { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
         { nickname: 'A', name: 'AA', phone: '13800880088', email: 'A@A.com', company: '公司', position: '职位', socials: ['wechat', 'sina'], createdTime: '2017-01-01 12:30' },
@@ -74,7 +78,26 @@ export default {
       ]
     }
   },
+  created() {
+    console.log('TODO with fetching API')
+  },
   methods: {
+    fetchData() {
+      this.tableData = []
+      request
+        .get('/api/system/sysUser/seachUser')
+        .query(this.searchKey)
+        .query({ currentPage: this.currentPage })
+        .query({ perPage: this.perPage })
+        .end((err, res) => {
+          if (err || res.body.status.errCode !== 200) {
+            return this.$notify.error({ title: '警告', message: '网络似乎出现问题~' })
+          }
+          const data = res.body.data
+          this.total = data.total
+          this.tableData = data.array
+        })
+    },
     handleSizeChange() {
     },
     handleCurrentChange() {

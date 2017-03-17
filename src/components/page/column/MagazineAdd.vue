@@ -58,6 +58,11 @@ export default {
         fileList: []
       }
     }
+  },
+  beforeRouteLeave(to, from, next) {
+    // TODO 突然离开未保存，提示管理员
+    console.log('leave')
+    next()
   }
 }
 </script>

@@ -13,13 +13,17 @@
 
 <script>
 const moment = require('moment')
+// const request = require('superagent')
 
-moment.lang('zh-cn')
+moment.locale('zh-cn')
 export default {
   data() {
     return {
       time: moment().format('ll')
     }
+  },
+  mounted() {
+    console.log('mounted')
   }
 }
 </script>

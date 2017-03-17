@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/common/Home'
-import Login from '@/components/page/Login'
 
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
+  /* eslint-disable */
+  scrollBehavior(to, from, savedPosition) {
+    // 对于所有路由导航，简单地让页面滚动到顶部
+    return { x: 0, y: 0 }
+  },
   routes: [
-    { path: '/', redirect: '/login' },
+    { path: '/login', component: resolve => require(['@/components/page/Login.vue'], resolve) },
     {
-      path: '/welcome',
+      path: '/',
       component: Home,
-      /* eslint-disable */
       children: [
-        { path: '/', component: resolve => require(['@/components/page/Welcome'], resolve) },
+        { path: '', component: resolve => require(['@/components/page/Welcome'], resolve) },
+        { path: '/welcome', component: resolve => require(['@/components/page/Welcome'], resolve) },
 
         { path: '/user/list', component: resolve => require(['@/components/page/User.vue'], resolve) },
         { path: '/comment/list', component: resolve => require(['@/components/page/Comment.vue'], resolve) },
@@ -61,6 +66,6 @@ export default new Router({
         { path: '/website/reset', component: resolve => require(['@/components/page/website/Reset.vue'], resolve) },
       ]
     },
-    { path: '/login', component: Login }
+    { path: '*', redirect: '/welcome' }
   ]
 })
