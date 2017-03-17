@@ -1,20 +1,11 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>新媒体管理</el-breadcrumb-item>
-        <el-breadcrumb-item>分类管理</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- Table -->
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="name" label="名字"></el-table-column>
-      <el-table-column prop="order" label="顺序"></el-table-column>
-      <el-table-column label="操作" width="200">
+    <el-table :data="tableData">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
+      <el-table-column prop="name" label="名字" min-width="100"></el-table-column>
+      <el-table-column prop="order" label="顺序" width="80"></el-table-column>
+      <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
@@ -31,11 +22,11 @@
 
     <!-- 添加栏目表单 -->
     <el-dialog title="添加分类" v-model="dialogFormVisible" label-position="right">
-      <el-form :model="newColumn" style="width: 500px">
-        <el-form-item label="名字" label-width="120px">
+      <el-form :model="newColumn" label-width="100px">
+        <el-form-item label="名字">
           <el-input v-model="newColumn.name"></el-input>
         </el-form-item>
-        <el-form-item label="顺序" label-width="120px">
+        <el-form-item label="顺序">
           <el-input v-model="newColumn.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
       </el-form>

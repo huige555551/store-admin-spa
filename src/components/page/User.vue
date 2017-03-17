@@ -1,13 +1,5 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="昵称">
@@ -21,26 +13,26 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary">搜索</el-button>
+        <el-button>清空</el-button>
       </el-form-item>
     </el-form>
 
     <!-- Table -->
-    <el-table :data="users" stripe style="width: 100%">
-      <!-- 栏目长度 100 120 160 200 视情况而定 -->
-      <el-table-column type="index" label="#" width="100"></el-table-column>
-      <el-table-column prop="nickname" label="昵称" min-width="120"></el-table-column>
-      <el-table-column prop="name" label="姓名" min-width="120"></el-table-column>
-      <el-table-column prop="phone" label="电话" min-width="160"></el-table-column>
-      <el-table-column prop="email" label="邮箱" min-width="160"></el-table-column>
-      <el-table-column prop="company" label="公司" min-width="160"></el-table-column>
+    <el-table :data="users">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
+      <el-table-column prop="nickname" label="昵称" min-width="100"></el-table-column>
+      <el-table-column prop="name" label="姓名" min-width="100"></el-table-column>
+      <el-table-column prop="phone" label="电话" width="140"></el-table-column>
+      <el-table-column prop="email" label="邮箱" min-width="140"></el-table-column>
+      <el-table-column prop="company" label="公司" min-width="120"></el-table-column>
       <el-table-column prop="position" label="职位" min-width="120"></el-table-column>
-      <el-table-column label="第三方社交绑定" min-width="200">
+      <el-table-column label="社交账号" min-width="120">
         <template scope="scope">
           <el-tag type="success" v-if="scope.row.socials.indexOf('wechat') != -1">微信</el-tag>
           <el-tag type="primary" v-if="scope.row.socials.indexOf('sina') != -1">新浪</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createdTime" label="注册时间" width="200"></el-table-column>
+      <el-table-column prop="createdTime" label="注册时间" width="160"></el-table-column>
     </el-table>
 
     <!-- 分页 -->
@@ -90,9 +82,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.plugins-tips .el-form-item {
-  margin-bottom: 0px;
-}
-</style>

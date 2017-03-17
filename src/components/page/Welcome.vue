@@ -1,14 +1,9 @@
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item><i class="el-icon-setting"></i> 欢迎进入管理后台</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="ms-doc">
       <h3>README.md</h3>
       <article>
-        <h1>Neweekly System</h1>
+        <h1>新周刊管理后台</h1>
         <p>基于 Vue.js 2 + Element UI 的后台管理系统</p>
       </article>
     </div>

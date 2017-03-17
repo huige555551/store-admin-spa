@@ -58,6 +58,7 @@ export default new Router({
         { path: '/website/ad', component: resolve => require(['@/components/page/website/Ad.vue'], resolve) },
         { path: '/website/job', component: resolve => require(['@/components/page/website/Job.vue'], resolve) },
         { path: '/website/partner', component: resolve => require(['@/components/page/website/Partner.vue'], resolve) },
+        { path: '/website/reset', component: resolve => require(['@/components/page/website/Reset.vue'], resolve) },
       ]
     },
     { path: '/login', component: Login }

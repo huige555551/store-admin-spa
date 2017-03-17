@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>新媒体管理</el-breadcrumb-item>
-        <el-breadcrumb-item>文章列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="标题">
@@ -24,32 +15,33 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary">搜索</el-button>
+        <el-button>清空</el-button>
       </el-form-item>
     </el-form>
 
     <!-- Table -->
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="title" label="标题" width="200"></el-table-column>
-      <el-table-column prop="column" label="栏目" width="120"></el-table-column>
-      <el-table-column prop="author" label="作者" width="120"></el-table-column>
-      <el-table-column prop="createdAt" label="时间" width="200"></el-table-column>
+    <el-table :data="tableData">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
+      <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
+      <el-table-column prop="column" label="栏目" width="100"></el-table-column>
+      <el-table-column prop="author" label="作者" width="100"></el-table-column>
+      <el-table-column prop="createdAt" label="时间" width="160"></el-table-column>
       <el-table-column label="封面" width="200">
         <template scope="scope">
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="预览" width="100">
+      <el-table-column label="预览" width="80">
         <template scope="scope">
           <el-button type="default" @click.native.prevent = "articleDialog = true" size="small">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="评论管理" width="160">
+      <el-table-column label="评论管理" width="120">
         <template scope="scope">
           <el-button type="default" size="small">评论管理</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>

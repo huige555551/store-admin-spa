@@ -1,17 +1,8 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>视频管理</el-breadcrumb-item>
-        <el-breadcrumb-item>添加视频</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- 创建文章 -->
     <div class="form-box">
-      <el-form ref="form" :model="video" label-width="80px">
+      <el-form ref="form" :model="video" label-width="100px" style="width: 500px;">
         <el-form-item label="封面上传">
           <el-upload action="" :file-list="video.cover">
             <el-button size="small" type="primary">点击上传</el-button>

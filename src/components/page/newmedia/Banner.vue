@@ -1,30 +1,21 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>新媒体管理</el-breadcrumb-item>
-        <el-breadcrumb-item>轮播管理</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- Table -->
-    <el-table :data="banners" stripe style="width: 100%">
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="title" label="标题"></el-table-column>
-      <el-table-column label="跳转链接">
+    <el-table :data="banners">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
+      <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
+      <el-table-column label="跳转链接" min-width="120">
         <template scope="scope">
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
-      <el-table-column prop="order" label="顺序"></el-table-column>
+      <el-table-column prop="order" label="顺序" width="80"></el-table-column>
       <el-table-column label="图片" width="200">
         <template scope="scope">
           <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
@@ -40,18 +31,18 @@
     </el-form>
 
     <!-- 添加轮播表单 -->
-    <el-dialog title="添加轮播" v-model="dialogFormVisible" label-position="right">
-      <el-form :model="newBanner" style="width: 500px">
-        <el-form-item label="标题" label-width="120px">
+    <el-dialog title="添加轮播" v-model="dialogFormVisible">
+      <el-form :model="newBanner" label-width="100px">
+        <el-form-item label="标题">
           <el-input v-model="newBanner.title"></el-input>
         </el-form-item>
-        <el-form-item label="跳转链接" label-width="120px">
+        <el-form-item label="跳转链接">
           <el-input v-model="newBanner.url"></el-input>
         </el-form-item>
-        <el-form-item label="顺序" label-width="120px">
+        <el-form-item label="顺序">
           <el-input v-model="newBanner.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
-        <el-form-item label="上传图片" label-width="120px">
+        <el-form-item label="上传图片">
           <el-upload action="" :file-list="newBanner.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">建议尺寸1440x400，只能上传jpg/png文件，且不超过1MB</div>

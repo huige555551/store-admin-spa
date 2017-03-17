@@ -91,6 +91,7 @@
         <el-menu-item index="/website/ad">广告设置</el-menu-item>
         <el-menu-item index="/website/job">岗位列表</el-menu-item>
         <el-menu-item index="/website/partner">合作伙伴</el-menu-item>
+        <el-menu-item index="/website/reset">修改密码</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
@@ -105,15 +106,16 @@ export default {
   }
 }
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 .sidebar{
   display: block;
   position: absolute;
-  width: 250px;
+  width: 220px;
   left: 0;
-  top: 70px;
+  top: 60px;
   bottom: 0;
-  background: #2E363F;
+  background-color: #020203;
   overflow-y: scroll;
 }
 .sidebar > ul {

@@ -1,20 +1,11 @@
 <template>
   <div>
-    <!-- 面包屑 -->
-    <div class="crumbs plugins-tips">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/welcome' }"><i class="el-icon-date"></i> 网站</el-breadcrumb-item>
-        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-
     <!-- Table -->
-    <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column type="index" label="#"></el-table-column>
-      <el-table-column prop="title" label="标题" width="160"></el-table-column>
-      <el-table-column prop="category" label="分类" width="120"></el-table-column>
-      <el-table-column label="视频" width="200">
+    <el-table :data="tableData">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
+      <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
+      <el-table-column prop="category" label="分类" width="100"></el-table-column>
+      <el-table-column label="视频" min-width="120">
         <template scope="scope">
           <p v-if="!scope.row.video">无</p>
           <a v-if="scope.row.video" :href="scope.row.video">{{scope.row.video}}</a>
@@ -25,25 +16,25 @@
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="时间" width="200"></el-table-column>
-      <el-table-column label="活动信息" width="160">
+      <el-table-column prop="createdAt" label="时间" width="140"></el-table-column>
+      <el-table-column label="活动信息" width="120">
         <template scope="scope">
           <el-button type="default" @click.native.prevent="activityDialog = true">查看活动</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="投票" width="160">
+      <el-table-column label="投票" width="120">
         <template scope="scope">
           <p v-if="!scope.row.vote">无</p>
           <el-button v-if="scope.row.vote" type="default" @click.native.prevent="voteDialog = true">查看投票</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="weiboTag" label="微博话题" width="160"></el-table-column>
-      <el-table-column label="评论管理" width="160">
+      <el-table-column prop="weiboTag" label="微博话题" min-width="120"></el-table-column>
+      <el-table-column label="评论管理" width="120">
         <template scope="scope">
           <el-button type="default" size="small">评论管理</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small">编辑</el-button>
           <el-button type="default" size="small">删除</el-button>
@@ -60,7 +51,7 @@
     <el-dialog title="活动信息" v-model="activityDialog">
       <el-tabs value="first">
         <el-tab-pane label="活动信息" name="first">
-          <el-form label-width="80px">
+          <el-form label-width="100px">
             <el-form-item label="活动标题">
               <span>活动标题</span>
             </el-form-item>
@@ -80,7 +71,7 @@
         </el-tab-pane>
         <el-tab-pane label="合作伙伴" name="second">
           <!-- Table -->
-          <el-table :data="partners" stripe style="width: 100%">
+          <el-table :data="partners">
             <el-table-column type="index" label="#"></el-table-column>
             <el-table-column prop="name" label="名字"></el-table-column>
             <el-table-column label="跳转链接">
@@ -102,7 +93,7 @@
     <el-dialog title="投票详情" v-model="voteDialog">
       <el-tabs value="first">
         <el-tab-pane label="投票信息" name="first">
-          <el-form label-width="80px">
+          <el-form label-width="100px">
             <el-form-item label="投票名称">
               <span>投票名称</span>
             </el-form-item>
@@ -120,7 +111,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="投票选项" name="second">
-          <el-form label-width="80px" label-position="left">
+          <el-form label-width="100px">
             <el-form-item label="问题一">
               <p>问题描述 <el-tag type="success">单选</el-tag></p>
               <el-radio-group>
@@ -140,7 +131,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="结果统计" name="third">
-          <el-form label-width="80px" label-position="left">
+          <el-form label-width="100px" style="width: 80%;">
             <el-form-item label="问题一">
               <p>问题描述 <el-tag type="success">单选</el-tag></p>
               <p>选项一：XXXXX</p>
