@@ -16,7 +16,7 @@
           <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column prop="createdAt" label="时间" width="140"></el-table-column>
+      <el-table-column prop="createdAt" label="时间" width="160"></el-table-column>
       <el-table-column label="活动信息" width="120">
         <template scope="scope">
           <el-button type="default" @click.native.prevent="activityDialog = true">查看活动</el-button>

@@ -47,6 +47,8 @@ module.exports = {
     "space-before-function-paren": ["error", "never"], // 禁止函数圆括号之前有一个空格
     "comma-dangle": ["error", "never"], // 禁用拖尾逗号
     "consistent-return": "off", // 禁用要求使用一致的 return 语句
-    "prefer-template": "off" // 关闭使用模板而非字符串连接
+    "prefer-template": "off", // 关闭使用模板而非字符串连接
+    "arrow-parens": "off", // 要求箭头函数的参数使用圆括号
+    "arrow-body-style": "off" // 要求箭头函数体使用大括号
   }
 }

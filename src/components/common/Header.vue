@@ -40,7 +40,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
-  z-index: 999;
+  z-index: 1;
   position: relative;
   box-sizing: border-box;
   width: 100%;
