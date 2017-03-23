@@ -33,7 +33,7 @@ export default {
   },
   mounted() {
     /* eslint-disable no-new */
-    console.log(Object.assign({}, {
+    (Object.assign({}, {
       textarea: $('#editor')
     }, this.options))
     this.editor = new Simditor(Object.assign({}, {

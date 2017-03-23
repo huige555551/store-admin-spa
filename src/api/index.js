@@ -8,6 +8,7 @@ import axios from 'axios'
 import qs from 'qs'
 import NProgress from 'nprogress'
 import { Notification } from 'element-ui'
+import router from '@/router'
 
 // API 服务器地址
 const serverHost = ''
@@ -32,21 +33,24 @@ function checkStatus(response) {
   // 如果 http 状态码正常, 则直接返回数据
   if (response.status === 200 || response.status === 304) {
     // 这里, 如果不需要除 data 外的其他数据, 可以直接 return response.data, 这样可以让后面的代码精简一些
-    return response.data
+    return {
+      code: response.data.status.errCode,
+      data: response.data.data
+    }
   }
   // 异常状态下, 把错误信息返回去
   return {
-    status: {
-      errCode: response.status,
-      message: response.statusText
-    }
+    code: response.status,
+    data: response.statusText
   }
 }
 
 // 处理来自后端的错误
 function checkCode(res) {
-  if (res.status.errCode !== 200) {
-    Notification.error({ title: '警告', message: `${res.status.errCode} ${res.status.message}. ` })
+  if (res.code === 503) {
+    router.replace('login')
+  } else if (res.code !== 200) {
+    Notification.error({ title: '警告', message: `${res.code} ${res.data}. ` })
   }
   return res
 }
@@ -58,7 +62,7 @@ export default {
       url: serverHost + url,
       data: qs.stringify(data),
       timeout: 30000,
-      withCredentials: true,
+      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -71,7 +75,7 @@ export default {
       url: serverHost + url,
       params,
       timeout: 30000,
-      withCredentials: true,
+      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }

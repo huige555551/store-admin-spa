@@ -3,28 +3,25 @@
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>栏目文章</span>
+        <span>首页管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>栏目列表</span>
+        <span>精选视频</span>
       </el-form-item>
     </el-form>
 
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="name" label="名字" min-width="100"></el-table-column>
+      <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column prop="order" label="顺序" width="80"></el-table-column>
-      <el-table-column label="状态" width="80">
+      <el-table-column label="视频链接" min-width="120">
         <template scope="scope">
-          <el-tag v-if="scope.row.isUse" type="success">上线</el-tag>
-          <el-tag v-if="!scope.row.isUse" type="gray">下线</el-tag>
+          <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
         </template>
       </el-table-column>
-      <el-table-column label="海报" width="200">
-        <template scope="scope">
-          <img :src="scope.row.bannerUrl" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
-        </template>
+      <el-table-column label="时长" width="100">
+        <template scope="scope">{{scope.row.length}}秒</template>
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
@@ -37,30 +34,27 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="addRow">添加栏目</el-button>
+        <el-button @click="addRow">添加视频</el-button> 最多{{max}}篇
       </el-form-item>
     </el-form>
 
     <!-- 添加表单 -->
-    <el-dialog title="添加栏目" v-model="formDialog">
-      <el-form :model="rowObj" label-width="100px">
-        <el-form-item label="名字">
-          <el-input v-model="rowObj.name"></el-input>
+    <el-dialog title="添加精选视频" v-model="formDialog">
+      <el-form label-position="right" label-width="100px">
+        <el-form-item label="选择视频">
+          <el-select v-model="rowObj.title" filterable placeholder="请输入视频标题进行搜索">
+            <el-option label="选项一" value="value1"></el-option>
+            <el-option label="选项二" value="value2"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
-        <el-form-item label="是否显示">
-          <el-radio-group v-model="rowObj.isUse">
-            <el-radio :label="true">上线</el-radio>
-            <el-radio :label="false">下线</el-radio>
-          </el-radio-group>
+        <el-form-item label="时长(秒)">
+          <el-input v-model="rowObj.length"></el-input>
         </el-form-item>
-        <el-form-item label="上传海报">
-          <el-upload action="" :file-list="rowObj.fileList">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">建议尺寸1440x320，只能上传jpg/png文件，且不超过1MB</div>
-          </el-upload>
+        <el-form-item label="视频链接">
+          <el-input v-model="rowObj.url"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -77,19 +71,18 @@ import api from '@/api'
 export default {
   data() {
     return {
+      max: 5,
       // 表单
       formDialog: false,
       editing: false,
       editingIndex: null,
       rowObj: {},
-      // 表格
       tableData: [
-        // { id: 1, name: '这是栏目1', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目2', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目3', order: 1, isUse: false, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目4', order: 1, isUse: false, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目5', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目6', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' }
+        // { id: 1, order: 1, title: '这是标题1', url: 'http://baidu.com', length: 90 },
+        // { id: 1, order: 2, title: '这是标题2', url: 'http://baidu.com', length: 90 },
+        // { id: 1, order: 3, title: '这是标题3', url: 'http://baidu.com', length: 90 },
+        // { id: 1, order: 4, title: '这是标题4', url: 'http://baidu.com', length: 90 },
+        // { id: 1, order: 5, title: '这是标题5', url: 'http://baidu.com', length: 90 }
       ]
     }
   },
@@ -97,47 +90,46 @@ export default {
     this.fetchData()
   },
   methods: {
-    // 新窗口打开轮播图
-    openImg(url) {
-      window.open(url)
-    },
-    // 获取数据
     async fetchData() {
-      const { code, data } = await api.get('api/system/article/listNavigation')
+      const { code, data } = await api.get('/api/system/article/listExquisiteArticle')
       if (code === 200) {
         this.tableData = data
       }
     },
-    // 添加行
+    // 添加精选
     addRow() {
+      if (this.tableData.length >= this.max) {
+        return this.$notify.info({ title: '提示', message: `最多创建${this.max}篇精选文章` })
+      }
       this.editing = false
       this.rowObj = {
-        name: null,
-        order: 1,
-        isUse: true,
-        bannerUrl: null
+        title: null,
+        url: null,
+        length: null,
+        order: null
       }
       this.formDialog = true
     },
-    // 编辑行
+    // 编辑精选
     editRow(index) {
       this.editing = true
       this.editingIndex = index
+      this.rowObj = {}
       this.rowObj.id = this.tableData[index].id
-      this.rowObj.name = this.tableData[index].name
       this.rowObj.order = this.tableData[index].order
-      this.rowObj.isUse = this.tableData[index].isUse
-      this.rowObj.bannerUrl = this.tableData[index].bannerUrl
+      this.rowObj.title = this.tableData[index].title
+      this.rowObj.url = this.tableData[index].url
+      this.rowObj.length = this.tableData[index].length
       this.formDialog = true
     },
     // 删除行
     async deleteRow(index) {
-      this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
+      this.$confirm('此操作将该删除该精选，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
-        const { code } = api.post('/api/system/article/deteleNavigation', { id: this.tableData[index].id })
+        const { code } = api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
         }
@@ -153,7 +145,7 @@ export default {
           this.formDialog = false
         }
       } else {
-        const { code, data } = await api.post('/api/system/article/addNavigation', this.rowObj)
+        const { code, data } = await api.post('/api/system/article/addArticle', this.rowObj)
         if (code === 200) {
           this.rowObj.id = data.id
           this.tableData.push(this.rowObj)

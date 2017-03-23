@@ -1,5 +1,19 @@
 <template>
   <div>
+    <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>栏目文章</span>
+      </el-form-item>
+      <el-form-item label="菜单：" v-if="!editing">
+        <span>添加封面</span>
+      </el-form-item>
+      <el-form-item label="文章：" v-if="editing">
+        <span>{{magazine.title}}</span>
+      </el-form-item>
+    </el-form>
+
+    <!-- 表单 -->
     <el-form ref="form" :model="magazine" label-width="100px" style="width: 500px;">
       <el-form-item label="封面上传">
         <el-upload action="" :file-list="magazine.fileList" list-type="picture">
@@ -46,16 +60,26 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   data() {
     return {
-      magazine: {
-        title: '',
-        term: '',
-        buyUrl: '',
-        story: '',
-        year: '2017',
-        fileList: []
+      editing: false,
+      magazine: {}
+    }
+  },
+  created() {
+    if (this.$route.params.id) {
+      this.editing = true
+      this.fetchData()
+    }
+  },
+  methods: {
+    async fetchData() {
+      const { code, data } = await api.get('/api/system/cover/getCover', { id: this.$route.params.id })
+      if (code === 200) {
+        this.magazine = data
       }
     }
   },

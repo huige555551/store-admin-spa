@@ -72,6 +72,9 @@ export default {
       ]
     }
   },
+  created() {
+    console.log('created')
+  },
   methods: {
     // 新窗口打开轮播图
     openImg(url) {

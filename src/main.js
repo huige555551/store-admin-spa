@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import 'nprogress/nprogress.css'
 // import api from '@/api'
 import App from './App'
 import router from './router'

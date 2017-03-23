@@ -1,20 +1,30 @@
 <template>
   <div>
-    <!-- 搜索 -->
-    <el-form :inline="true" :model="searchKey">
-      <el-form-item label="标题">
-        <el-input v-model="searchKey.title" placeholder="标题"></el-input>
+    <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>固定栏目</span>
       </el-form-item>
-      <el-form-item label="日期">
-        <el-date-picker v-model="searchKey.date" type="date" placeholder="选择日期"></el-date-picker>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary">搜索</el-button>
-        <el-button>清空</el-button>
+      <el-form-item label="菜单：">
+        <span>插画列表</span>
       </el-form-item>
     </el-form>
 
-    <!-- Table -->
+    <!-- 搜索 -->
+    <el-form :inline="true">
+      <el-form-item label="标题">
+        <el-input v-model="searchInput.title" placeholder="标题"></el-input>
+      </el-form-item>
+      <el-form-item label="日期">
+        <el-date-picker v-model="searchInput.date" type="date" placeholder="选择日期"></el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
+        <el-button @click.native.prevent="emptySearch">清空</el-button>
+      </el-form-item>
+    </el-form>
+
+    <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
@@ -28,8 +38,8 @@
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="default" size="small">编辑</el-button>
-          <el-button type="default" size="small">删除</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/illustration/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,54 +50,110 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="10"
+        :page-sizes="[10, 20, 50]"
+        :page-size="perPage"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   data() {
     return {
-      currentPage: 1,
-      searchKey: {
-        year: '',
-        term: '',
-        title: ''
+      // 搜索
+      searchInput: {
+        title: null,
+        date: null
       },
+      searchKey: {
+        title: null,
+        date: null
+      },
+      // 分页
+      total: 0,
+      currentPage: 1,
+      perPage: 10,
       tableData: [
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '插画标题', date: '2017-02-02', count: 12, author: '新周刊', term: 480, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
       ]
     }
+  },
+  created() {
+    // this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
     openImg(url) {
       window.open(url)
     },
-    handleSizeChange() {
+    // 清空搜索
+    emptySearch() {
+      this.searchInput.title = null
+      this.searchInput.date = null
+      this.searchKey.title = null
+      this.searchKey.date = null
+      this.currentPage = 1
+      this.fetchData()
     },
-    handleCurrentChange() {
+    // 搜索
+    search() {
+      this.searchKey.title = this.searchInput.title
+      this.searchKey.date = this.searchInput.date
+      this.currentPage = 1
+      this.fetchData()
+    },
+    // 获取数据
+    async fetchData() {
+      this.tableData = []
+      const { code, data } = await api.get('/api/system/article/listArticle', {
+        currentPage: this.currentPage,
+        perPage: this.perPage,
+        title: this.searchKey.title,
+        date: this.searchKey.date
+      })
+      if (code === 200) {
+        this.tableData = data
+      }
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.perPage = val
+      this.currentPage = 1
+      this.fetchData()
+    },
+    // 分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.fetchData()
+    },
+    // 删除行
+    async deleteRow(index) {
+      this.$confirm('此操作将该删除该封面，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        const { code } = api.post('/api/system/article/deleteArticle', { id: this.tableData[index].id })
+        if (code === 200) {
+          this.tableData.splice(index, 1)
+          this.fetchData()
+        }
+      }).catch(() => {})
     }
   }
 }
 </script>
-
-<style>
-.plugins-tips .el-form-item {
-  margin-bottom: 0px;
-}
-</style>

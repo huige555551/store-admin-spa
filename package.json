@@ -10,6 +10,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "vue": "^2.2.1",
     "vue-router": "^2.2.0"
   },
@@ -57,7 +58,6 @@
     "simditor": "^2.3.6",
     "url-loader": "^0.5.7",
     "vue-loader": "^11.1.4",
-    "vue-quill-editor": "^1.1.1",
     "vue-simditor": "0.0.3",
     "vue-style-loader": "^2.0.0",
     "vue-template-compiler": "^2.2.1",
