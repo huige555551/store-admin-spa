@@ -33,9 +33,15 @@ function checkStatus(response) {
   // 如果 http 状态码正常, 则直接返回数据
   if (response.status === 200 || response.status === 304) {
     // 这里, 如果不需要除 data 外的其他数据, 可以直接 return response.data, 这样可以让后面的代码精简一些
+    if (response.data.status.errCode === 200) {
+      return {
+        code: response.data.status.errCode,
+        data: response.data.data
+      }
+    }
     return {
       code: response.data.status.errCode,
-      data: response.data.data
+      data: response.data.status.message
     }
   }
   // 异常状态下, 把错误信息返回去
@@ -48,7 +54,7 @@ function checkStatus(response) {
 // 处理来自后端的错误
 function checkCode(res) {
   if (res.code === 503) {
-    router.replace('login')
+    return router.replace('login')
   } else if (res.code !== 200) {
     Notification.error({ title: '警告', message: `${res.code} ${res.data}. ` })
   }

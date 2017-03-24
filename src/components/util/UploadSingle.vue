@@ -54,7 +54,7 @@ export default {
     // 文件上传
     beforeUpload(file) {
       if (file.size / 1024 / 1024 > this.size) {
-        return this.$notify.error({ title: '错误', message: '建议尺寸1440x520，只能上传jpg/png文件，且不超过1MB' })
+        return this.$notify.error({ title: '错误', message: `建议尺寸${this.dimension}，只能上传jpg/png文件，且不超过${this.size}MB` })
       }
       return api.get('/api/system/upload/getToken').then(response => {
         this.bucketPort = response.data.bucketPort

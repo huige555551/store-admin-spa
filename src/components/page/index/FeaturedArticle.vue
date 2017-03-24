@@ -37,12 +37,17 @@
     <el-dialog title="添加精选文章" v-model="formDialog">
       <el-form label-width="100px">
         <el-form-item label="选择文章" >
-          <el-select v-model="rowObj.title" 
-            filterable remote 
-            placeholder="请输入文章标题进行搜索"
-            :remote-method="searchArticle">
-            <el-option label="选项一" value="value1"></el-option>
-            <el-option label="选项二" value="value2"></el-option>
+          <el-select v-model="rowObj.articleId"
+            filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchArticle"
+            @change="handleChange">
+            <el-option
+              v-for="item in results"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="顺序">
@@ -69,6 +74,7 @@ export default {
       editing: false,
       editingIndex: null,
       rowObj: {},
+      results: [],
       // 表格
       tableData: []
     }
@@ -78,6 +84,7 @@ export default {
   },
   methods: {
     async fetchData() {
+      this.tableData = []
       const { code, data } = await api.get('/api/system/article/listExquisiteArticle')
       if (code === 200) {
         this.tableData = data
@@ -87,6 +94,7 @@ export default {
       const { code, data } = await api.get('/api/system/article/searchArticle', { title: val })
       if (code === 200) {
         console.log(data)
+        this.results = data
       }
     },
     // 添加精选
@@ -96,6 +104,7 @@ export default {
       }
       this.editing = false
       this.rowObj = {
+        articleId: null,
         title: null,
         order: 1
       }
@@ -106,10 +115,13 @@ export default {
       this.editing = true
       this.editingIndex = index
       this.rowObj = {}
-      this.rowObj.id = this.tableData[index].id
+      this.rowObj.articleId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title
       this.formDialog = true
+    },
+    handleChange() {
+
     },
     // 删除行
     deleteRow(index) {
@@ -118,10 +130,11 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+        const { code } = api.post('/api/system/article/deleteExquisiteArticle', { articleId: this.tableData[index].id })
         console.log(code)
         if (code === 200) {
           this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
         }
       }).catch(() => {})
     },
@@ -135,11 +148,9 @@ export default {
           this.formDialog = false
         }
       } else {
-        const { code, data } = await api.post('/api/system/article/addArticle', this.rowObj)
+        const { code } = await api.post('/api/system/article/addExquisiteArticle', { articleId: this.rowObj.articleId })
         if (code === 200) {
-          this.rowObj.id = data.id
-          this.tableData.push(this.rowObj)
-          this.rowObj = {}
+          this.fetchData()
           this.formDialog = false
         }
       }

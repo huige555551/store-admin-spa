@@ -64,7 +64,7 @@
           <UploadSingle
             :imgUrl="rowObj.imgUrl"
             :imgKey="rowObj.imgKey"
-            :size=1 dimension="1440x520"
+            :size=0.01 dimension="1440x520"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
@@ -87,7 +87,7 @@ const _ = require('lodash')
 export default {
   data() {
     return {
-      max: 7,
+      max: 6,
       // 表单
       formDialog: false,
       editing: false,
@@ -168,6 +168,7 @@ export default {
         const { code } = await api.post('/api/system/banner/deleteBanner', { bannerId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
         }
       }).catch(() => {})
     },
@@ -180,6 +181,9 @@ export default {
       if (this.editing) {
         const { code } = await api.post('/api/system/banner/updateBanner', this.rowObj)
         if (code === 200) {
+          this.tableData.splice(this.editingIndex, 1, this.rowObj)
+
+
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.formDialog = false
         }

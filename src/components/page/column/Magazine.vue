@@ -31,11 +31,11 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
-      <el-table-column prop="term" label="期号" width="80"></el-table-column>
-      <el-table-column prop="date" label="日期" width="120"></el-table-column>
+      <el-table-column prop="period" label="期号" width="80"></el-table-column>
+      <el-table-column prop="publicationDate" label="日期" width="120"></el-table-column>
       <el-table-column label="封面" width="80">
         <template scope="scope">
-          <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img :src="scope.row.coverUrl" height="80" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -83,21 +83,21 @@ export default {
       currentPage: 1,
       perPage: 10,
       tableData: [
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', term: '480', date: '2017-02-02', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
+        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
       ]
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -126,7 +126,7 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/article/listArticle', {
+      const { code, data } = await api.get('/api/system/cover/searchCover', {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
@@ -134,7 +134,8 @@ export default {
         year: this.searchKey.year
       })
       if (code === 200) {
-        this.tableData = data
+        this.tableData = data.array
+        this.total = data.total
       }
     },
     // 分页
@@ -155,7 +156,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
-        const { code } = api.post('/api/system/article/deleteArticle', { id: this.tableData[index].id })
+        const { code } = api.post('/api/system/cover/deleteCover', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.fetchData()

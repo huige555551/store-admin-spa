@@ -69,24 +69,25 @@ export default {
       magazine: {}
     }
   },
-  created() {
+  async created() {
     if (this.$route.params.id) {
       this.editing = true
-      this.fetchData()
-    }
-  },
-  methods: {
-    async fetchData() {
       const { code, data } = await api.get('/api/system/cover/getCover', { id: this.$route.params.id })
       if (code === 200) {
         this.magazine = data
       }
     }
   },
-  beforeRouteLeave(to, from, next) {
-    // TODO 突然离开未保存，提示管理员
-    console.log('leave')
-    next()
+  methods: {
   }
+  // beforeRouteLeave(to, from, next) {
+  //   this.$confirm('此操作将该放弃编辑，是否继续?', '提示', {
+  //     confirmButtonText: '确定',
+  //     cancelButtonText: '取消',
+  //     type: 'info'
+  //   }).then(async () => {
+  //     next()
+  //   }).catch(() => {})
+  // }
 }
 </script>
