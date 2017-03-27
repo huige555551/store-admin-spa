@@ -53,11 +53,13 @@ export default new Router({
         { path: '/audio/category', component: resolve => require(['@/components/page/audio/Category.vue'], resolve) },
         { path: '/audio/list', component: resolve => require(['@/components/page/audio/Audio.vue'], resolve) },
         { path: '/audio/add', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
+        { path: '/audio/edit/:id', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
         // 新媒体管理
         { path: '/newmedia/category', component: resolve => require(['@/components/page/newmedia/Category.vue'], resolve) },
         { path: '/newmedia/list', component: resolve => require(['@/components/page/newmedia/Article.vue'], resolve) },
         { path: '/newmedia/add', component: resolve => require(['@/components/page/newmedia/ArticleAdd.vue'], resolve) },
         { path: '/newmedia/banner', component: resolve => require(['@/components/page/newmedia/Banner.vue'], resolve) },
+        { path: '/newmedia/edit/:id', component: resolve => require(['@/components/page/newmedia/ArticleAdd.vue'], resolve) },
         // 图书管理
         { path: '/book/list', component: resolve => require(['@/components/page/book/Book.vue'], resolve) },
         { path: '/book/add', component: resolve => require(['@/components/page/book/BookAdd.vue'], resolve) },
