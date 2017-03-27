@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Table -->
-    <el-table :data="banners">
+    <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column label="跳转链接" min-width="120">
@@ -17,8 +17,8 @@
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="default" size="small">编辑</el-button>
-          <el-button type="default" size="small">删除</el-button>
+          <el-button type="default" size="small"  @click.native.prevent="editRow(scope.$index)">编辑</el-button>
+          <el-button type="default" size="small"  @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -26,32 +26,41 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="dialogFormVisible = true">添加轮播</el-button> 最多6张
+        <el-button @click="addRow">添加轮播</el-button> 最多6张
       </el-form-item>
     </el-form>
 
     <!-- 添加轮播表单 -->
     <el-dialog title="添加轮播" v-model="dialogFormVisible">
-      <el-form :model="newBanner" label-width="100px">
+      <el-form :model="rowObj" label-width="100px">
         <el-form-item label="标题">
-          <el-input v-model="newBanner.title"></el-input>
+          <el-input v-model="rowObj.title"></el-input>
         </el-form-item>
         <el-form-item label="跳转链接">
-          <el-input v-model="newBanner.url"></el-input>
+          <el-input v-model="rowObj.url"></el-input>
         </el-form-item>
         <el-form-item label="顺序">
-          <el-input v-model="newBanner.order" placeholder="输入数字，数字越大越排前"></el-input>
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="上传图片">
-          <el-upload action="" :file-list="newBanner.fileList">
+          <UploadSingle
+            :imgUrl="rowObj.imgUrl"
+            :imgKey="rowObj.imgKey"
+            :size=1 dimension="1440x520"
+            @handleRemove="handleRemove"
+            @handleSuccess="handleSuccess">
+          </UploadSingle>
+        </el-form-item>
+        <!--<el-form-item label="上传图片">
+          <el-upload action="" :file-list="rowObj.fileList">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">建议尺寸1440x400，只能上传jpg/png文件，且不超过1MB</div>
           </el-upload>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -66,11 +75,17 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      max: 6,
+      // 表单
       dialogFormVisible: false,
-      newBanner: {
-
+      editing: false,
+      editingIndex: null,
+      rowObj: {
+        imgUrl: null, // data内声明，允许子组件跟踪值变化
+        imgKey: null // data内声明，允许子组件跟踪值变化
       },
-      banners: []
+      // 表格
+      tableData: []
     }
   },
   components: {
@@ -115,7 +130,7 @@ export default {
       this.rowObj.url = null
       this.rowObj.author = null
       this.rowObj.order = null
-      this.formDialog = true
+      this.dialogFormVisible = true
     },
     // 编辑轮播
     editRow(index) {
@@ -129,7 +144,7 @@ export default {
       this.rowObj.url = this.tableData[index].url
       this.rowObj.author = this.tableData[index].author
       this.rowObj.order = this.tableData[index].order
-      this.formDialog = true
+      this.dialogFormVisible = true
     },
     // 删除行
     deleteRow(index) {
@@ -150,21 +165,19 @@ export default {
       if (!this.rowObj.imgUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
-      this.rowObj.type = 1
+      this.rowObj.type = 3
       if (this.editing) {
         const { code } = await api.post('/api/system/banner/updateBanner', this.rowObj)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, this.rowObj)
-
-
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
-          this.formDialog = false
+          this.dialogFormVisible = false
         }
       } else {
         const { code } = await api.post('/api/system/banner/addBanner', this.rowObj)
         if (code === 200) {
           this.fetchData()
-          this.formDialog = false
+          this.dialogFormVisible = false
         }
       }
     }

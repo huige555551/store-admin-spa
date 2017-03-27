@@ -3,19 +3,19 @@
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="标题">
-        <el-input v-model="searchKey.title" placeholder="标题"></el-input>
+        <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="作者">
-        <el-input v-model="searchKey.author" placeholder="作者"></el-input>
+        <el-input v-model="searchInput.author" placeholder="作者"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
-        <el-select v-model="searchKey" filterable placeholder="请输入栏目进行搜索">
+        <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
           <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">搜索</el-button>
-        <el-button>清空</el-button>
+        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
+        <el-button @click.native.prevent="emptySearch">清空</el-button>
       </el-form-item>
     </el-form>
 
@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column label="预览" width="80">
         <template scope="scope">
-          <el-button type="default" @click.native.prevent = "articleDialog = true" size="small">查看</el-button>
+          <el-button type="default" @click.native.prevent = "checkDetail(scope.$index)" size="small">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="评论管理" width="120">
@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="default" size="small" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
+          <el-button type="default" size="small" @click.native.prevent="$router.push('/newmedia/edit/'+scope.row.id)">编辑</el-button>
           <el-button type="default" size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -52,11 +52,13 @@
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="10"
+        :page-sizes="[10, 20, 50]"
+        :page-size="perPage"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="total">
       </el-pagination>
     </div>
 
@@ -64,16 +66,13 @@
     <el-dialog title="文章信息" v-model="articleDialog">
       <el-form :model="rowObj" label-width="80px">
         <el-form-item label="封面">
-          <img src="http://om4r3bojb.bkt.clouddn.com/index-banner.jpg" style="max-width: 200px; max-height: 200px">
+          <img v-bind:src="rowObj.coverUrl" style="max-width: 200px; max-height: 200px">
         </el-form-item>
         <el-form-item label="标题">
           <span>{{rowObj.title}}</span>
         </el-form-item>
         <el-form-item label="栏目">
           <span>{{rowObj.navigationName}}</span>
-        </el-form-item>
-        <el-form-item label="期数">
-          <span>{{rowObj.period}}</span>
         </el-form-item>
         <el-form-item label="作者">
           <span>{{rowObj.author}}</span>
@@ -101,7 +100,6 @@ export default {
       content: '<p>123456</p><p>123456</p>',
       editing: false,
       editingIndex: null,
-      // { id: 1, title: '这是标题1', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
       tableData: [],
       rowObj: {
         id: null,
@@ -109,7 +107,6 @@ export default {
         coverUrl: null,
         navigationName: null,
         author: null,
-        period: null,
         publicationDate: null
       },
       options: [
@@ -144,6 +141,7 @@ export default {
     openImg(url) {
       window.open(url)
     },
+    // 清空搜索
     emptySearch() {
       this.searchInput.title = null
       this.searchInput.author = null
@@ -165,7 +163,13 @@ export default {
     // 获取文章列表数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/wechat/listArticle', { currentPage: this.currentPage, perPage: this.perPage })
+      const { code, data } = await api.get('/api/system/wechat/listArticle', {
+        currentPage: this.currentPage,
+        perPage: this.perPage,
+        title: this.searchKey.title,
+        column: this.searchKey.column,
+        author: this.searchKey.author
+      })
       if (code === 200) {
         this.tableData = data.array
         this.total = data.total
@@ -180,7 +184,6 @@ export default {
       this.rowObj.title = this.tableData[index].title
       this.rowObj.author = this.tableData[index].author
       this.rowObj.navigationName = this.tableData[index].navigationName
-      this.rowObj.period = this.tableData[index].period
       this.rowObj.publicationDate = this.tableData[index].publicationDate
       this.articleDialog = true
     },
@@ -191,7 +194,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/wechat/deleteNavigation', { id: this.tableData[index].id })
+        const { code } = await api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
@@ -214,6 +217,27 @@ export default {
           this.dialogFormVisible = false
         }
       }
+    },
+    // 查看
+    checkDetail(index) {
+      this.rowObj.id = this.tableData[index].id
+      this.rowObj.title = this.tableData[index].title
+      this.rowObj.coverUrl = this.tableData[index].coverUrl
+      this.rowObj.navigationName = this.tableData[index].navigationName
+      this.rowObj.author = this.tableData[index].author
+      this.rowObj.publicationDate = this.tableData[index].publicationDate
+      this.articleDialog = true
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.perPage = val
+      this.currentPage = 1
+      this.fetchData()
+    },
+    // 分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.fetchData()
     }
   }
 }

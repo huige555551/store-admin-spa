@@ -16,7 +16,7 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="dialogFormVisible = true">添加分类</el-button>
+        <el-button @click="addRow">添加分类</el-button>
       </el-form-item>
     </el-form>
 
@@ -49,11 +49,8 @@ export default {
       dialogFormVisible: false,
       editing: false,
       editingIndex: null,
-      rowObj: {
-        name: null,
-        order: null
-      },
       newColumn: {
+        id: null,
         name: null,
         order: null
       },
@@ -77,6 +74,7 @@ export default {
       this.editing = false
       this.newColumn.name = null
       this.newColumn.order = null
+      this.dialogFormVisible = true
     },
     // 编辑行
     editRow(index) {
@@ -107,8 +105,8 @@ export default {
       if (this.editing) {
         const { code } = await api.post('/api/system/wechat/updateNavigation', this.newColumn)
         if (code === 200) {
-          this.tableData.splice(this.this.editingIndex, 1, this.newColumn)
-          this.tableData.splice(this.this.editingIndex, 1, _.clone(this.newColumn))
+          this.tableData.splice(this.editingIndex, 1, this.newColumn)
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.newColumn))
           this.dialogFormVisible = false
         }
       } else {
