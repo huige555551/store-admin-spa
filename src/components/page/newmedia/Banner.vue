@@ -31,7 +31,7 @@
     </el-form>
 
     <!-- 添加轮播表单 -->
-    <el-dialog title="添加轮播" v-model="dialogFormVisible">
+    <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="标题">
           <el-input v-model="rowObj.title"></el-input>
@@ -59,7 +59,7 @@
         </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="formDialog = false">取 消</el-button>
         <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
       </div>
     </el-dialog>
@@ -77,7 +77,7 @@ export default {
     return {
       max: 6,
       // 表单
-      dialogFormVisible: false,
+      formDialog: false,
       editing: false,
       editingIndex: null,
       rowObj: {
@@ -130,7 +130,7 @@ export default {
       this.rowObj.url = null
       this.rowObj.author = null
       this.rowObj.order = null
-      this.dialogFormVisible = true
+      this.formDialog = true
     },
     // 编辑轮播
     editRow(index) {
@@ -144,7 +144,7 @@ export default {
       this.rowObj.url = this.tableData[index].url
       this.rowObj.author = this.tableData[index].author
       this.rowObj.order = this.tableData[index].order
-      this.dialogFormVisible = true
+      this.formDialog = true
     },
     // 删除行
     deleteRow(index) {
@@ -171,13 +171,13 @@ export default {
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, this.rowObj)
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
-          this.dialogFormVisible = false
+          this.formDialog = false
         }
       } else {
         const { code } = await api.post('/api/system/banner/addBanner', this.rowObj)
         if (code === 200) {
           this.fetchData()
-          this.dialogFormVisible = false
+          this.formDialog = false
         }
       }
     }

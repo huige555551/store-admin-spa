@@ -1,8 +1,8 @@
 <template>
   <div>
-    <!-- 创建文章 -->
+    <!-- 创建表单 -->
     <div class="form-box">
-      <el-form ref="form" :model="audio" label-width="100px" style="width: 500px;">
+      <el-form label-width="100px" label-position="left" style="width: 500px;">
         <el-form-item label="封面上传">
           <UploadSingle
             :imgUrl="audio.imgUrl"
@@ -11,11 +11,11 @@
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
-
         </el-form-item>
         <el-form-item label="选择分类">
           <el-select v-model="audio.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+            <el-option value="1" label="选项1"></el-option>
+            <el-option value="2" label="选项2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="音频标题">
@@ -29,9 +29,9 @@
             <p>还哭的声音.mp3</p>
             <el-button>替换</el-button>
           </template>
-          <el-upload 
+          <el-upload
             v-show="!audio.fileUrl"
-            action="//up-z2.qiniu.com" 
+            action="//up-z2.qiniu.com"
             accept="audio/*"
             :show-file-list="false"
             :multiple="false">
@@ -54,30 +54,12 @@
 <script>
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
-// const _ = require('lodash')
 
 export default {
   data() {
     return {
       editing: false,
-      audio: {
-        navigationId: null,
-        length: null,
-        title: null,
-        time: null,
-        introduction: null,
-        fileKey: null,
-        fileUrl: null,
-        imgKey: null, // data内声明，允许子组件跟踪值变化
-        imgUrl: null  // data内声明，允许子组件跟踪值变化
-      },
-      options: [
-        { id: '1', value: '1', label: '1' },
-        { id: '2', value: '2', label: '2' },
-        { id: '3', value: '3', label: '3' },
-        { id: '4', value: '4', label: '4' },
-        { id: '5', value: '5', label: '5' }
-      ]
+      audio: {}
     }
   },
   components: {
@@ -91,6 +73,8 @@ export default {
         console.log(data)
         this.audio = data
       }
+    } else {
+      this.editing = false
     }
   },
   methods: {

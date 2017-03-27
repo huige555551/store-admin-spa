@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Table -->
+    <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="名字" min-width="100"></el-table-column>
@@ -20,19 +20,19 @@
       </el-form-item>
     </el-form>
 
-    <!-- 添加栏目表单 -->
-    <el-dialog title="添加分类" v-model="dialogFormVisible" label-position="right">
-      <el-form :model="newColumn" label-width="100px">
+    <!-- 添加表单 -->
+    <el-dialog title="添加分类" v-model="formDialog" label-position="right">
+      <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
-          <el-input v-model="newColumn.name"></el-input>
+          <el-input v-model="rowObj.name"></el-input>
         </el-form-item>
         <el-form-item label="顺序">
-          <el-input v-model="newColumn.order" placeholder="输入数字，数字越大越排前"></el-input>
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native.prevent="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
+        <el-button @click.native.prevent="formDialog = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -46,14 +46,16 @@ const _ = require('lodash')
 export default {
   data() {
     return {
-      dialogFormVisible: false,
+      // 表单
+      formDialog: false,
       editing: false,
       editingIndex: null,
-      newColumn: {
+      rowObj: {
         id: null,
         name: null,
         order: null
       },
+      // 表格
       tableData: []
     }
   },
@@ -72,18 +74,18 @@ export default {
     // 添加行
     addRow() {
       this.editing = false
-      this.newColumn.name = null
-      this.newColumn.order = null
-      this.dialogFormVisible = true
+      this.rowObj.name = null
+      this.rowObj.order = null
+      this.formDialog = true
     },
     // 编辑行
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.newColumn.id = this.tableData[index].id
-      this.newColumn.name = this.tableData[index].name
-      this.newColumn.order = this.tableData[index].order
-      this.dialogFormVisible = true
+      this.rowObj.id = this.tableData[index].id
+      this.rowObj.name = this.tableData[index].name
+      this.rowObj.order = this.tableData[index].order
+      this.formDialog = true
     },
     // 删除行
     deleteRow(index) {
@@ -92,7 +94,6 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        console.log(this.tableData[index].id)
         const { code } = await api.post('/api/system/wechat/deleteNavigation', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
@@ -102,18 +103,21 @@ export default {
     },
     // 保存行
     async saveRow() {
+      // 表单验证
+      if (!this.rowObj.order || !this.rowObj.name) {
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+      }
       if (this.editing) {
-        const { code } = await api.post('/api/system/wechat/updateNavigation', this.newColumn)
+        const { code } = await api.post('/api/system/wechat/updateNavigation', this.rowObj)
         if (code === 200) {
-          this.tableData.splice(this.editingIndex, 1, this.newColumn)
-          this.tableData.splice(this.editingIndex, 1, _.clone(this.newColumn))
-          this.dialogFormVisible = false
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
+          this.formDialog = false
         }
       } else {
-        const { code } = await api.post('/api/system/wechat/addNavigation', this.newColumn)
+        const { code } = await api.post('/api/system/wechat/addNavigation', this.rowObj)
         if (code === 200) {
           this.fetchData()
-          this.dialogFormVisible = false
+          this.formDialog = false
         }
       }
     }

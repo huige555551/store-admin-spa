@@ -10,7 +10,8 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          <el-option value="1" label="1"></el-option>
+          <el-option value="2" label="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -33,18 +34,19 @@
       </el-table-column>
       <el-table-column label="预览" width="80">
         <template scope="scope">
-          <el-button type="default" @click.native.prevent = "checkDetail(scope.$index)" size="small">查看</el-button>
+          <el-button @click.native.prevent="checkDetail(scope.$index)" size="small">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="评论管理" width="120">
         <template scope="scope">
-          <el-button type="default" size="small">评论管理</el-button>
+          <!-- TODO with hui -->
+          <el-button size="small">评论管理</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="default" size="small" @click.native.prevent="$router.push('/newmedia/edit/'+scope.row.id)">编辑</el-button>
-          <el-button type="default" size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/newmedia/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +66,7 @@
 
     <!-- 预览dialog -->
     <el-dialog title="文章信息" v-model="articleDialog">
-      <el-form :model="rowObj" label-width="80px">
+      <el-form label-width="100px">
         <el-form-item label="封面">
           <img v-bind:src="rowObj.coverUrl" style="max-width: 200px; max-height: 200px">
         </el-form-item>
@@ -80,9 +82,6 @@
         <el-form-item label="发布时间">
           <span>{{rowObj.publicationDate}}</span>
         </el-form-item>
-        <el-form-item label="内容">
-          <p v-html="content"></p>
-        </el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -96,11 +95,8 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      // 预览
       articleDialog: false,
-      content: '<p>123456</p><p>123456</p>',
-      editing: false,
-      editingIndex: null,
-      tableData: [],
       rowObj: {
         id: null,
         title: null,
@@ -109,13 +105,6 @@ export default {
         author: null,
         publicationDate: null
       },
-      options: [
-        { id: '1', value: '选项1', label: '选项1' },
-        { id: '2', value: '选项2', label: '选项2' },
-        { id: '3', value: '选项3', label: '选项3' },
-        { id: '4', value: '选项4', label: '选项4' },
-        { id: '5', value: '选项5', label: '选项5' }
-      ],
       // 搜索
       searchInput: {
         title: null,
@@ -130,7 +119,9 @@ export default {
       // 分页
       total: 0,
       currentPage: 1,
-      perPage: 10
+      perPage: 10,
+      // 表格
+      tableData: []
     }
   },
   created() {
@@ -175,21 +166,9 @@ export default {
         this.total = data.total
       }
     },
-    // 编辑行
-    editRow(index) {
-      console.log(this.tableData[index])
-      this.editing = true
-      this.editingIndex = index
-      this.rowObj.id = this.tableData[index].id
-      this.rowObj.title = this.tableData[index].title
-      this.rowObj.author = this.tableData[index].author
-      this.rowObj.navigationName = this.tableData[index].navigationName
-      this.rowObj.publicationDate = this.tableData[index].publicationDate
-      this.articleDialog = true
-    },
     // 删除行
     deleteRow(index) {
-      this.$confirm('此操作将该删除该分类数据，是否继续?', '提示', {
+      this.$confirm('此操作将该删除该文章，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -198,34 +177,13 @@ export default {
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
         }
       }).catch(() => {})
     },
-    // 保存行
-    async saveRow() {
-      if (this.editing) {
-        const { code } = await api.post('/api/system/wechat/updateNavigation', this.newColumn)
-        if (code === 200) {
-          this.tableData.splice(this.this.editingIndex, 1, this.newColumn)
-          this.tableData.splice(this.this.editingIndex, 1, _.clone(this.newColumn))
-          this.dialogFormVisible = false
-        }
-      } else {
-        const { code } = await api.post('/api/system/wechat/addNavigation', this.newColumn)
-        if (code === 200) {
-          this.fetchData()
-          this.dialogFormVisible = false
-        }
-      }
-    },
     // 查看
     checkDetail(index) {
-      this.rowObj.id = this.tableData[index].id
-      this.rowObj.title = this.tableData[index].title
-      this.rowObj.coverUrl = this.tableData[index].coverUrl
-      this.rowObj.navigationName = this.tableData[index].navigationName
-      this.rowObj.author = this.tableData[index].author
-      this.rowObj.publicationDate = this.tableData[index].publicationDate
+      this.rowObj = _.clone(this.tableData[index])
       this.articleDialog = true
     },
     // 分页

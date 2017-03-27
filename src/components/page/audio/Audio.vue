@@ -6,8 +6,9 @@
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
-        <el-select v-model="value" filterable placeholder="请输入栏目进行搜索">
-          <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id" v-model="item.value"></el-option>
+        <el-select v-model="searchInput.categoryId" filterable placeholder="请输入栏目进行搜索">
+          <el-option value="1" label="选项1"></el-option>
+          <el-option value="2" label="选项2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -16,7 +17,7 @@
       </el-form-item>
     </el-form>
 
-    <!-- Table -->
+    <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
@@ -42,7 +43,7 @@
         :current-page="currentPage"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[10, 20, 50]"
         :page-size="perPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
@@ -57,36 +58,23 @@ import api from '@/api'
 export default {
   data() {
     return {
-      editIndex: null,
-      currentPage: 1,
-      total: 0,
-      perPage: 10,
+      // 搜索
       searchInput: {
         id: 1,
         title: null,
-        catergory: null
+        catergoryId: null
       },
       searchKey: {
         id: null,
         title: null,
-        catergory: null
+        catergoryId: null
       },
-      tableData: [
-        { title: '这是标题1', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 1 },
-        { title: '这是标题2', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 2 },
-        { title: '这是标题3', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 3 },
-        { title: '这是标题4', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 4 },
-        { title: '这是标题5', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 5 },
-        { title: '这是标题6', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 6 }
-      ],
-      options: [
-        { id: '1', value: '选项1', label: '1' },
-        { id: '2', value: '选项2', label: '2' },
-        { id: '3', value: '选项3', label: '3' },
-        { id: '4', value: '选项4', label: '4' },
-        { id: '5', value: '选项5', label: '5' }
-      ],
-      value: ''
+      // 分页
+      currentPage: 1,
+      total: 0,
+      perPage: 10,
+      // 表格
+      tableData: []
     }
   },
   created() {
@@ -98,14 +86,14 @@ export default {
     },
     search() {
       this.searchKey.title = this.searchInput.title
-      this.searchKey.category = this.searchInput.catergory
+      this.searchKey.categoryId = this.searchInput.catergoryId
       this.fetchData()
     },
     emptySearch() {
       this.searchInput.title = null
-      this.searchInput.category = null
+      this.searchInput.categoryId = null
       this.searchKey.title = null
-      this.searchKey.category = null
+      this.searchKey.categoryId = null
       this.currentPage = 1
       this.tableData = []
     },
@@ -135,15 +123,12 @@ export default {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
-        } else {
-          console.log('failed')
         }
       }).catch(() => {})
     },
     // 分页
     handleSizeChange(val) {
       this.perPage = val
-      this.total = this.total / val
       this.currentPage = 1
       this.fetchData()
     },

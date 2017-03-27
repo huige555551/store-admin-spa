@@ -80,10 +80,6 @@
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
 
-// const Moment = require('moment')
-
-// Moment.locale('zh-cn')
-
 export default {
   data() {
     return {
@@ -117,7 +113,7 @@ export default {
     },
     handleDatePick(val) {
       console.log(val)
-      this.cover.publicationDate = val
+      // this.cover.publicationDate = val
     },
     handleRemove(name) {
       if (name === 'cover') {
