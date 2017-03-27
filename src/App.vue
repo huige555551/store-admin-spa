@@ -54,5 +54,5 @@ a {
   .el-input, .el-textarea {
     width: 320px;
   }
-} 
+}
 </style>

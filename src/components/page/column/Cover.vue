@@ -35,12 +35,12 @@
       <el-table-column prop="publicationDate" label="日期" width="120"></el-table-column>
       <el-table-column label="封面" width="80">
         <template scope="scope">
-          <img :src="scope.row.coverUrl" height="80" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
+          <img :src="scope.row.coverUrl + '?imageView2/2/w/80'" height="80" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/magazine/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/cover/edit/'+scope.row.id)">编辑</el-button>
           <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -82,18 +82,8 @@ export default {
       total: 0,
       currentPage: 1,
       perPage: 10,
-      tableData: [
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '封面标题', period: '480', publicationDate: '2017-02-02', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
-      ]
+      // 表格
+      tableData: []
     }
   },
   created() {
@@ -156,9 +146,10 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
-        const { code } = api.post('/api/system/cover/deleteCover', { id: this.tableData[index].id })
+        const { code } = api.post('/api/system/cover/deleteCover', { coverId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
         }
       }).catch(() => {})
