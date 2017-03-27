@@ -181,9 +181,6 @@ export default {
       if (this.editing) {
         const { code } = await api.post('/api/system/banner/updateBanner', this.rowObj)
         if (code === 200) {
-          this.tableData.splice(this.editingIndex, 1, this.rowObj)
-
-
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.formDialog = false
         }

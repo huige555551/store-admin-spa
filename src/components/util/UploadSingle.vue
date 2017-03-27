@@ -38,6 +38,10 @@ export default {
     imgUrl: {
       type: String,
       default: null
+    },
+    name: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -49,7 +53,7 @@ export default {
   methods: {
     // 删除按钮
     handleRemove() {
-      this.$emit('handleRemove')
+      this.$emit('handleRemove', this.name)
     },
     // 文件上传
     beforeUpload(file) {
@@ -67,7 +71,7 @@ export default {
     },
     // 上传成功
     handleSuccess(response) {
-      this.$emit('handleSuccess', response, this.bucketPort)
+      this.$emit('handleSuccess', response, this.bucketPort, this.name)
     }
   }
 }

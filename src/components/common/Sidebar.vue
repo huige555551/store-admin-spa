@@ -19,8 +19,8 @@
         <template slot="title"><i class="el-icon-date"></i>固定栏目</template>
         <el-menu-item-group>
           <template slot="title">封面管理</template>
-          <el-menu-item index="/magazine/list">封面列表</el-menu-item>
-          <el-menu-item index="/magazine/add">添加封面</el-menu-item>
+          <el-menu-item index="/cover/list">封面列表 - s</el-menu-item>
+          <el-menu-item index="/cover/add">添加封面</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">漫画管理</template>
