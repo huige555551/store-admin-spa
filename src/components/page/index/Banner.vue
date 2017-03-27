@@ -126,8 +126,8 @@ export default {
     },
     // 上传成功
     handleSuccess(response, bucketPort) {
-      this.rowObj.imgKey = response.key
-      this.rowObj.imgUrl = `${bucketPort}/${response.key}`
+      this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.rowObj, 'imgKey', response.key)
     },
     // 添加轮播
     addRow() {
@@ -135,27 +135,18 @@ export default {
         return this.$notify.info({ title: '提示', message: `最多创建${this.max}张轮播` })
       }
       this.editing = false
-      this.rowObj.title = null
-      this.rowObj.imgUrl = null
-      this.rowObj.imgKey = null
-      this.rowObj.content = null
-      this.rowObj.url = null
-      this.rowObj.author = null
-      this.rowObj.order = null
+      this.rowObj = {}
+      this.$set(this.rowObj, 'imgUrl', null)
+      this.$set(this.rowObj, 'imgKey', null)
       this.formDialog = true
     },
     // 编辑轮播
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj.id = this.tableData[index].id
-      this.rowObj.title = this.tableData[index].title
-      this.rowObj.imgUrl = this.tableData[index].imgUrl
-      this.rowObj.imgKey = this.tableData[index].imgKey
-      this.rowObj.content = this.tableData[index].content
-      this.rowObj.url = this.tableData[index].url
-      this.rowObj.author = this.tableData[index].author
-      this.rowObj.order = this.tableData[index].order
+      this.rowObj = _.clone(this.tableData[index])
+      this.$set(this.rowObj, 'imgUrl', this.tableData[index].imgUrl)
+      this.$set(this.rowObj, 'imgKey', this.tableData[index].imgKey)
       this.formDialog = true
     },
     // 删除行
