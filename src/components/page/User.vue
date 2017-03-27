@@ -79,6 +79,7 @@ export default {
       total: 0,
       currentPage: 1,
       perPage: 10,
+      // 表格
       tableData: []
     }
   },

@@ -3,12 +3,15 @@
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>栏目文章</span>
+        <span>固定栏目</span>
       </el-form-item>
       <el-form-item label="菜单：" v-if="!editing">
-        <span>添加封面</span>
+        <span>新增封面</span>
       </el-form-item>
-      <el-form-item label="文章：" v-if="editing">
+      <el-form-item label="菜单：" v-if="editing">
+        <span>编辑封面</span>
+      </el-form-item>
+      <el-form-item label="封面：" v-if="editing">
         <span>{{cover.title}}</span>
       </el-form-item>
     </el-form>
@@ -30,6 +33,7 @@
           format="yyyy-MM-dd"
           @change="handleDatePick"
           type="date"
+          :clearable="false"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -79,10 +83,6 @@
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
 
-// const Moment = require('moment')
-
-// Moment.locale('zh-cn')
-
 export default {
   data() {
     return {
@@ -94,17 +94,29 @@ export default {
     UploadSingle
   },
   async created() {
-    if (this.$route.params.id) {
-      this.editing = true
-      const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
-      if (code === 200) {
-        this.cover = data
-      }
-    }
+    this.fetchData()
+  },
+  // 组件复用，路由数据刷新
+  async beforeRouteUpdate() {
+    this.fetchData()
   },
   methods: {
+    async fetchData() {
+      if (this.$route.params.id) {
+        this.editing = true
+        const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
+        if (code === 200) {
+          this.cover = data
+        }
+      } else {
+        this.editing = false
+        this.cover = {}
+        this.cover.publicationDate = null
+      }
+    },
     handleDatePick(val) {
-      this.cover.publicationDate = val
+      console.log(val)
+      // this.cover.publicationDate = val
     },
     handleRemove(name) {
       if (name === 'cover') {
@@ -136,8 +148,6 @@ export default {
       } else if (!this.cover.publicationDate || !this.cover.title || !this.cover.period || !this.cover.buyUrl || !this.cover.story || !this.cover.directory) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
-      // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
-      // console.log(this.publicationDate)
       if (this.editing) {
         const { code } = await api.post('/api/system/cover/updateCover', this.cover)
         if (code === 200) {

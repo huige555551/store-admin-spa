@@ -59,6 +59,7 @@ export default new Router({
         { path: '/newmedia/list', component: resolve => require(['@/components/page/newmedia/Article.vue'], resolve) },
         { path: '/newmedia/add', component: resolve => require(['@/components/page/newmedia/ArticleAdd.vue'], resolve) },
         { path: '/newmedia/banner', component: resolve => require(['@/components/page/newmedia/Banner.vue'], resolve) },
+        { path: '/newmedia/edit/:id', component: resolve => require(['@/components/page/newmedia/ArticleAdd.vue'], resolve) },
         // 图书管理
         { path: '/book/list', component: resolve => require(['@/components/page/book/Book.vue'], resolve) },
         { path: '/book/add', component: resolve => require(['@/components/page/book/BookAdd.vue'], resolve) },
