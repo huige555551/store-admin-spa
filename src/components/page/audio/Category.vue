@@ -97,6 +97,7 @@ export default {
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, this.rowObj)
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
+          this.$notify.success({ title: '成功', message: '修改成功' })
           this.dialogFormVisible = false
         }
       } else {
@@ -110,19 +111,19 @@ export default {
     // 获取分类数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/audio/getNavigation', { id: 1 })
+      const { code, data } = await api.get('/api/system/audio/listNavigation')
       if (code === 200) {
-        this.tableData = data.array
+        this.tableData = data
       }
     },
-    deleteRow(index) {
-      console.log(this.tableData[index].id)
+    // 删除栏目
+    async deleteRow(index) {
       this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/audio/deleteNavigation', { id: this.tableData[index].id })
+        const { code } = await api.post('/api/system/audio/deleteNavigation', { navigationId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })

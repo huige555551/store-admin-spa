@@ -145,8 +145,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/cover/deleteCover', { coverId: this.tableData[index].id })
+      }).then(async () => {
+        const { code } = await api.post('/api/system/cover/deleteCover', { coverId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })

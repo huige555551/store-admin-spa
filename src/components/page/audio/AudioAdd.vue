@@ -5,8 +5,8 @@
       <el-form ref="form" :model="audio" label-width="100px" style="width: 500px;">
         <el-form-item label="封面上传">
           <UploadSingle
-            :imgUrl="cover.imgUrl"
-            :imgKey="cover.imgKey"
+            :imgUrl="audio.imgUrl"
+            :imgKey="audio.imgKey"
             :size=1 dimension="240x240"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
@@ -25,17 +25,26 @@
           <el-input v-model="audio.length"></el-input>
         </el-form-item>
         <el-form-item label="音频链接">
-          <el-upload action="//up-z2.qiniu.com" :file-list="audio.cover">
+          <template v-show="audio.fileUrl">
+            <p>还哭的声音.mp3</p>
+            <el-button>替换</el-button>
+          </template>
+          <el-upload 
+            v-show="!audio.fileUrl"
+            action="//up-z2.qiniu.com" 
+            accept="audio/*"
+            :show-file-list="false"
+            :multiple="false">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传mp3文件</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="音频摘要">
-          <el-input type="textarea" :rows="4" v-model="audio.remark"></el-input>
+          <el-input type="textarea" :rows="4" v-model="audio.introduction"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button @click="beforeRouteLeave">取消</el-button>
+          <el-button type="primary" @click="save">提交</el-button>
+          <el-button @click="$router.push('/audio/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -45,60 +54,46 @@
 <script>
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
-import Simditor from '../../util/Simditor'
-// import router from 'router'
 // const _ = require('lodash')
 
 export default {
   data() {
     return {
-      searchKey: '',
-      cover: {
-        imgUrl: null, // data内声明，允许子组件跟踪值变化
-        imgKey: null  // data内声明，允许子组件跟踪值变化
-      },
+      editing: false,
       audio: {
         navigationId: null,
         length: null,
         title: null,
         time: null,
+        introduction: null,
         fileKey: null,
-        remark: null,
-        coverKey: null
+        fileUrl: null,
+        imgKey: null, // data内声明，允许子组件跟踪值变化
+        imgUrl: null  // data内声明，允许子组件跟踪值变化
       },
       options: [
-        { id: '1', value: '选项1', label: '选项1' },
-        { id: '2', value: '选项2', label: '选项2' },
-        { id: '3', value: '选项3', label: '选项3' },
-        { id: '4', value: '选项4', label: '选项4' },
-        { id: '5', value: '选项5', label: '选项5' }
-      ],
-      initContent: '<p>123456</p>',
-      options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: true,
-        // toolbar: ['title', 'image'],
-        cleanPaste: true
-      },
-      components: {
-        UploadSingle
-      }
+        { id: '1', value: '1', label: '1' },
+        { id: '2', value: '2', label: '2' },
+        { id: '3', value: '3', label: '3' },
+        { id: '4', value: '4', label: '4' },
+        { id: '5', value: '5', label: '5' }
+      ]
     }
   },
   components: {
-    Simditor,
     UploadSingle
   },
-  methods: {
-    async onSubmit() {
-      const { code } = await api.post('/api/system/audio/addAudio', this.audio)
+  async created() {
+    if (this.$route.params.id) {
+      this.editing = true
+      const { code, data } = await api.get('/api/system/audio/getAudio?', { id: this.$route.params.id })
       if (code === 200) {
-        this.$message.success('提交成功！')
-      } else {
-        this.$message.error('提交失败！')
+        console.log(data)
+        this.audio = data
       }
-    },
+    }
+  },
+  methods: {
     // 删除封面图片
     handleRemove() {
       this.audio.imgKey = null
@@ -106,33 +101,27 @@ export default {
     },
     // 封面图片上传成功
     handleSuccess(response, bucketPort) {
-      this.cover.imgKey = response.key
-      this.cover.imgUrl = `${bucketPort}/${response.key}`
+      this.audio.imgKey = response.key
+      this.audio.imgUrl = `${bucketPort}/${response.key}`
     },
-    change(val) {
-      console.log(val)
-    },
-    beforeRouteLeave(to, from, next) {
-      // TODO 突然离开未保存，提示管理员
-      console.log('leave')
-      this.$confirm('此操作将不保留任何修改, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        // $router.push('/audio/list')
-        window.location.href = '/audio/list'
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-      next()
+    async save() {
+      if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.length || !this.audio.title || !this.audio.introduction) {
+        console.log(!this.audio.introduction)
+        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+      }
+      if (this.editing) {
+        const { code } = await api.post('/api/system/audio/updateAudio', this.audio)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/audio/list')
+        }
+      } else {
+        const { code } = await api.post('/api/system/audio/addAudio', this.audio)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/audio/list')
+        }
+      }
     }
   }
 }

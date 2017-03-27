@@ -20,7 +20,7 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
-      <el-table-column prop="category" label="分类" width="100"></el-table-column>
+      <el-table-column prop="navigationName" label="分类" width="100"></el-table-column>
       <el-table-column prop="time" label="时长" width="120"></el-table-column>
       <el-table-column label="封面" width="200">
         <template scope="scope">
@@ -30,8 +30,8 @@
       <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="default" size="small">编辑</el-button>
-          <el-button type="default" size="small">删除</el-button>
+          <el-button type="default" size="small" @click.native.prevent="$router.push('/audio/edit/'+scope.row.id)">编辑</el-button>
+          <el-button type="default" size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,6 +57,7 @@ import api from '@/api'
 export default {
   data() {
     return {
+      editIndex: null,
       currentPage: 1,
       total: 0,
       perPage: 10,
@@ -71,12 +72,12 @@ export default {
         catergory: null
       },
       tableData: [
-        { title: '这是标题1', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' },
-        { title: '这是标题2', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' },
-        { title: '这是标题3', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' },
-        { title: '这是标题4', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' },
-        { title: '这是标题5', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' },
-        { title: '这是标题6', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120' }
+        { title: '这是标题1', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 1 },
+        { title: '这是标题2', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 2 },
+        { title: '这是标题3', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 3 },
+        { title: '这是标题4', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 4 },
+        { title: '这是标题5', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 5 },
+        { title: '这是标题6', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', length: '20"20"', publicationDate: '2017-02-02 12:30', time: '120', id: 6 }
       ],
       options: [
         { id: '1', value: '选项1', label: '1' },
@@ -119,9 +120,25 @@ export default {
       })
       if (code === 200) {
         this.tableData = data.array
-        console.log(this.tableData)
         this.total = data.total
       }
+    },
+    // 删除行
+    async deleteRow(index) {
+      this.$confirm('此操作将该删除该音频，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(async () => {
+        const { code } = await api.post('/api/system/audio/deleteAudio', { id: this.tableData[index].id })
+        if (code === 200) {
+          this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
+        } else {
+          console.log('failed')
+        }
+      }).catch(() => {})
     },
     // 分页
     handleSizeChange(val) {
