@@ -64,7 +64,7 @@
           <UploadSingle
             :imgUrl="rowObj.imgUrl"
             :imgKey="rowObj.imgKey"
-            :size=0.01 dimension="1440x520"
+            :size=1 dimension="1440x520"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
@@ -159,7 +159,7 @@ export default {
       this.formDialog = true
     },
     // 删除行
-    deleteRow(index) {
+    async deleteRow(index) {
       this.$confirm('此操作将该删除该轮播，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
