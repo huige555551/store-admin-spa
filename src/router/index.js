@@ -29,9 +29,9 @@ export default new Router({
         { path: '/feature/video', component: resolve => require(['@/components/page/index/FeaturedVideo.vue'], resolve) },
         { path: '/feature/audio', component: resolve => require(['@/components/page/index/FeaturedAudio.vue'], resolve) },
         // 固定栏目
-        { path: '/magazine/list', component: resolve => require(['@/components/page/column/Magazine.vue'], resolve) },
-        { path: '/magazine/add', component: resolve => require(['@/components/page/column/MagazineAdd.vue'], resolve) },
-        { path: '/magazine/edit/:id', component: resolve => require(['@/components/page/column/MagazineAdd.vue'], resolve) },
+        { path: '/cover/list', component: resolve => require(['@/components/page/column/Cover.vue'], resolve) },
+        { path: '/cover/add', component: resolve => require(['@/components/page/column/CoverAdd.vue'], resolve) },
+        { path: '/cover/edit/:id', component: resolve => require(['@/components/page/column/CoverAdd.vue'], resolve) },
         { path: '/comics/list', component: resolve => require(['@/components/page/column/Comics.vue'], resolve) },
         { path: '/comics/add', component: resolve => require(['@/components/page/column/ComicsAdd.vue'], resolve) },
         { path: '/comics/edit/:id', component: resolve => require(['@/components/page/column/ComicsAdd.vue'], resolve) },
