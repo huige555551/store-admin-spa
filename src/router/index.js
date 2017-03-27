@@ -53,6 +53,7 @@ export default new Router({
         { path: '/audio/category', component: resolve => require(['@/components/page/audio/Category.vue'], resolve) },
         { path: '/audio/list', component: resolve => require(['@/components/page/audio/Audio.vue'], resolve) },
         { path: '/audio/add', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
+        { path: '/audio/add', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
         // 新媒体管理
         { path: '/newmedia/category', component: resolve => require(['@/components/page/newmedia/Category.vue'], resolve) },
         { path: '/newmedia/list', component: resolve => require(['@/components/page/newmedia/Article.vue'], resolve) },

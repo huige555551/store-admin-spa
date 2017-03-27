@@ -54,7 +54,7 @@
 
       <!-- 音频管理 -->
       <el-submenu index="audio">
-        <template slot="title"><i class="el-icon-date"></i>音频管理</template>
+        <template slot="title"><i class="el-icon-date"></i>音频管理-Lee</template>
         <el-menu-item index="/audio/category">分类管理</el-menu-item>
         <el-menu-item index="/audio/list">音频列表</el-menu-item>
         <el-menu-item index="/audio/add">添加音频</el-menu-item>
