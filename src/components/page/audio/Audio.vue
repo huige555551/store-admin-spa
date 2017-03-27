@@ -15,7 +15,6 @@
         <el-button  @click.native.prevent="emptySearch">清空</el-button>
       </el-form-item>
     </el-form>
-
     <!-- Table -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
