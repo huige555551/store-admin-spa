@@ -175,7 +175,7 @@ export default {
         author: this.searchKey.author
       })
       if (code === 200) {
-        this.tableData = data
+        this.tableData = data.array
       }
     },
     // 分页

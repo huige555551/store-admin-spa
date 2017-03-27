@@ -30,6 +30,7 @@
           format="yyyy-MM-dd"
           @change="handleDatePick"
           type="date"
+          :clearable="false"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -94,16 +95,28 @@ export default {
     UploadSingle
   },
   async created() {
-    if (this.$route.params.id) {
-      this.editing = true
-      const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
-      if (code === 200) {
-        this.cover = data
-      }
-    }
+    this.fetchData()
+  },
+  // 组件复用，路由数据刷新
+  async beforeRouteUpdate() {
+    this.fetchData()
   },
   methods: {
+    async fetchData() {
+      if (this.$route.params.id) {
+        this.editing = true
+        const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
+        if (code === 200) {
+          this.cover = data
+        }
+      } else {
+        this.editing = false
+        this.cover = {}
+        this.cover.publicationDate = null
+      }
+    },
     handleDatePick(val) {
+      console.log(val)
       this.cover.publicationDate = val
     },
     handleRemove(name) {
@@ -136,8 +149,6 @@ export default {
       } else if (!this.cover.publicationDate || !this.cover.title || !this.cover.period || !this.cover.buyUrl || !this.cover.story || !this.cover.directory) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
-      // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
-      // console.log(this.publicationDate)
       if (this.editing) {
         const { code } = await api.post('/api/system/cover/updateCover', this.cover)
         if (code === 200) {
