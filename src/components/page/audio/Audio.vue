@@ -1,12 +1,21 @@
 <template>
   <div>
+    <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>音频管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>音频列表</span>
+      </el-form-item>
+    </el-form>
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="标题">
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
-        <el-select v-model="searchInput.categoryId" filterable placeholder="请输入栏目进行搜索">
+        <el-select v-model="searchInput.catergoryId" filterable placeholder="请输入栏目进行搜索">
           <el-option value="1" label="选项1"></el-option>
           <el-option value="2" label="选项2"></el-option>
         </el-select>
@@ -16,7 +25,6 @@
         <el-button  @click.native.prevent="emptySearch">清空</el-button>
       </el-form-item>
     </el-form>
-
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
