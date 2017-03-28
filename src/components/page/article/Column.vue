@@ -103,7 +103,7 @@ export default {
     },
     // 获取数据
     async fetchData() {
-      const { code, data } = await api.get('api/system/article/listNavigation')
+      const { code, data } = await api.get('/api/system/article/listNavigation')
       if (code === 200) {
         this.tableData = data
       }

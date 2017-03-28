@@ -83,7 +83,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="save">提交</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$router.push('/book/list')">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -124,21 +124,8 @@ export default {
         }
       } else {
         this.editing = false
-        this.book = { publicationDate: '' }
+        this.book = { publicationDate: null }
       }
-    },
-    // 音频上传
-    beforebookUpload(file) {
-      if (file.type.indexOf('mp3') === -1) {
-        return this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
-      }
-      return api.get('/api/system/upload/getToken').then(response => {
-        this.bookName = file.name
-        this.bucketPort = response.data.bucketPort
-        this.uploadParams = {
-          token: response.data.token
-        }
-      })
     },
     // 删除封面图片
     handleRemove(name) {
@@ -173,9 +160,8 @@ export default {
       if (!this.book.coverUrl || !this.book.introductionImgUrl || !this.book.directoryImgUrl || !this.book.name || !this.book.author || !this.book.publisher || !this.book.publicationDate || !this.book.introduction || !this.book.buyUrl || !this.book.douban) {
         return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
       }
-      // this.book.publicationDate
       if (this.editing) {
-        const { code } = await api.post('/api/system/book/updatebook', this.book)
+        const { code } = await api.post('/api/system/book/updateBook', this.book)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/book/list')
