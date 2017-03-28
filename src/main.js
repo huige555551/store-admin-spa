@@ -6,6 +6,8 @@ import 'nprogress/nprogress.css'
 import App from './App'
 import router from './router'
 
+require('es6-promise').polyfill()
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
