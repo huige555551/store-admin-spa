@@ -126,6 +126,7 @@ export default {
     },
     // 上传成功
     handleSuccess(response, bucketPort) {
+      console.log(response)
       this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
       this.$set(this.rowObj, 'imgKey', response.key)
     },

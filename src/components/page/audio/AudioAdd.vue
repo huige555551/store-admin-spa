@@ -1,5 +1,20 @@
 <template>
   <div>
+    <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>音频管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：" v-if="!editing">
+        <span>添加音频</span>
+      </el-form-item>
+      <el-form-item label="菜单："v-if="editing">
+        <span>编辑音频</span>
+      </el-form-item>
+      <el-form-item label="音频：" v-if="editing">
+        <span>{{audio.title}}</span>
+      </el-form-item>
+    </el-form>
     <!-- 创建表单 -->
     <div class="form-box">
       <el-form label-width="100px" label-position="left" style="width: 500px;">
@@ -25,16 +40,21 @@
           <el-input v-model="audio.length"></el-input>
         </el-form-item>
         <el-form-item label="音频链接">
-          <template v-show="audio.fileUrl">
-            <p>还哭的声音.mp3</p>
-            <el-button>替换</el-button>
+          <template v-if="audioName">
+            <p>{{ audioName }}</p>
+            <el-button @click="changeAudio">替换</el-button>
           </template>
           <el-upload
-            v-show="!audio.fileUrl"
+            v-if="!audioName"
             action="//up-z2.qiniu.com"
+            name = "file"
             accept="audio/*"
             :show-file-list="false"
-            :multiple="false">
+            :multiple="false"
+            :on-success="handleAudioSuccess"
+            :on-error="handleAudioError"
+            :before-upload="beforeAudioUpload"
+            :data="uploadParams">
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传mp3文件</div>
           </el-upload>
@@ -59,25 +79,60 @@ export default {
   data() {
     return {
       editing: false,
-      audio: {}
+      audio: { navigationId: '' },
+      uploadParams: {},
+      audioName: ''
     }
   },
   components: {
     UploadSingle
   },
   async created() {
-    if (this.$route.params.id) {
-      this.editing = true
-      const { code, data } = await api.get('/api/system/audio/getAudio?', { id: this.$route.params.id })
-      if (code === 200) {
-        console.log(data)
-        this.audio = data
-      }
-    } else {
-      this.editing = false
-    }
+    this.fetchData()
+  },
+  // 组件复用，路由数据刷新
+  async beforeRouteUpdate() {
+    this.fetchData()
   },
   methods: {
+    // 获取数据
+    async fetchData() {
+      if (this.$route.params.id) {
+        this.editing = true
+        const { code, data } = await api.get('/api/system/audio/getAudio?', { id: this.$route.params.id })
+        if (code === 200) {
+          this.audio = data
+        }
+      } else {
+        this.editing = false
+        this.audio = {}
+      }
+    },
+    // 音频上传
+    beforeAudioUpload(file) {
+      if (file.type.indexOf('mp3') === -1) {
+        return this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
+      }
+      return api.get('/api/system/upload/getToken').then(response => {
+        this.audioName = file.name
+        this.bucketPort = response.data.bucketPort
+        this.uploadParams = {
+          token: response.data.token
+        }
+      })
+    },
+    handleAudioSuccess(response) {
+      // TODO response.key是什么
+      console.log(response)
+      this.$set(this.audio, 'fileKey', 'response.key')
+    },
+    handleAudioError(err, file, fileList) {
+      console.log(err, file, fileList)
+    },
+    // 更换音频
+    changeAudio() {
+      this.audioName = ''
+    },
     // 删除封面图片
     handleRemove() {
       this.audio.imgKey = null
@@ -85,11 +140,11 @@ export default {
     },
     // 封面图片上传成功
     handleSuccess(response, bucketPort) {
-      this.audio.imgKey = response.key
-      this.audio.imgUrl = `${bucketPort}/${response.key}`
+      this.$set(this.audio, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.audio, 'imgKey', response.key)
     },
     async save() {
-      if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.length || !this.audio.title || !this.audio.introduction) {
+      if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.length || !this.audio.title || !this.audio.introduction || !this.audioName) {
         console.log(!this.audio.introduction)
         return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
       }

@@ -1,5 +1,14 @@
 <template>
   <div>
+  <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>音频管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>音频栏目</span>
+      </el-form-item>
+    </el-form>
     <!-- Table -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
@@ -102,6 +111,9 @@ export default {
     },
     // 保存修改
     async saveRow() {
+      if (!this.rowObj.order || !this.rowObj.name) {
+        return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和顺序' })
+      }
       if (this.editing) {
         const { code } = await api.post('/api/system/audio/updateNavigation', this.rowObj)
         if (code === 200) {
