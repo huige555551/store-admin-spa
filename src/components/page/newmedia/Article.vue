@@ -1,5 +1,14 @@
 <template>
   <div>
+    <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>新媒体管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>文章列表</span>
+      </el-form-item>
+    </el-form>
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="标题">

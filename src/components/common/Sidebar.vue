@@ -62,7 +62,7 @@
 
       <!-- 新媒体管理 -->
       <el-submenu index="newmedia">
-        <template slot="title"><i class="el-icon-date"></i>新媒体管理</template>
+        <template slot="title"><i class="el-icon-date"></i>新媒体管理－hui</template>
         <el-menu-item index="/newmedia/category">分类管理</el-menu-item>
         <el-menu-item index="/newmedia/list">文章列表</el-menu-item>
         <el-menu-item index="/newmedia/add">添加文章</el-menu-item>
