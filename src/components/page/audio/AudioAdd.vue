@@ -29,23 +29,23 @@
         </el-form-item>
         <el-form-item label="选择分类">
           <el-select v-model="audio.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option value="1" label="选项1"></el-option>
-            <el-option value="2" label="选项2"></el-option>
+            <el-option value="1" label="1"></el-option>
+            <el-option value="2" label="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="音频标题">
           <el-input v-model="audio.title"></el-input>
         </el-form-item>
         <el-form-item label="时长(秒)">
-          <el-input v-model="audio.length"></el-input>
+          <el-input v-model="audio.time"></el-input>
         </el-form-item>
         <el-form-item label="音频链接">
-          <template v-if="audioName">
+          <div v-show="audioName">
             <p>{{ audioName }}</p>
             <el-button @click="changeAudio">替换</el-button>
-          </template>
+          </div>
           <el-upload
-            v-if="!audioName"
+            v-show="!audioName"
             action="//up-z2.qiniu.com"
             name = "file"
             accept="audio/*"
@@ -81,7 +81,8 @@ export default {
       editing: false,
       audio: { navigationId: '' },
       uploadParams: {},
-      audioName: ''
+      audioName: '',
+      value: ''
     }
   },
   components: {
@@ -90,8 +91,12 @@ export default {
   async created() {
     this.fetchData()
   },
+  mounted() {
+    document.querySelectorAll('.el-upload__input')[1].setAttribute('name', 'file')
+  },
   // 组件复用，路由数据刷新
   async beforeRouteUpdate() {
+    console.log(this.editing)
     this.fetchData()
   },
   methods: {
@@ -123,8 +128,8 @@ export default {
     },
     handleAudioSuccess(response) {
       // TODO response.key是什么
-      console.log(response)
-      this.$set(this.audio, 'fileKey', 'response.key')
+      this.$notify.success({ title: '成功', message: '上传成功' })
+      this.$set(this.audio, 'fileKey', response.key)
     },
     handleAudioError(err, file, fileList) {
       console.log(err, file, fileList)
@@ -144,8 +149,8 @@ export default {
       this.$set(this.audio, 'imgKey', response.key)
     },
     async save() {
-      if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.length || !this.audio.title || !this.audio.introduction || !this.audioName) {
-        console.log(!this.audio.introduction)
+      console.log(this.audio)
+      if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.time || !this.audio.title || !this.audio.introduction || !this.audio.fileKey) {
         return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
       }
       if (this.editing) {
