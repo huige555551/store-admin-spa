@@ -101,7 +101,6 @@ export default {
     async searchArticle(val) {
       const { code, data } = await api.get('/api/system/article/searchArticle', { title: val })
       if (code === 200) {
-        console.log(data)
         this.results = data
       }
     },
@@ -157,7 +156,7 @@ export default {
           this.formDialog = false
         }
       } else {
-        const { code } = await api.post('/api/system/article/addExquisiteArticle', { articleId: this.rowObj.articleId })
+        const { code } = await api.post('/api/system/article/addExquisiteArticle', this.rowObj)
         if (code === 200) {
           this.fetchData()
           this.formDialog = false

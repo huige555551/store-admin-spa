@@ -1,6 +1,16 @@
 <!-- TODO -->
 <template>
   <div>
+  <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>网站设置</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>修改密码</span>
+      </el-form-item>
+    </el-form>
+
     <el-form label-width="100px" style="width: 400px">
       <el-form-item label="旧密码">
         <el-input type="password" v-model="form.oldPassword"></el-input>

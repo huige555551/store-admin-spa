@@ -1,5 +1,6 @@
 <template>
   <div>
+  <!-- TODO搜索功能未完成 -->
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
@@ -168,7 +169,7 @@ export default {
       })
       if (code === 200) {
         this.tableData = data.array
-        this.total = data.total
+        this.total = data.array.length
         this.currentPage = data.currentPage
       }
     },
