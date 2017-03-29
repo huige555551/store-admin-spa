@@ -83,14 +83,7 @@ export default {
       editingIndex: null,
       rowObj: {},
       // 表格
-      tableData: [
-        // { id: 1, name: '这是栏目1', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目2', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目3', order: 1, isUse: false, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目4', order: 1, isUse: false, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目5', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' },
-        // { id: 1, name: '这是栏目6', order: 1, isUse: true, bannerUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg' }
-      ]
+      tableData: []
     }
   },
   created() {

@@ -122,14 +122,7 @@ export default {
       // 预览
       previewDialog: false,
       previewObj: {},
-      tableData: [
-        // { id: 1, title: '这是标题1', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
-        // { id: 1, title: '这是标题2', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
-        // { id: 1, title: '这是标题3', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
-        // { id: 1, title: '这是标题4', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
-        // { id: 1, title: '这是标题5', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' },
-        // { id: 1, title: '这是标题6', coverUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', navigationName: '栏目', author: '新周刊', period: '480', publicationDate: '2017-02-02 12:30' }
-      ]
+      tableData: []
     }
   },
   created() {

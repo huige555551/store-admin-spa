@@ -36,7 +36,7 @@
 
       <!-- 栏目文章 -->
       <el-submenu index="article">
-        <template slot="title"><i class="el-icon-date"></i>栏目文章</template>
+        <template slot="title"><i class="el-icon-date"></i>栏目文章-Lee</template>
         <el-menu-item index="/column/list">栏目列表</el-menu-item>
         <el-menu-item index="/author/list">作者列表</el-menu-item>
         <el-menu-item index="/article/list">文章列表</el-menu-item>
