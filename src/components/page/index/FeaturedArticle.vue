@@ -9,7 +9,6 @@
         <span>精选文章</span>
       </el-form-item>
     </el-form>
-
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
@@ -49,6 +48,15 @@
               :value="item.id">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="标题">
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
+        </el-form-item>
+        <el-form-item label="顺序">
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
+        </el-form-item>
+        <el-form-item label="顺序">
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
@@ -134,6 +142,7 @@ export default {
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
         }
       }).catch(() => {})
     },

@@ -62,6 +62,8 @@
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[10, 20, 50]"
         :page-size="perPage"
@@ -90,9 +92,6 @@
         </el-form-item>
         <el-form-item label="发布时间">
           <span>{{previewObj.publicationDate}}</span>
-        </el-form-item>
-        <el-form-item label="内容">
-          <p v-html="previewObj.content"></p>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -171,8 +170,23 @@ export default {
       if (code === 200) {
         this.tableData = data.array
         this.total = data.array.length
-        console.log(this.total)
+        this.currentPage = data.currentPage
       }
+    },
+    // 删除行
+    deleteRow(index) {
+      this.$confirm('此操作将该删除该文章，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(async () => {
+        const { code } = await api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+        if (code === 200) {
+          this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
+        }
+      }).catch(() => {})
     },
     // 分页
     handleSizeChange(val) {
@@ -184,20 +198,6 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.fetchData()
-    },
-    // 删除行
-    async deleteRow(index) {
-      this.$confirm('此操作将该删除该文章，是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/article/deleteArticle', { id: this.tableData[index].id })
-        if (code === 200) {
-          this.tableData.splice(index, 1)
-          this.fetchData()
-        }
-      }).catch(() => {})
     }
   }
 }
