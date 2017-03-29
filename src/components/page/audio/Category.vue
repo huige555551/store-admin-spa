@@ -126,6 +126,7 @@ export default {
         if (code === 200) {
           this.fetchData()
           this.formDialog = false
+          this.$notify.success({ title: '成功', message: '添加成功' })
         }
       }
     }

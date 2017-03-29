@@ -99,9 +99,9 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage })
+      const { code, data } = await api.get('/api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage })
       if (code === 200) {
-        this.tableData = data
+        this.tableData = data.array
       }
     },
     // 分页

@@ -49,11 +49,12 @@ export default new Router({
         { path: '/video/list', component: resolve => require(['@/components/page/video/Video.vue'], resolve) },
         { path: '/video/add', component: resolve => require(['@/components/page/video/VideoAdd.vue'], resolve) },
         { path: '/video/banner', component: resolve => require(['@/components/page/video/Banner.vue'], resolve) },
+        { path: '/video/edit/:id', component: resolve => require(['@/components/page/video/VideoAdd.vue'], resolve) },
         // 音频管理
         { path: '/audio/category', component: resolve => require(['@/components/page/audio/Category.vue'], resolve) },
         { path: '/audio/list', component: resolve => require(['@/components/page/audio/Audio.vue'], resolve) },
-        { path: '/audio/add', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
-        { path: '/audio/edit/:id', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve) },
+        { path: '/audio/add', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve), },
+        { path: '/audio/edit/:id', component: resolve => require(['@/components/page/audio/AudioAdd.vue'], resolve), },
         // 新媒体管理
         { path: '/newmedia/category', component: resolve => require(['@/components/page/newmedia/Category.vue'], resolve) },
         { path: '/newmedia/list', component: resolve => require(['@/components/page/newmedia/Article.vue'], resolve) },
@@ -63,6 +64,7 @@ export default new Router({
         // 图书管理
         { path: '/book/list', component: resolve => require(['@/components/page/book/Book.vue'], resolve) },
         { path: '/book/add', component: resolve => require(['@/components/page/book/BookAdd.vue'], resolve) },
+        { path: '/book/edit/:id', component: resolve => require(['@/components/page/book/BookAdd.vue'], resolve) },
         // 活动管理
         { path: '/activity/list', component: resolve => require(['@/components/page/activity/Activity.vue'], resolve) },
         { path: '/activity/add', component: resolve => require(['@/components/page/activity/ActivityAdd.vue'], resolve) },

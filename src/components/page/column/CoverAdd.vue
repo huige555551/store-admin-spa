@@ -110,8 +110,7 @@ export default {
         }
       } else {
         this.editing = false
-        this.cover = {}
-        this.cover.publicationDate = null
+        this.cover = { publicationDate: null }
       }
     },
     handleDatePick(val) {

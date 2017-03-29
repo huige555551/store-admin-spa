@@ -1,34 +1,52 @@
 <template>
   <div>
+  <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>视频管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：" v-if="!editing">
+        <span>添加视频</span>
+      </el-form-item>
+      <el-form-item label="菜单："v-if="editing">
+        <span>编辑视频</span>
+      </el-form-item>
+      <el-form-item label="音频：" v-if="editing">
+        <span>{{video.title}}</span>
+      </el-form-item>
+    </el-form>
     <!-- 创建文章 -->
     <div class="form-box">
-      <el-form ref="form" :model="video" label-width="100px" style="width: 500px;">
+      <el-form ref="form" abel-position="left" label-width="100px" style="width: 500px;">
         <el-form-item label="封面上传">
-          <el-upload action="" :file-list="video.cover">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">建议尺寸268x150，只能上传jpg/png文件，且不超过1MB</div>
-          </el-upload>
+          <UploadSingle
+            :imgUrl="video.coverUrl"
+            :imgKey="video.coverKey"
+            :size=1 dimension="240x240"
+            @handleRemove="handleRemove"
+            @handleSuccess="handleSuccess">
+          </UploadSingle>
         </el-form-item>
         <el-form-item label="选择分类">
-          <el-select v-model="searchKey" filterable placeholder="请输入分类进行搜索">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          <el-select v-model="video.navigationId" filterable placeholder="请输入分类进行搜索">
+            <el-option :label="123" :value="123"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="视频标题">
           <el-input v-model="video.title"></el-input>
         </el-form-item>
         <el-form-item label="时长(秒)">
-          <el-input v-model="video.length"></el-input>
+          <el-input v-model="video.time"></el-input>
         </el-form-item>
         <el-form-item label="视频链接">
           <el-input v-model="video.url"></el-input>
         </el-form-item>
         <el-form-item label="视频摘要">
-          <el-input type="textarea" :rows="4" v-model="video.description"></el-input>
+          <el-input type="textarea" :rows="4" v-model="video.remark"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary" @click="save">提交</el-button>
+          <el-button @click="$router.push('/video/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -36,46 +54,70 @@
 </template>
 
 <script>
-import Simditor from '../../util/Simditor'
+import api from '@/api'
+import UploadSingle from '@/components/util/UploadSingle'
 
 export default {
   data() {
     return {
-      searchKey: '',
-      video: {
-      },
-      options: [
-        { id: '1', value: '选项1', label: '选项1' },
-        { id: '2', value: '选项2', label: '选项2' },
-        { id: '3', value: '选项3', label: '选项3' },
-        { id: '4', value: '选项4', label: '选项4' },
-        { id: '5', value: '选项5', label: '选项5' }
-      ],
-      initContent: '<p>123456</p>',
-      options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: true,
-        // toolbar: ['title', 'image'],
-        cleanPaste: true
-      }
+      editing: false,
+      video: { navigationId: '' },
+      uploadParams: {}
     }
   },
   components: {
-    Simditor
+    UploadSingle
+  },
+  async created() {
+    this.fetchData()
+  },
+  // 组件复用，路由数据刷新
+  async beforeRouteUpdate() {
+    this.fetchData()
   },
   methods: {
-    onSubmit() {
-      this.$message.success('提交成功！')
+    // 获取数据
+    async fetchData() {
+      if (this.$route.params.id) {
+        this.editing = true
+        const { code, data } = await api.get('/api/system/video/getVideo?', { id: this.$route.params.id })
+        if (code === 200) {
+          this.video = data
+        }
+      } else {
+        this.editing = false
+        this.video = {}
+      }
     },
-    change(val) {
-      console.log(val)
+    // 删除封面图片
+    handleRemove() {
+      this.video.coverKey = null
+      this.video.coverUrl = null
+    },
+    // 封面图片上传成功
+    handleSuccess(response, bucketPort) {
+      this.$set(this.video, 'coverUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.video, 'coverKey', response.key)
+    },
+    async save() {
+      console.log(this.video)
+      if (!this.video.coverUrl || !this.video.navigationId || !this.video.time || !this.video.title || !this.video.remark || !this.video.url) {
+        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+      }
+      if (this.editing) {
+        const { code } = await api.post('/api/system/video/updateVideo', this.video)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/video/list')
+        }
+      } else {
+        const { code } = await api.post('/api/system/video/addVideo', this.video)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/video/list')
+        }
+      }
     }
-  },
-  beforeRouteLeave(to, from, next) {
-    // TODO 突然离开未保存，提示管理员
-    console.log('leave')
-    next()
   }
 }
 </script>

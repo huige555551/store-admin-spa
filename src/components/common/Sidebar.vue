@@ -45,19 +45,19 @@
 
       <!-- 视频管理 -->
       <el-submenu index="video">
-        <template slot="title"><i class="el-icon-date"></i>视频管理</template>
-        <el-menu-item index="/video/category">分类管理</el-menu-item>
-        <el-menu-item index="/video/list">视频列表</el-menu-item>
-        <el-menu-item index="/video/add">添加视频</el-menu-item>
+        <template slot="title"><i class="el-icon-date"></i>视频管理-Lee</template>
+        <el-menu-item index="/video/category">分类管理✅</el-menu-item>
+        <el-menu-item index="/video/list">视频列表✅</el-menu-item>
+        <el-menu-item index="/video/add">添加视频✅</el-menu-item>
         <el-menu-item index="/video/banner">轮播管理</el-menu-item>
       </el-submenu>
 
       <!-- 音频管理 -->
       <el-submenu index="audio">
         <template slot="title"><i class="el-icon-date"></i>音频管理-Lee</template>
-        <el-menu-item index="/audio/category">分类管理</el-menu-item>
-        <el-menu-item index="/audio/list">音频列表</el-menu-item>
-        <el-menu-item index="/audio/add">添加音频</el-menu-item>
+        <el-menu-item index="/audio/category">分类管理✅</el-menu-item>
+        <el-menu-item index="/audio/list">音频列表✅</el-menu-item>
+        <el-menu-item index="/audio/add">添加音频✅</el-menu-item>
       </el-submenu>
 
       <!-- 新媒体管理 -->
@@ -74,15 +74,15 @@
 
       <!-- 图书管理 -->
       <el-submenu index="book">
-        <template slot="title"><i class="el-icon-date"></i>图书管理</template>
-        <el-menu-item index="/book/list">图书列表</el-menu-item>
-        <el-menu-item index="/book/add">添加图书</el-menu-item>
+        <template slot="title"><i class="el-icon-date"></i>图书管理-Lee</template>
+        <el-menu-item index="/book/list">图书列表✅</el-menu-item>
+        <el-menu-item index="/book/add">添加图书✅</el-menu-item>
       </el-submenu>
 
       <!-- 活动管理 -->
       <el-submenu index="activity">
-        <template slot="title"><i class="el-icon-date"></i>活动管理</template>
-        <el-menu-item index="/activity/category">活动分类</el-menu-item>
+        <template slot="title"><i class="el-icon-date"></i>活动管理-Lee</template>
+        <el-menu-item index="/activity/category">活动分类✅</el-menu-item>
         <el-menu-item index="/activity/list">活动列表</el-menu-item>
         <el-menu-item index="/activity/add">添加活动</el-menu-item>
         <el-menu-item index="/activity/banner">轮播管理</el-menu-item>
@@ -90,10 +90,10 @@
 
       <!-- 网站设置 -->
       <el-submenu index="setting">
-        <template slot="title"><i class="el-icon-setting"></i>网站设置</template>
+        <template slot="title"><i class="el-icon-setting"></i>网站设置-Lee</template>
         <el-menu-item index="/website/ad">广告设置</el-menu-item>
-        <el-menu-item index="/website/job">岗位列表</el-menu-item>
-        <el-menu-item index="/website/partner">合作伙伴</el-menu-item>
+        <el-menu-item index="/website/job">岗位列表✅</el-menu-item>
+        <el-menu-item index="/website/partner">合作伙伴✅</el-menu-item>
         <el-menu-item index="/website/reset">修改密码</el-menu-item>
       </el-submenu>
     </el-menu>
