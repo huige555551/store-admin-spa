@@ -1,16 +1,9 @@
 <template>
   <div>
-<<<<<<< HEAD
-  <!-- 面包屑 -->
-    <el-form :inline="true">
-      <el-form-item label="网站：">
-        <span>栏目文章</span>
-=======
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
         <span>新媒体管理</span>
->>>>>>> 0abddb64a7c3bc0ef158362e55cb09727870c01a
       </el-form-item>
       <el-form-item label="菜单：">
         <span>文章列表</span>
