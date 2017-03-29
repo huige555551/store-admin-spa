@@ -1,5 +1,14 @@
 <template>
   <div>
+  <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>活动管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>活动列表</span>
+      </el-form-item>
+    </el-form>
     <!-- Table -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
@@ -44,7 +53,7 @@
 
     <!-- 分页 -->
     <div class="pagination">
-      <el-pagination :current-page="currentPage" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="400"></el-pagination>
+      <el-pagination :current-page="currentPage" :page-sizes="[10, 20, 50]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </div>
 
     <!-- 活动信息 -->

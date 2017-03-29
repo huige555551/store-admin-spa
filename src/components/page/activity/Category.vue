@@ -6,7 +6,7 @@
         <span>活动管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>活动栏目</span>
+        <span>活动分类</span>
       </el-form-item>
     </el-form>
     <!-- Table -->

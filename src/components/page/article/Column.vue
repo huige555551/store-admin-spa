@@ -1,5 +1,6 @@
 <template>
   <div>
+  <!-- TODO 编辑时候是否上线没有显示出来 -->
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
@@ -23,7 +24,7 @@
       </el-table-column>
       <el-table-column label="海报" width="200">
         <template scope="scope">
-          <img :src="scope.row.bannerUrl" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
+          <img :src="scope.row.bannerUrl" width="200" max-height="200" @click="openImg(scope.row.bannerUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -40,7 +41,6 @@
         <el-button @click="addRow">添加栏目</el-button>
       </el-form-item>
     </el-form>
-
     <!-- 添加表单 -->
     <el-dialog title="添加栏目" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
@@ -57,10 +57,14 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传海报">
-          <el-upload action="" :file-list="rowObj.fileList">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">建议尺寸1440x320，只能上传jpg/png文件，且不超过1MB</div>
-          </el-upload>
+          <UploadSingle
+            :imgUrl="rowObj.bannerUrl"
+            :imgKey="rowObj.banner"
+            :size=1 dimension="520x676" name="article"
+            @handleRemove="handleRemove"
+            @handleSuccess="handleSuccess">
+          </UploadSingle>
+          <div slot="tip" class="el-upload__tip">建议尺寸1440x320，只能上传jpg/png文件，且不超过1MB</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -73,6 +77,9 @@
 
 <script>
 import api from '@/api'
+import UploadSingle from '../../util/UploadSingle'
+
+const _ = require('lodash')
 
 export default {
   data() {
@@ -81,10 +88,16 @@ export default {
       formDialog: false,
       editing: false,
       editingIndex: null,
-      rowObj: {},
+      rowObj: {
+        isUse: null,
+        bannerUrl: null
+      },
       // 表格
       tableData: []
     }
+  },
+  components: {
+    UploadSingle
   },
   created() {
     this.fetchData()
@@ -104,12 +117,7 @@ export default {
     // 添加行
     addRow() {
       this.editing = false
-      this.rowObj = {
-        name: null,
-        order: 1,
-        isUse: true,
-        bannerUrl: null
-      }
+      this.rowObj = { isUse: true }
       this.formDialog = true
     },
     // 编辑行
@@ -129,31 +137,46 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/article/deteleNavigation', { id: this.tableData[index].id })
+      }).then(async() => {
+        const { code } = await api.post('/api/system/article/deleteNavigation', { id: this.tableData[index].id })
         if (code === 200) {
+          this.$notify.success({ title: '成功', message: '删除成功' })
           this.tableData.splice(index, 1)
+          this.fetchData()
         }
       }).catch(() => {})
     },
     // 保存行
     async saveRow() {
+      if (!this.rowObj.name || !this.rowObj.order || !this.rowObj.bannerUrl) {
+        return this.$notify.error({ title: '失败', message: '请确认表单均填写正确' })
+      }
+      console.log(this.rowObj)
       if (this.editing) {
         const { code } = await api.post('/api/system/article/updateNavigation', this.rowObj)
         if (code === 200) {
-          this.tableData[this.editingIndex] = this.rowObj
-          this.rowObj = {}
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
+          this.$notify.success({ title: '成功', message: '修改成功' })
+          this.rowObj = { isUse: null }
           this.formDialog = false
         }
       } else {
-        const { code, data } = await api.post('/api/system/article/addNavigation', this.rowObj)
+        const { code } = await api.post('/api/system/article/addNavigation', this.rowObj)
         if (code === 200) {
-          this.rowObj.id = data.id
-          this.tableData.push(this.rowObj)
-          this.rowObj = {}
+          this.$notify.success({ title: '成功', message: '添加成功' })
+          this.fetchData()
+          this.rowObj = { isUse: null }
           this.formDialog = false
         }
       }
+    },
+    handleRemove() {
+      this.rowObj.bannerUrl = null
+      this.rowObj.banner = null
+    },
+    handleSuccess(response, bucketPort) {
+      this.$set(this.rowObj, 'bannerUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.rowObj, 'banner', response.key)
     }
   }
 }

@@ -116,8 +116,7 @@ export default {
       window.open(url)
     },
     search() {
-      this.searchKey.title = this.searchInput.title
-      this.searchKey.categoryId = this.searchInput.catergoryId
+      this.searchKey.name = this.searchInput.name
       this.fetchData()
     },
     emptySearch() {
@@ -129,7 +128,7 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage })
+      const { code, data } = await api.get('/api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage, authorName: this.searchKey.name })
       if (code === 200) {
         this.tableData = data.array
       }

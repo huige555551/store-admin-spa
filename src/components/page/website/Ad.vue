@@ -1,9 +1,19 @@
 <template>
   <div>
+  <!-- TODO 编辑时上下线没有显示 -->
+  <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>网站管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>广告设置</span>
+      </el-form-item>
+    </el-form>
     <!-- Table -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="position" label="位置" width="120"></el-table-column>
+      <el-table-column prop="location" label="位置" width="120"></el-table-column>
       <el-table-column prop="size" label="尺寸" width="120"></el-table-column>
       <el-table-column prop="advertiser" label="广告主" min-width="120"></el-table-column>
       <el-table-column label="跳转链接" min-width="120">
@@ -18,13 +28,14 @@
       </el-table-column>
       <el-table-column label="状态" width="100">
         <template scope="scope">
-          <el-tag type="success">上线</el-tag>
+          <el-tag v-if="scope.row.ifUse" type="success">上线</el-tag>
+          <el-tag v-if="!scope.row.ifUse" type="gray">下线</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button @click.native.prevent="" type="default" size="small">编辑</el-button>
-          <el-button type="default" size="small">删除</el-button>
+          <el-button @click.native.prevent="" type="default" size="small" @click="editRow(scope.$index)">编辑</el-button>
+          <el-button type="default" size="small" @click="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,72 +43,150 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="dialogFormVisible = true">添加广告</el-button>
+        <el-button @click="addRow">添加广告</el-button>
       </el-form-item>
     </el-form>
 
     <!-- 添加轮播表单 -->
-    <el-dialog title="添加广告" v-model="dialogFormVisible">
+    <el-dialog title="添加广告" v-model="formDialog">
       <el-form :model="newAd" label-width="100px">
         <el-form-item label="广告主">
-          <el-input v-model="newAd.advertiser"></el-input>
+          <el-input v-model="newAd.advertisers"></el-input>
         </el-form-item>
         <el-form-item label="跳转链接">
           <el-input v-model="newAd.url"></el-input>
         </el-form-item>
         <el-form-item label="选择位置">
-          <el-select v-model="newAd.position">
-            <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id" :disabled="item.disabled"></el-option>
+          <el-select v-model="newAd.location">
+            <el-option label="选项一" :value="1"></el-option>
+            <el-option label="选项二" :value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-radio-group v-model="newAd.resource">
-            <el-radio label="上线"></el-radio>
-            <el-radio label="下线"></el-radio>
+          <el-radio-group v-model="newAd.ifUse">
+            <el-radio label="true">上线</el-radio>
+            <el-radio label="false">下线</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传图片">
-          <el-upload action="" :file-list="newAd.fileList">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">建议尺寸TODO，只能上传jpg/png文件，且不超过1MB</div>
-          </el-upload>
+          <UploadSingle
+            :imgUrl="newAd.imgUrl"
+            :imgKey="newAd.imgKey"
+            :size=1 dimension="520x676" name="article"
+            @handleRemove="handleRemove"
+            @handleSuccess="handleSuccess">
+          </UploadSingle>
+          <div slot="tip" class="el-upload__tip">建议尺寸TODO，只能上传jpg/png文件，且不超过1MB</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary">确 定</el-button>
-        <el-button>取 消</el-button>
+        <el-button type="primary" @click="saveRow">确 定</el-button>
+        <el-button @click="formDialog = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+import UploadSingle from '../../util/UploadSingle'
+
+const _ = require('lodash')
+
 export default {
   data() {
     return {
-      options: [
-        { id: '1', value: '选项1', label: '选项1', disabled: false },
-        { id: '2', value: '选项2', label: '选项2', disabled: true },
-        { id: '3', value: '选项3', label: '选项3', disabled: true },
-        { id: '4', value: '选项4', label: '选项4', disabled: true },
-        { id: '5', value: '选项5', label: '选项5', disabled: false }
-      ],
-      newAd: {},
-      dialogFormVisible: false,
-      tableData: [
-        { position: '位置1', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true },
-        { position: '位置2', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true },
-        { position: '位置3', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true },
-        { position: '位置4', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true },
-        { position: '位置5', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true },
-        { position: '位置6', imgUrl: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', size: '120x120', url: 'http://baidu.com', advertiser: '新周刊', isOn: true }
-      ]
+      // 表单
+      editing: false,
+      editingIndex: null,
+      formDialog: false,
+      newAd: {
+        location: null,
+        ifUse: null
+      },
+      // 表格
+      tableData: [],
+      options: []
     }
   },
+  components: {
+    UploadSingle
+  },
+  created() {
+    this.fetchData()
+  },
   methods: {
-    // 新窗口打开轮播图
-    openImg(url) {
-      window.open(url)
+    // 获取分类数据
+    async fetchData() {
+      this.tableData = []
+      const { code, data } = await api.get('/api/system/advertisment/listAdvertisment')
+      if (code === 200) {
+        this.tableData = data
+      }
+    },
+    editRow(index) {
+      this.editing = true
+      this.editingIndex = index
+      this.newAd.id = this.tableData[index].id
+      this.newAd.location = this.tableData[index].location
+      this.newAd.advertisers = this.tableData[index].advertisers
+      this.newAd.url = this.tableData[index].url
+      this.newAd.ifUse = this.tableData[index].ifUse
+      this.formDialog = true
+    },
+    addRow() {
+      this.editing = false
+      this.newAd = {
+        location: null,
+        ifUse: null
+      }
+      this.formDialog = true
+    },
+    // 删除广告
+    async deleteRow(index) {
+      this.$confirm('此操作将该删除该广告，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(async () => {
+        const { code } = await api.post('/api/system/advertisment/deleteAdvertisment', { id: this.tableData[index].id })
+        if (code === 200) {
+          this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
+        }
+      }).catch(() => {})
+    },
+    // 保存修改
+    async saveRow() {
+      // if (!this.newAd.location || !this.newAd.advertiser || !this.newAd.imgKey) {
+      //   return this.$notify.error({ title: '失败', message: '请确认表单填写完整' })
+      // }
+      console.log(this.newAd)
+      if (this.editing) {
+        const { code } = await api.post('/api/system/advertisment/updateAdvertisment', this.newAd)
+        if (code === 200) {
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.newAd))
+          this.$notify.success({ title: '成功', message: '修改成功' })
+          this.formDialog = false
+        }
+      } else {
+        const { code } = await api.post('/api/system/advertisment/addAdvertisment', this.newAd)
+        if (code === 200) {
+          this.fetchData()
+          this.formDialog = false
+          this.$notify.success({ title: '成功', message: '添加成功' })
+        }
+      }
+    },
+    // 删除封面图片
+    handleRemove() {
+      this.newAd.imgKey = null
+      this.newAd.imgUrl = null
+    },
+    // 封面图片上传成功
+    handleSuccess(response, bucketPort) {
+      this.$set(this.newAd, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.newAd, 'imgKey', response.key)
     }
   }
 }
