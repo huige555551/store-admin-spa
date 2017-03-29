@@ -9,6 +9,17 @@
         <span>作者列表</span>
       </el-form-item>
     </el-form>
+    <!-- 搜索 -->
+    <!-- TODO搜索接口待开 分页总数 -->
+    <el-form :inline="true" :model="searchKey">
+      <el-form-item label="作者">
+        <el-input v-model="searchInput.name" placeholder="作者名字"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
+        <el-button  @click.native.prevent="emptySearch">清空</el-button>
+      </el-form-item>
+    </el-form>
 
     <!-- 表格 -->
     <el-table :data="tableData">
@@ -48,10 +59,14 @@
           <el-input v-model="rowObj.name"></el-input>
         </el-form-item>
         <el-form-item label="上传头像">
-          <el-upload action="">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">建议尺寸120x120，只能上传jpg/png文件，且不超过1MB</div>
-          </el-upload>
+          <UploadSingle
+            :imgUrl="rowObj.headImgUrl"
+            :imgKey="rowObj.headImgKey"
+            :size=1 dimension="240x240"
+            @handleRemove="handleRemove"
+            @handleSuccess="handleSuccess">
+          </UploadSingle>
+          <div slot="tip" class="el-upload__tip">建议尺寸120x120，只能上传jpg/png文件，且不超过1MB</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -64,6 +79,9 @@
 
 <script>
 import api from '@/api'
+import UploadSingle from '@/components/util/UploadSingle'
+
+const _ = require('lodash')
 
 export default {
   data() {
@@ -76,25 +94,37 @@ export default {
       formDialog: false,
       editing: false,
       editingIndex: null,
-      rowObj: {},
+      rowObj: {
+        headImgUrl: '',
+        headImgKey: ''
+      },
       // 表格
-      tableData: [
-        // { id: 1, name: '作者1', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' },
-        // { id: 1, name: '作者2', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' },
-        // { id: 1, name: '作者3', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' },
-        // { id: 1, name: '作者4', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' },
-        // { id: 1, name: '作者5', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' },
-        // { id: 1, name: '作者6', headImgUrl: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg' }
-      ]
+      tableData: [],
+      searchInput: {},
+      searchKey: {}
     }
   },
-  created() {
+  components: {
+    UploadSingle
+  },
+  async created() {
     this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
     openImg(url) {
       window.open(url)
+    },
+    search() {
+      this.searchKey.title = this.searchInput.title
+      this.searchKey.categoryId = this.searchInput.catergoryId
+      this.fetchData()
+    },
+    emptySearch() {
+      this.searchInput.name = null
+      this.searchKey.name = null
+      this.currentPage = 1
+      this.tableData = []
     },
     // 获取数据
     async fetchData() {
@@ -131,17 +161,20 @@ export default {
       this.rowObj.id = this.tableData[index].id
       this.rowObj.name = this.tableData[index].name
       this.rowObj.headImgUrl = this.tableData[index].headImgUrl
+      this.rowObj.headImgKey = this.tableData[index].headImgKey
       this.formDialog = true
     },
     // 删除行
     async deleteRow(index) {
+      console.log(this.tableData[index], index)
       this.$confirm('此操作将该删除该作者，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/author/deleteAuthor', { authorId: this.tableData[index].id })
+      }).then(async() => {
+        const { code } = await api.post('/api/system/author/deleteAuthor', { authorId: this.tableData[index].id })
         if (code === 200) {
+          this.$notify.success({ title: '成功', message: '删除成功' })
           this.tableData.splice(index, 1)
           this.fetchData()
         }
@@ -149,10 +182,14 @@ export default {
     },
     // 保存行
     async saveRow() {
+      console.log(this.rowObj)
+      if (!this.rowObj.name || !this.rowObj.headImgUrl) {
+        return this.$notify.error({ title: '错误', message: '请填写完整用户名并上传头像' })
+      }
       if (this.editing) {
         const { code } = await api.post('/api/system/author/updateAuthor', this.rowObj)
         if (code === 200) {
-          this.tableData[this.editingIndex] = this.rowObj
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
           this.formDialog = false
         }
@@ -164,6 +201,16 @@ export default {
           this.fetchData()
         }
       }
+    },
+    // 删除用户头像
+    handleRemove() {
+      this.rowObj.headImgUrl = null
+      this.rowObj.headImgKey = null
+    },
+    // 用户头像上传成功
+    handleSuccess(response, bucketPort) {
+      this.$set(this.rowObj, 'headImgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.rowObj, 'headImgKey', response.key)
     }
   }
 }
