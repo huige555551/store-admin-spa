@@ -16,7 +16,7 @@
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
       <el-table-column prop="period" label="期数" width="80"></el-table-column>
-      <el-table-column prop="navigation" label="栏目" width="100"></el-table-column>
+      <el-table-column prop="navigationName" label="栏目" width="100"></el-table-column>
       <el-table-column prop="order" label="顺序" width="70"></el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
@@ -47,8 +47,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary">确 定</el-button>
-        <el-button>取 消</el-button>
+        <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
+        <el-button @click.native.prevent="formDialog = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -67,13 +67,7 @@ export default {
       editingIndex: null,
       rowObj: {},
       // 表格
-      tableData: [
-        // { id: 1, order: '1', title: '这是标题1', author: '新周刊', period: 480, navigation: '生活' },
-        // { id: 1, order: '1', title: '这是标题2', author: '新周刊', period: 480, navigation: '生活' },
-        // { id: 1, order: '1', title: '这是标题3', author: '新周刊', period: 480, navigation: '生活' },
-        // { id: 1, order: '1', title: '这是标题4', author: '新周刊', period: 480, navigation: '生活' },
-        // { id: 1, order: '1', title: '这是标题5', author: '新周刊', period: 480, navigation: '生活' }
-      ]
+      tableData: []
     }
   },
   created() {
