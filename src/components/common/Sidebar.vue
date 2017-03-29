@@ -40,7 +40,7 @@
         <el-menu-item index="/column/list">栏目列表✅-Lee</el-menu-item>
         <el-menu-item index="/author/list">作者列表✅-Lee</el-menu-item>
         <el-menu-item index="/article/list">文章列表</el-menu-item>
-        <el-menu-item index="/article/add">添加文章-Lee</el-menu-item>
+        <el-menu-item index="/article/add">添加文章✅-Lee</el-menu-item>
       </el-submenu>
 
       <!-- 视频管理 -->
@@ -91,10 +91,10 @@
       <!-- 网站设置 -->
       <el-submenu index="setting">
         <template slot="title"><i class="el-icon-setting"></i>网站设置</template>
-        <el-menu-item index="/website/ad">广告设置</el-menu-item>
+        <el-menu-item index="/website/ad">广告设置✅-Lee</el-menu-item>
         <el-menu-item index="/website/job">岗位列表✅-Lee</el-menu-item>
         <el-menu-item index="/website/partner">合作伙伴✅-Lee</el-menu-item>
-        <el-menu-item index="/website/reset">修改密码</el-menu-item>
+        <el-menu-item index="/website/reset">修改密码-Lee</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

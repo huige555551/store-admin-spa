@@ -57,7 +57,7 @@
           <el-input v-model="newAd.url"></el-input>
         </el-form-item>
         <el-form-item label="选择位置">
-          <el-select v-model="newAd.location">
+          <el-select v-model="newAd.advertismentTypeId">
             <el-option label="选项一" :value="1"></el-option>
             <el-option label="选项二" :value="2"></el-option>
           </el-select>
@@ -101,7 +101,7 @@ export default {
       editingIndex: null,
       formDialog: false,
       newAd: {
-        location: null,
+        advertismentTypeId: null,
         ifUse: null
       },
       // 表格
@@ -127,6 +127,7 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
+      this.advertismentTypeId = this.tableData[index].advertismentTypeId
       this.newAd.id = this.tableData[index].id
       this.newAd.location = this.tableData[index].location
       this.newAd.advertisers = this.tableData[index].advertisers
@@ -138,6 +139,7 @@ export default {
       this.editing = false
       this.newAd = {
         location: null,
+        advertismentTypeId: null,
         ifUse: null
       }
       this.formDialog = true
