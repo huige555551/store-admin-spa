@@ -24,13 +24,13 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">漫画管理</template>
-          <el-menu-item index="/comics/list">漫画列表-hui</el-menu-item>
-          <el-menu-item index="/comics/add">添加漫画-hui</el-menu-item>
+          <el-menu-item index="/comics/list">漫画列表-hui✅</el-menu-item>
+          <el-menu-item index="/comics/add">添加漫画-hui✅</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">插画管理</template>
-          <el-menu-item index="/illustration/list">插画列表-hui</el-menu-item>
-          <el-menu-item index="/illustration/add">添加插画-hui</el-menu-item>
+          <el-menu-item index="/illustration/list">插画列表-hui✅</el-menu-item>
+          <el-menu-item index="/illustration/add">添加插画-hui✅</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
@@ -39,7 +39,7 @@
         <template slot="title"><i class="el-icon-date"></i>栏目文章-Lee</template>
         <el-menu-item index="/column/list">栏目列表</el-menu-item>
         <el-menu-item index="/author/list">作者列表</el-menu-item>
-        <el-menu-item index="/article/list">文章列表</el-menu-item>
+        <el-menu-item index="/article/list">文章列表-hui✅</el-menu-item>
         <el-menu-item index="/article/add">添加文章</el-menu-item>
       </el-submenu>
 
@@ -49,7 +49,7 @@
         <el-menu-item index="/video/category">分类管理✅</el-menu-item>
         <el-menu-item index="/video/list">视频列表✅</el-menu-item>
         <el-menu-item index="/video/add">添加视频✅</el-menu-item>
-        <el-menu-item index="/video/banner">轮播管理</el-menu-item>
+        <el-menu-item index="/video/banner">轮播管理✅</el-menu-item>
       </el-submenu>
 
       <!-- 音频管理 -->
@@ -63,10 +63,10 @@
       <!-- 新媒体管理 -->
       <el-submenu index="newmedia">
         <template slot="title"><i class="el-icon-date"></i>新媒体管理－hui</template>
-        <el-menu-item index="/newmedia/category">分类管理</el-menu-item>
-        <el-menu-item index="/newmedia/list">文章列表</el-menu-item>
-        <el-menu-item index="/newmedia/add">添加文章</el-menu-item>
-        <el-menu-item index="/newmedia/banner">轮播管理</el-menu-item>
+        <el-menu-item index="/newmedia/category">分类管理✅</el-menu-item>
+        <el-menu-item index="/newmedia/list">文章列表✅</el-menu-item>
+        <el-menu-item index="/newmedia/add">添加文章✅</el-menu-item>
+        <el-menu-item index="/newmedia/banner">轮播管理✅</el-menu-item>
       </el-submenu>
 
       <!-- 评论管理 -->
@@ -85,7 +85,7 @@
         <el-menu-item index="/activity/category">活动分类✅</el-menu-item>
         <el-menu-item index="/activity/list">活动列表</el-menu-item>
         <el-menu-item index="/activity/add">添加活动</el-menu-item>
-        <el-menu-item index="/activity/banner">轮播管理</el-menu-item>
+        <el-menu-item index="/activity/banner">轮播管理✅</el-menu-item>
       </el-submenu>
 
       <!-- 网站设置 -->
