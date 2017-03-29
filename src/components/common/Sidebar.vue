@@ -49,7 +49,7 @@
         <el-menu-item index="/video/category">分类管理✅-Lee</el-menu-item>
         <el-menu-item index="/video/list">视频列表✅-Lee</el-menu-item>
         <el-menu-item index="/video/add">添加视频✅-Lee</el-menu-item>
-        <el-menu-item index="/video/banner">轮播管理✅</el-menu-item>
+        <el-menu-item index="/video/banner">轮播管理✅-hui</el-menu-item>
       </el-submenu>
 
       <!-- 音频管理 -->
