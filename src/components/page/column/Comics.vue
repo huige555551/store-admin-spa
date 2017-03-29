@@ -28,7 +28,7 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
-      <el-table-column prop="date" label="日期" width="120"></el-table-column>
+      <el-table-column prop="publicationDate" label="日期" width="120"></el-table-column>
       <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
       <el-table-column prop="term" label="期数" width="80"></el-table-column>
       <el-table-column label="封面" width="80">
@@ -78,22 +78,11 @@ export default {
       total: 0,
       currentPage: 1,
       perPage: 10,
-      tableData: [
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' },
-        { id: 1, title: '漫画标题', date: '2017-02-02', term: 480, author: '新周刊', count: 12, imgUrl: 'http://om4r3bojb.bkt.clouddn.com/magazine.jpg' }
-      ]
+      tableData: []
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -119,14 +108,16 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/article/listArticle', {
+      const { code, data } = await api.get('/api/system/comicIllustration/getList', {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
-        date: this.searchKey.date
+        date: this.searchKey.date,
+        type: 1
       })
+      console.log(code, data)
       if (code === 200) {
-        this.tableData = data
+        this.tableData = data.array
       }
     },
     // 分页
@@ -147,7 +138,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
-        const { code } = api.post('/api/system/article/deleteArticle', { id: this.tableData[index].id })
+        const { code } = api.post('/api/system/comicIllustration/deleteComicIllustrations', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.fetchData()

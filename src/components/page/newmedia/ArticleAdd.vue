@@ -33,13 +33,8 @@
             <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <!--<el-form-item label="选择作者">
-          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索">
-            <el-option v-for="item in optionAuthor" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>-->
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorName" filterable placeholder="请输入作者进行搜索">
+          <el-select v-model="article.authorName" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -51,11 +46,11 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="文章标签">
-          <el-select v-model="article.labelList" multiple filterable allow-create placeholder="请选择/输入文章标签">
+          <el-select v-model="article.laberl" multiple filterable allow-create placeholder="请选择/输入文章标签">
             <el-option v-for="item in optionTag" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="日期" v-model="article.publicationDate">
+        <el-form-item label="日期" >
           <el-date-picker
             v-model="article.publicationDate"
             format="yyyy-MM-dd"
@@ -67,7 +62,7 @@
         <el-form-item label="文章摘要">
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
-        <el-form-item label="文章内容" style="width: 800px" v-model="article.content">
+        <el-form-item label="文章内容" style="width: 800px">
           <simditor :content="article.content" :options="options2" @change="change"></simditor>
         </el-form-item>
         <el-form-item>
@@ -84,55 +79,12 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-// export default {
-//   data() {
-//     return {
-//       searchKey: '',
-//       article: {
-//         tags: []
-//       },
-//       options: [
-//         { id: '1', value: '选项1', label: '选项1' },
-//         { id: '2', value: '选项2', label: '选项2' },
-//         { id: '3', value: '选项3', label: '选项3' },
-//         { id: '4', value: '选项4', label: '选项4' },
-//         { id: '5', value: '选项5', label: '选项5' }
-//       ],
-//       initContent: '<p>123456</p>',
-//       options2: {
-//         placeHolder: '输入文章内容',
-//         toolbarFloat: false,
-//         upload: true,
-//         // toolbar: ['title', 'image'],
-//         cleanPaste: true
-//       }
-//     }
-//   },
-//   components: {
-//     Simditor
-//   },
-//   methods: {
-//     onSubmit() {
-//       this.$message.success('提交成功！')
-//     },
-//     change(val) {
-//       console.log(val)
-//     }
-//   },
-//   beforeRouteLeave(to, from, next) {
-//     // TODO 突然离开未保存，提示管理员
-//     console.log('leave')
-//     next()
-//   }
-// }
-
-
 export default {
   data() {
     return {
       editing: false,
       article: {
-        content: '<p>123456</p>'
+        publicationDate: ''
       },
       options2: {
         placeHolder: '输入文章内容',
@@ -154,23 +106,33 @@ export default {
     this.fetchData()
   },
   // 组件复用，路由数据刷新
+  /* eslint-disable */
   watch: {
     '$route'() {
       this.fetchData()
     }
   },
+  /* eslint-enable */
   methods: {
     change() {
     },
+    // async authorFilter() {
+    //   const getTag = await api.get('/api/system/author/listAuthor', {})
+    //   if (getTag.code === 200) {
+    //     this.optionTag = getTag.data.array
+    //   }
+    // },
     async fetchData() {
       const getNavigation = await api.get('/api/system/article/listNavigation')
       if (getNavigation.code === 200) {
         this.optionColumn = getNavigation.data
       }
-      const getTag = await api.get('/api/system/author/listAuthor')
-      if (getTag.code === 200) {
-        this.optionTag = getTag.data.array
-      }
+      this.optionTag = [{ name: '事件', id: 1 },
+        { name: '科技', id: 2 }]
+      // const getTag = await api.get('/api/system/author/listAuthor')
+      // if (getTag.code === 200) {
+      //   this.optionTag = getTag.data.array
+      // }
       const getAuthor = await api.get('/api/system/author/listAuthor')
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
@@ -182,12 +144,12 @@ export default {
           this.article = data
         }
       } else {
-        console.log('add new')
         this.editing = false
-        this.article = {}
+        this.article = { navigationName: null, authorName: null, publicationDate: null, laberl: [], content: '<p>a</p>' }
       }
     },
     handleDatePick(val) {
+      console.log('val', val)
       this.article.publicationDate = val
     },
     handleRemove(name) {
@@ -205,7 +167,7 @@ export default {
     async save() {
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.searchKeyColumn || !this.article.searchKeyAuthor || !this.article.title || !this.article.tags || !this.article.introduction || !this.article.content) {
+      } else if (!this.article.navigationName || !this.article.authorName || !this.article.title || !this.article.laberl || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
@@ -218,6 +180,9 @@ export default {
           this.$router.push('/newmedia/list')
         }
       } else {
+        this.article.navigationId = this.article.navigationName
+        this.article.authorId = this.article.authorName
+        this.article.labelList = this.article.laberl
         const { code } = await api.post('/api/system/wechat/addArticle', this.article)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

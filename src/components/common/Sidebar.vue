@@ -24,13 +24,13 @@
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">漫画管理</template>
-          <el-menu-item index="/comics/list">漫画列表</el-menu-item>
-          <el-menu-item index="/comics/add">添加漫画</el-menu-item>
+          <el-menu-item index="/comics/list">漫画列表-hui</el-menu-item>
+          <el-menu-item index="/comics/add">添加漫画-hui</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">插画管理</template>
-          <el-menu-item index="/illustration/list">插画列表</el-menu-item>
-          <el-menu-item index="/illustration/add">添加插画</el-menu-item>
+          <el-menu-item index="/illustration/list">插画列表-hui</el-menu-item>
+          <el-menu-item index="/illustration/add">添加插画-hui</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 

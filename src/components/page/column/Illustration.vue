@@ -28,7 +28,7 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
-      <el-table-column prop="date" label="日期" width="140"></el-table-column>
+      <el-table-column prop="publicationDate" label="日期" width="140"></el-table-column>
       <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
       <el-table-column prop="term" label="期数" width="80"></el-table-column>
       <el-table-column label="封面" width="80">
@@ -93,7 +93,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -119,14 +119,15 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/article/listArticle', {
+      const { code, data } = await api.get('/api/system/comicIllustration/getList', {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
-        date: this.searchKey.date
+        date: this.searchKey.date,
+        type: 2
       })
       if (code === 200) {
-        this.tableData = data
+        this.tableData = data.array
       }
     },
     // 分页
