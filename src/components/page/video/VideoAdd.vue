@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item label="选择分类">
           <el-select v-model="video.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option :label="123" :value="1"></el-option>
+            <el-option :label="123" :value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="视频标题">
