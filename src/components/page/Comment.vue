@@ -5,8 +5,8 @@
       <el-form-item label="网站：">
         <span>评论管理</span>
       </el-form-item>
-      <el-form-item label="文章：">
-        <span>去寺院喝咖啡，听爵士煮老茶</span>
+      <el-form-item :label=title>
+        <span>待完善</span>
       </el-form-item>
     </el-form>
 
@@ -62,6 +62,7 @@ import api from '@/api'
 export default {
   data() {
     return {
+      title: null,
       currentPage: 1,
       searchKey: {},
       searchInput: {},
@@ -101,12 +102,21 @@ export default {
     },
     async fetchData() {
       if (this.$route.params.type === 'article') {
+        this.title = '文章'
         const { code, data } = await api.get('/api/system/comment/listArticleComment?', { articleId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total
         }
+      } else if (this.$route.params.type === 'video') {
+        this.title = '视频'
+        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
+        if (code === 200) {
+          this.tableData = data.array
+          this.total = data.total
+        }
       } else {
+        this.title = '活动'
         const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
