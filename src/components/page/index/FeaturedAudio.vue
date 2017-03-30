@@ -9,42 +9,66 @@
       </el-form-item>
     </el-form>
     
-    <!-- 添加精选文章 -->
+    <!-- 替换精选音频 -->
     <el-dialog title="选择精选音频" v-model="formDialog">
       <el-form label-position="right" label-width="100px">
         <el-form-item label="选择音频">
-          <el-select v-model="featuredObj.title" filterable placeholder="请输入音频标题进行搜索">
-            <el-option label="选项一" value="value1"></el-option>
-            <el-option label="选项二" value="value2"></el-option>
+          <el-select
+            v-model="featuredObj.audioId" 
+            filterable remote placeholder="请输入音频标题进行搜索"
+            :remote-method="searchAudio">
+            <el-option
+              v-for="item in results"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary">确 定</el-button>
-        <el-button>取 消</el-button>
+        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button @click="formDialog = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   data() {
     return {
       formDialog: false,
       featuredObj: {},
-      featuredAudio: {
-        title: '老屋，旧房，砖瓦',
-        dialog: false
-      }
+      featuredAudio: {},
+      results: {}
     }
   },
-  created() {
+  async created() {
     this.fetchData()
   },
   methods: {
-    fetchData() {
-      console.log()
+    async fetchData() {
+      this.tableData = []
+      const { code, data } = await api.get('/api/system/audio/getExquisiteAudio')
+      if (code === 200) {
+        this.featuredAudio = data
+      }
+    },
+    async searchAudio(val) {
+      const { code, data } = await api.get('/api/system/audio/searchAudioByTitle', { title: val })
+      if (code === 200) {
+        this.results = data
+      }
+    },
+    async save() {
+      const { code } = await api.post('/api/system/audio/changeAudio', this.featuredObj)
+      if (code === 200) {
+        this.$notify.success({ title: '成功', message: '音频替换成功' })
+        this.formDialog = false
+      }
     }
   }
 }

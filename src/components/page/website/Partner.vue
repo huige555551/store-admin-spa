@@ -80,7 +80,7 @@ export default {
       editing: false,
       editingIndex: null,
       partnerDialog: false,
-      rowObj: {},
+      rowObj: { imgUrl: null },
       tableData: []
     }
   },

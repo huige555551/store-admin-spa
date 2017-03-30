@@ -21,7 +21,7 @@
         </template>
       </el-table-column>
       <el-table-column label="时长" width="100">
-        <template scope="scope">{{scope.row.length}}秒</template>
+        <template scope="scope">{{scope.row.time}}</template>
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
@@ -42,16 +42,23 @@
     <el-dialog title="添加精选视频" v-model="formDialog">
       <el-form label-position="right" label-width="100px">
         <el-form-item label="选择视频">
-          <el-select v-model="rowObj.title" filterable placeholder="请输入视频标题进行搜索">
-            <el-option label="选项一" value="value1"></el-option>
-            <el-option label="选项二" value="value2"></el-option>
+          <el-select v-model="rowObj.targetVideoId"
+            filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchVideo">
+            <el-option
+              v-for="item in results"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="时长(秒)">
-          <el-input v-model="rowObj.length"></el-input>
+          <el-input v-model="rowObj.time"></el-input>
         </el-form-item>
         <el-form-item label="视频链接">
           <el-input v-model="rowObj.url"></el-input>
@@ -68,6 +75,8 @@
 <script>
 import api from '@/api'
 
+const _ = require('lodash')
+
 export default {
   data() {
     return {
@@ -76,14 +85,9 @@ export default {
       formDialog: false,
       editing: false,
       editingIndex: null,
-      rowObj: {},
-      tableData: [
-        // { id: 1, order: 1, title: '这是标题1', url: 'http://baidu.com', length: 90 },
-        // { id: 1, order: 2, title: '这是标题2', url: 'http://baidu.com', length: 90 },
-        // { id: 1, order: 3, title: '这是标题3', url: 'http://baidu.com', length: 90 },
-        // { id: 1, order: 4, title: '这是标题4', url: 'http://baidu.com', length: 90 },
-        // { id: 1, order: 5, title: '这是标题5', url: 'http://baidu.com', length: 90 }
-      ]
+      rowObj: { targetVideoId: null },
+      tableData: [],
+      results: []
     }
   },
   created() {
@@ -91,21 +95,27 @@ export default {
   },
   methods: {
     async fetchData() {
-      const { code, data } = await api.get('/api/system/article/listExquisiteArticle')
+      const { code, data } = await api.get('/api/system/video/listExquisiteVideo')
       if (code === 200) {
         this.tableData = data
+      }
+    },
+    async searchVideo(val) {
+      const { code, data } = await api.get('/api/system/video/searchVideoByTitle', { title: val })
+      if (code === 200) {
+        this.results = data
       }
     },
     // 添加精选
     addRow() {
       if (this.tableData.length >= this.max) {
-        return this.$notify.info({ title: '提示', message: `最多创建${this.max}篇精选文章` })
+        return this.$notify.info({ title: '提示', message: `最多创建${this.max}个精选视频` })
       }
       this.editing = false
       this.rowObj = {
         title: null,
         url: null,
-        length: null,
+        targetVideoId: null,
         order: null
       }
       this.formDialog = true
@@ -114,12 +124,12 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = {}
-      this.rowObj.id = this.tableData[index].id
+      this.rowObj = { targetVideoId: this.tableData[index].title }
+      this.rowObj.videoId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title
       this.rowObj.url = this.tableData[index].url
-      this.rowObj.length = this.tableData[index].length
+      this.rowObj.time = this.tableData[index].time
       this.formDialog = true
     },
     // 删除行
@@ -128,9 +138,10 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+      }).then(async() => {
+        const { code } = await api.post('/api/system/video/deleteExquisiteVideo', { videoId: this.tableData[index].id })
         if (code === 200) {
+          this.$notify.success({ title: '成功', message: '删除成功' })
           this.tableData.splice(index, 1)
         }
       }).catch(() => {})
@@ -138,18 +149,20 @@ export default {
     // 保存行
     async saveRow() {
       if (this.editing) {
-        const { code } = await api.post('/api/system/article/updateNavigation', this.rowObj)
+        const { code } = await api.post('/api/system/video/updateExquisiteVideo', this.rowObj)
         if (code === 200) {
-          this.tableData[this.editingIndex] = this.rowObj
+          this.$notify.success({ title: '成功', message: '修改成功' })
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
           this.formDialog = false
         }
       } else {
-        const { code, data } = await api.post('/api/system/article/addArticle', this.rowObj)
+        this.rowObj.videoId = this.rowObj.targetVideoId
+        console.log(this.rowObj)
+        const { code } = await api.post('/api/system/video/addExquisiteVideo', this.rowObj)
         if (code === 200) {
-          this.rowObj.id = data.id
-          this.tableData.push(this.rowObj)
-          this.rowObj = {}
+          this.$notify.success({ title: '成功', message: '添加成功' })
+          this.fetchData()
           this.formDialog = false
         }
       }
