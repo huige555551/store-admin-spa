@@ -37,9 +37,16 @@
     <el-dialog title="添加精选文章" v-model="formDialog">
       <el-form label-width="100px">
         <el-form-item label="选择文章" >
-          <el-select v-model="rowObj.title" filterable placeholder="请输入文章标题进行搜索">
-            <el-option label="选项一" value="value1"></el-option>
-            <el-option label="选项二" value="value2"></el-option>
+          <el-select v-model="rowObj.articleId"
+            filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchArticle">
+            <el-option
+              v-for="item in results"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="顺序">
@@ -57,6 +64,8 @@
 <script>
 import api from '@/api'
 
+const _ = require('lodash')
+
 export default {
   data() {
     return {
@@ -65,9 +74,10 @@ export default {
       formDialog: false,
       editing: false,
       editingIndex: null,
-      rowObj: {},
+      rowObj: { articleId: null },
       // 表格
-      tableData: []
+      tableData: [],
+      results: []
     }
   },
   created() {
@@ -75,9 +85,15 @@ export default {
   },
   methods: {
     async fetchData() {
-      const { code, data } = await api.get('/api/system/article/listExquisiteArticle')
+      const { code, data } = await api.get('/api/system/wechat/listNewMedia')
       if (code === 200) {
-        this.featuredArticles = data
+        this.tableData = data
+      }
+    },
+    async searchArticle(val) {
+      const { code, data } = await api.get('/api/system/wechat/searchArticle', { title: val })
+      if (code === 200) {
+        this.results = data
       }
     },
     // 添加精选
@@ -96,10 +112,13 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = {}
-      this.rowObj.id = this.tableData[index].id
+      this.rowObj = { articleId: null }
+      this.rowObj.newMediaId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title
+      this.rowObj.navigationName = this.tableData[index].navigationName
+      this.rowObj.author = this.tableData[index].author
+      this.rowObj.period = this.tableData[index].period
       this.formDialog = true
     },
     // 删除行
@@ -108,28 +127,32 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+      }).then(async() => {
+        const { code } = await api.post('/api/system/wechat/deleteNewMedia', { newMediaId: this.tableData[index].id })
         if (code === 200) {
+          this.$notify.success({ title: '成功', message: '删除成功' })
           this.tableData.splice(index, 1)
         }
       }).catch(() => {})
     },
     // 保存行
     async saveRow() {
+      if (!this.rowObj.articleId || !this.rowObj.title) {
+        return this.$notify.error({ title: '保存失败', message: '请确认表达填写完整' })
+      }
       if (this.editing) {
-        const { code } = await api.post('/api/system/article/updateNavigation', this.rowObj)
+        const { code } = await api.post('/api/system/wechat/updateNewMedia', this.rowObj)
         if (code === 200) {
-          this.tableData[this.editingIndex] = this.rowObj
+          this.$notify.success({ title: '成功', message: '修改成功' })
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
           this.formDialog = false
         }
       } else {
-        const { code, data } = await api.post('/api/system/article/addArticle', this.rowObj)
+        const { code } = await api.post('/api/system/wechat/addNewMedia', this.rowObj)
         if (code === 200) {
-          this.rowObj.id = data.id
-          this.tableData.push(this.rowObj)
-          this.rowObj = {}
+          this.$notify.success({ title: '成功', message: '添加成功' })
+          this.fetchData()
           this.formDialog = false
         }
       }

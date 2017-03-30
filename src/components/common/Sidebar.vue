@@ -7,11 +7,11 @@
       <!-- 首页管理 -->
       <el-submenu index="index">
         <template slot="title"><i class="el-icon-date"></i>首页管理</template>
-        <el-menu-item index="/index/banner">轮播管理</el-menu-item>
-        <el-menu-item index="/feature/article">精选文章</el-menu-item>
-        <el-menu-item index="/feature/newmedia">精选新媒体</el-menu-item>
-        <el-menu-item index="/feature/video">精选视频</el-menu-item>
-        <el-menu-item index="/feature/audio">精选音频</el-menu-item>
+        <el-menu-item index="/index/banner">轮播管理✅-stone</el-menu-item>
+        <el-menu-item index="/feature/article">精选文章✅-Lee</el-menu-item>
+        <el-menu-item index="/feature/newmedia">精选新媒体✅-Lee</el-menu-item>
+        <el-menu-item index="/feature/video">精选视频✅-Lee</el-menu-item>
+        <el-menu-item index="/feature/audio">精选音频✅-Lee</el-menu-item>
       </el-submenu>
 
       <!-- 固定栏目 -->
