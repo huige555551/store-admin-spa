@@ -133,13 +133,13 @@ export default {
       this.fetchData()
     },
     // 删除行
-    async deleteRow(index) {
+    deleteRow(index) {
       this.$confirm('此操作将该删除该封面，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/comicIllustration/deleteComicIllustrations', { id: this.tableData[index].id })
+      }).then(async () => {
+        const { code } = await api.post('/api/system/comicIllustration/deleteComicIllustrations', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.fetchData()

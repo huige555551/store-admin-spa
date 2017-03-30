@@ -88,7 +88,7 @@ export default {
         publicationDate: '',
         navigationId: '',
         authorId: '',
-        content: '123'
+        content: '<p>123456</p>'
       },
       options2: {
         placeHolder: '输入文章内容',

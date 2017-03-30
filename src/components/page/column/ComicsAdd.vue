@@ -11,7 +11,7 @@
           @handleSuccess="handleSuccess">
         </UploadSingle>
       </el-form-item>
-      
+
       <el-form-item label="漫画上传">
         <!--<el-upload list-type="picture-card" class="avatar-uploader" action="//up-z2.qiniu.com" accept="image/*" list-type="picture-card" :show-file-list="false" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload">
           <img v-if="comics.comicsUrl" :src="comics.comicsUrl" class="avatar">
@@ -92,6 +92,7 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
+      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }

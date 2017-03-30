@@ -25,7 +25,7 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="名字" min-width="100"></el-table-column>
-      <el-table-column label="头像" width="80">
+      <el-table-column label="头像" width="120">
         <template scope="scope">
           <img :src="scope.row.headImgUrl" width="80" height="80" @click="openImg(scope.row.headImgUrl)" style="cursor: pointer">
         </template>
@@ -131,6 +131,7 @@ export default {
       const { code, data } = await api.get('/api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage, authorName: this.searchKey.name })
       if (code === 200) {
         this.tableData = data.array
+        this.total = data.total
       }
     },
     // 分页
