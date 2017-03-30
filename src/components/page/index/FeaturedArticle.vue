@@ -140,13 +140,18 @@ export default {
     },
     // 保存行
     async saveRow() {
+      console.log(this.rowObj)
       if (this.editing) {
+        if (this.rowObj.targetArticleId === this.rowObj.title) {
+          this.rowObj.targetArticleId = this.rowObj.articleId
+        }
         const { code } = await api.post('/api/system/article/updateExquisiteArticle', this.rowObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
           this.formDialog = false
+          this.fetchData()
         }
       } else {
         this.rowObj.articleId = this.rowObj.targetArticleId

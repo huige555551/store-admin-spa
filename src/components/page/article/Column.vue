@@ -117,7 +117,7 @@ export default {
     // 添加行
     addRow() {
       this.editing = false
-      this.rowObj = { isUse: true }
+      this.rowObj = { isUse: null }
       this.formDialog = true
     },
     // 编辑行

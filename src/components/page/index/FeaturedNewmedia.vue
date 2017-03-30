@@ -137,6 +137,9 @@ export default {
     },
     // 保存行
     async saveRow() {
+      if (this.rowObj.articleId === this.rowObj.title) {
+        this.rowObj.articleId = this.rowObj.newMediaId
+      }
       if (!this.rowObj.articleId || !this.rowObj.title) {
         return this.$notify.error({ title: '保存失败', message: '请确认表达填写完整' })
       }
@@ -146,6 +149,7 @@ export default {
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
+          this.fetchData()
           this.formDialog = false
         }
       } else {
