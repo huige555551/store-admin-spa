@@ -113,7 +113,7 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = { targetArticleId: null }
+      this.rowObj = { targetArticleId: this.tableData[index].title }
       this.rowObj.articleId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title

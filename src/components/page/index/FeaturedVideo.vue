@@ -124,7 +124,7 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = { videoId: null }
+      this.rowObj = { targetVideoId: this.tableData[index].title }
       this.rowObj.videoId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title
