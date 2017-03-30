@@ -29,12 +29,12 @@
           </UploadSingle>
         </el-form-item>
         <el-form-item label="选择栏目">
-          <el-select v-model="article.navigationName" filterable placeholder="请输入栏目进行搜索">
+          <el-select v-model="article.navigationId" filterable placeholder="请输入栏目进行搜索">
             <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorName" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
+          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -130,14 +130,11 @@ export default {
         this.optionColumn = getNavigation.data
       }
       this.optionTag = []
-      // const getTag = await api.get('/api/system/author/listAuthor')
-      // if (getTag.code === 200) {
-      //   this.optionTag = getTag.data.array
-      // }
       const getAuthor = await api.get('/api/system/author/listAuthor')
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
       }
+      // editing
       if (this.$route.params.id) {
         this.editing = true
         const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
@@ -145,8 +142,9 @@ export default {
           this.article = data
         }
       } else {
+      // new
         this.editing = false
-        this.article = { navigationName: null, authorName: null, publicationDate: null, labels: [], content: '<p>a</p>' }
+        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '<p>a</p>' }
       }
     },
     handleDatePick(val) {
@@ -167,7 +165,7 @@ export default {
     async save() {
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationName || !this.article.authorName || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // 对上post的key
@@ -185,8 +183,7 @@ export default {
           return this.$notify.error({ title: '失败', message: code + '保存失败' })
         }
       } else {
-        this.article.navigationId = this.article.navigationName
-        this.article.authorId = this.article.authorName
+        this.article.authorId = this.article.authorId
         const { code } = await api.post('/api/system/wechat/addArticle', this.article)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

@@ -162,7 +162,7 @@ export default {
     async save() {
       console.log(this.comics.title, this.comics.period, this.comics.authorId)
       if (!this.comics.imgUrl || !this.comics.comicsList.length) {
-        return this.$notify.error({ title: '错误', message: '图片不能为空' })
+        // return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.comics.title || !this.comics.period || !this.comics.authorId) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
@@ -180,8 +180,8 @@ export default {
         /* eslint-enable */
       })
       // post参数构造
-      this.comics.imgList = imgUrl
-      console.log(this.comics.imgList)
+      this.comics.imgList = _.clone(imgUrl)
+      console.log(this.comics.imgList instanceof Array, imgUrl, this.comics.imgList)
       // period＝> string to nubmer
       this.$set(this.comics, 'period', Number(this.comics.period))
       // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
@@ -196,8 +196,8 @@ export default {
           this.$router.push('/comics/list')
         }
       } else {
-        this.comics.imgKey = this.comics.coverKey
-        console.log('comics', this.comics.imgKey)
+        this.$set(this.comics, 'imgKey', this.comics.coverKey)
+        console.log('comics', this.comics)
         const { code } = await api.post('/api/system/comicIllustration/addComicIllustrations', this.comics)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

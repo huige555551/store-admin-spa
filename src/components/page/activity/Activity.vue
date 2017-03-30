@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column label="投票" width="120">
         <template scope="scope">
-          <p v-if="scope.row.hasVote">无</p>
+          <p v-if="!scope.row.hasVote">无</p>
           <el-button v-if="scope.row.hasVote" type="default" @click.native.prevent="showVoteDetail(scope.$index)">查看投票</el-button>
         </template>
       </el-table-column>
@@ -128,27 +128,18 @@
         </el-tab-pane>
         <el-tab-pane label="投票选项" name="second">
           <el-form label-width="100px">
-            <el-form-item label="问题一">
-              <p>问题描述 <el-tag type="success">单选</el-tag></p>
+            <el-form-item  v-for="(item,index) in rowObj.problems" :label="'问题' + (index+1)">
+              <p>{{item.problem}}  <el-tag v-if="item.type==1"type="success">单选</el-tag>
+                <el-tag v-if="item.type==2"type="success">多选</el-tag></p>
               <el-radio-group>
-                <el-radio label="选项一"></el-radio>
-                <el-radio label="选项二"></el-radio>
+                <el-radio v-for="optionitem in item.options" :label="'选项' + (index+1)"></el-radio>
               </el-radio-group>
-            </el-form-item>
-            <el-form-item label="问题二">
-              <p>问题描述 <el-tag type="success">多选</el-tag></p>
-              <el-checkbox-group>
-                <el-checkbox label="选项一"></el-checkbox>
-                <el-checkbox label="选项二"></el-checkbox>
-                <el-checkbox label="选项三"></el-checkbox>
-                <el-checkbox label="选项四"></el-checkbox>
-              </el-checkbox-group>
             </el-form-item>
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="结果统计" name="third">
           <el-form label-width="100px" style="width: 80%;">
-            <el-form-item v-for="item in rowObj.result" label="">
+            <el-form-item v-for="(item,index) in rowObj.result" :label="'问题' + (index+1)">
               <p>{{item.problem}} 
                 <el-tag v-if="item.type==1"type="success">单选</el-tag>
                 <el-tag v-if="item.type==2"type="success">多选</el-tag>

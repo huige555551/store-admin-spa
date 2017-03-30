@@ -64,8 +64,8 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="newAd.ifUse">
-            <el-radio label="true">上线</el-radio>
-            <el-radio label="false">下线</el-radio>
+            <el-radio :label="true">上线</el-radio>
+            <el-radio :label="false">下线</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="上传图片">
