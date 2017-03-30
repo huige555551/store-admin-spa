@@ -15,7 +15,7 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="location" label="位置" width="120"></el-table-column>
       <el-table-column prop="size" label="尺寸" width="120"></el-table-column>
-      <el-table-column prop="advertiser" label="广告主" min-width="120"></el-table-column>
+      <el-table-column prop="advertisers" label="广告主" min-width="120"></el-table-column>
       <el-table-column label="跳转链接" min-width="120">
         <template scope="scope">
           <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
@@ -102,7 +102,8 @@ export default {
       formDialog: false,
       newAd: {
         advertismentTypeId: null,
-        ifUse: null
+        ifUse: null,
+        location: null
       },
       // 表格
       tableData: [],
@@ -127,12 +128,13 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.advertismentTypeId = this.tableData[index].advertismentTypeId
+      this.newAd.advertismentTypeId = this.tableData[index].advertismentTypeId
       this.newAd.id = this.tableData[index].id
       this.newAd.location = this.tableData[index].location
       this.newAd.advertisers = this.tableData[index].advertisers
       this.newAd.url = this.tableData[index].url
       this.newAd.ifUse = this.tableData[index].ifUse
+      this.newAd.imgUrl = this.tableData[index].imgUrl
       this.formDialog = true
     },
     addRow() {

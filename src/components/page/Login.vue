@@ -4,7 +4,7 @@
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item prop="username">
-          <el-input v-model="ruleForm.username" placeholder="用户名"></el-input>
+          <el-input v-model="ruleForm.account" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
@@ -19,15 +19,17 @@
 </template>
 
 <script>
+import api from '@/api'
+
 export default {
   data() {
     return {
       ruleForm: {
-        username: '',
+        account: '',
         password: ''
       },
       rules: {
-        username: [
+        account: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
@@ -37,17 +39,12 @@ export default {
     }
   },
   methods: {
-    submitForm(formName) {
-      const self = this
-      self.$refs[formName].validate((valid) => {
-        if (valid) {
-          localStorage.setItem('ms_username', self.ruleForm.username)
-          self.$router.push('/welcome')
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    async submitForm() {
+      const { code } = await api.post('/api/system/login', this.ruleForm)
+      if (code === 200) {
+        this.$notify.success({ title: '成功', message: '登录成功' })
+        this.$router.push('/welcome')
+      }
     }
   }
 }
