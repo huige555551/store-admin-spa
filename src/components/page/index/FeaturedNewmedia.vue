@@ -104,7 +104,7 @@ export default {
       this.editing = false
       this.rowObj = {
         title: null,
-        order: 1
+        order: null
       }
       this.formDialog = true
     },

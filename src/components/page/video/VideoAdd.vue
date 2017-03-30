@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item label="选择分类">
           <el-select v-model="video.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option :label="123" :value="123"></el-option>
+            <el-option :label="123" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="视频标题">
@@ -86,7 +86,7 @@ export default {
         }
       } else {
         this.editing = false
-        this.video = {}
+        this.video = { navigationId: null }
       }
     },
     // 删除封面图片

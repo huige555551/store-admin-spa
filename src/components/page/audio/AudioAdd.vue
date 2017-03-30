@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       editing: false,
-      audio: { navigationId: '' },
+      audio: { navigationId: '', audioName: null },
       uploadParams: {},
       audioName: '',
       value: ''
@@ -107,10 +107,12 @@ export default {
         const { code, data } = await api.get('/api/system/audio/getAudio?', { id: this.$route.params.id })
         if (code === 200) {
           this.audio = data
+          this.audioName = data.fileKey
+          console.log(!this.audio.audioName)
         }
       } else {
         this.editing = false
-        this.audio = {}
+        this.audio = { navigationId: null }
       }
     },
     // 音频上传
