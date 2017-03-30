@@ -30,7 +30,7 @@
       <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
       <el-table-column label="评论管理" width="140">
         <template scope="scope">
-          <el-button type="default" size="small">评论管理</el-button>
+          <el-button type="default" size="small"  @click.native.prevent="$router.push('/comment/video/'+scope.row.id)">评论管理</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
