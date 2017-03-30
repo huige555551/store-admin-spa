@@ -19,11 +19,15 @@
         <el-input v-model="comics.term"></el-input>
       </el-form-item>
       <el-form-item label="选择作者">
-        <el-select v-model="searchKey" filterable placeholder="请输入作者进行搜索">
-          <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+        <el-select v-model="comics.authorId" filterable placeholder="请输入作者进行搜索">
+          <el-option
+              v-for="item in optionsAuthor"
+              :label="item.name"
+              :value="item.id"
+              :key="item.id">
+            </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
         <el-button type="primary">提交</el-button>
         <el-button>取消</el-button>
       </el-form-item>

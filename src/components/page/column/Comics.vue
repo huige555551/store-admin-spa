@@ -29,8 +29,8 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column prop="publicationDate" label="日期" width="120"></el-table-column>
-      <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
-      <el-table-column prop="term" label="期数" width="80"></el-table-column>
+      <el-table-column prop="authorName" label="作者" min-width="60"></el-table-column>
+      <el-table-column prop="period" label="期数" width="80"></el-table-column>
       <el-table-column label="封面" width="80">
         <template scope="scope">
           <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
@@ -118,6 +118,7 @@ export default {
       console.log(code, data)
       if (code === 200) {
         this.tableData = data.array
+        this.total = data.total
       }
     },
     // 分页

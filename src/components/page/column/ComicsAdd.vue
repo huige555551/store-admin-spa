@@ -3,7 +3,7 @@
     <el-form ref="form" :model="comics" label-width="100px" style="width: 500px;">
       <el-form-item label="封面上传">
         <UploadSingle
-          :imgUrl="comics.coverUrl"
+          :imgUrl="comics.imgUrl"
           :imgKey="comics.coverKey"
           :size=1 dimension="520x676"
           :data="uploadParams"
@@ -26,12 +26,17 @@
       <el-form-item label="漫画标题">
         <el-input v-model="comics.title"></el-input>
       </el-form-item>
-      <el-form-item label="期数">
-        <el-input v-model="comics.period"></el-input>
+      <el-form-item label="期数" >
+        <el-input v-model="comics.period" type="number"></el-input>
       </el-form-item>
       <el-form-item label="选择作者">
         <el-select v-model="comics.authorId" filterable placeholder="请输入作者进行搜索">
-          <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+          <el-option
+              v-for="item in optionsAuthor"
+              :label="item.name"
+              :value="item.id"
+              :key="item.id">
+            </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -53,23 +58,14 @@ export default {
     return {
       editing: null,
       searchKey: {},
-      options: [
-        { id: '1', value: '1', label: '选项1' },
-        { id: '2', value: '2', label: '选项2' },
-        { id: '3', value: '3', label: '选项3' },
-        { id: '4', value: '4', label: '选项4' },
-        { id: '5', value: '5', label: '选项5' },
-        { id: '6', value: '6', label: '选项6' },
-        { id: '7', value: '7', label: '选项7' },
-        { id: '8', value: '8', label: '选项8' }
-      ],
+      optionsAuthor: [],
       comics: {
         imgKey: '',
         title: '',
         term: '',
         buyUrl: '',
         story: '',
-        period: '',
+        period: null,
         authorId: '',
         year: '2017',
         comicsList: [],
@@ -93,18 +89,37 @@ export default {
     console.log('leave')
     next()
   },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      this.fetchData()
+    /* eslint-enable */
+    }
+  },
   methods: {
     async fetchData() {
+      const getAuthor = await api.get('/api/system/author/listAuthor')
+      if (getAuthor.code === 200) {
+        this.optionsAuthor = getAuthor.data.array
+      }
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('}/api/system/comicIllustration/getComicIllustrations', { id: this.$route.params.id })
+        const { code, data } = await api.get('/api/system/comicIllustration/getComicIllustrations', { id: this.$route.params.id })
         if (code === 200) {
+          /* eslint-disable */
+          let comicsList = []
           this.comics = data
+          data.imgList.forEach(function(item, index){
+            console.log(item.imgKey, item.imgUrl)
+          /* eslint-enable */
+            comicsList.push({ name: item.imgKey, url: item.imgUrl })
+          })
+          this.comics.comicsList = comicsList
           this.editing = true
         }
       } else {
         this.editing = false
-        this.comics = { imgKey: '', title: '', type: 1, authorId: '', period: '', comicsList: [], imgList: [] }
+        this.comics = { imgKey: '', title: '', type: 1, authorId: '', period: null, comicsList: [], imgList: [] }
       }
     },
     /* eslint-disable */
@@ -136,17 +151,17 @@ export default {
       // this.comics.comicsList.splice(this.comics.comicsList.length, 0, { 'imgKey': response.key })
     },
     handleRemove() {
-      this.comics.coverUrl = null
+      this.comics.imgUrl = null
       this.comics.coverKey = null
     },
     // 文件上传成功
     handleSuccess(response, bucketPort) {
-      this.$set(this.comics, 'coverUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.comics, 'imgUrl', `${bucketPort}/${response.key}`)
       this.$set(this.comics, 'coverKey', response.key)
     },
     async save() {
       console.log(this.comics.title, this.comics.period, this.comics.authorId)
-      if (!this.comics.coverUrl || !this.comics.comicsUrl) {
+      if (!this.comics.imgUrl || !this.comics.comicsList.length) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.comics.title || !this.comics.period || !this.comics.authorId) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
@@ -158,21 +173,31 @@ export default {
       /* eslint-enable */
       comicsList.forEach((item) => {
         /* eslint-disable */
-        imgUrl.push({ 'imgKey': item.response.key })
+        if(item.response)
+          imgUrl.push({ 'imgKey': item.response.key })
+        else
+          imgUrl.push({ 'imgKey': item.name})
         /* eslint-enable */
       })
+      // post参数构造
       this.comics.imgList = imgUrl
-      this.imgKey = this.coverKey
+      console.log(this.comics.imgList)
+      // period＝> string to nubmer
+      this.$set(this.comics, 'period', Number(this.comics.period))
       // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
       // console.log(this.publicationDate)
       if (this.editing) {
+        console.log(this.comics)
         // this.$set(this.cover, 'publicationDate', this.comics.publicationDate.slice(0, 16))
-        const { code } = await api.post('/api/system/wechat/updatecomics', this.comics)
+        console.log('comics', this.comics.imgKey)
+        const { code } = await api.post('/api/system/comicIllustration/updateComicIllustrations', this.comics)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/comics/list')
         }
       } else {
+        this.comics.imgKey = this.comics.coverKey
+        console.log('comics', this.comics.imgKey)
         const { code } = await api.post('/api/system/comicIllustration/addComicIllustrations', this.comics)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

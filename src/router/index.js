@@ -70,6 +70,7 @@ export default new Router({
         { path: '/activity/add', component: resolve => require(['@/components/page/activity/ActivityAdd.vue'], resolve) },
         { path: '/activity/category', component: resolve => require(['@/components/page/activity/Category.vue'], resolve) },
         { path: '/activity/banner', component: resolve => require(['@/components/page/activity/Banner.vue'], resolve) },
+        { path: '/activity/edit/:id', component: resolve => require(['@/components/page/activity/ActivityAdd.vue'], resolve) },
         // 网站设置
         { path: '/website/ad', component: resolve => require(['@/components/page/website/Ad.vue'], resolve) },
         { path: '/website/job', component: resolve => require(['@/components/page/website/Job.vue'], resolve) },
