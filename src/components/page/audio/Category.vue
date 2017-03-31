@@ -97,7 +97,7 @@ export default {
     },
     // 删除栏目
     async deleteRow(index) {
-      this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
+      this.$confirm('此操作将会清空与该栏目的所有音乐，请谨慎操作，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -112,7 +112,7 @@ export default {
     // 保存修改
     async saveRow() {
       if (!this.rowObj.order || !this.rowObj.name) {
-        return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和顺序' })
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/audio/updateNavigation', this.rowObj)

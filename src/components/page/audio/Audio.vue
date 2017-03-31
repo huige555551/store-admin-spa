@@ -42,7 +42,7 @@
           <img :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
+      <el-table-column prop="publicationDate" label="时间" width="200"></el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small" @click.native.prevent="$router.push('/audio/edit/'+scope.row.id)">编辑</el-button>

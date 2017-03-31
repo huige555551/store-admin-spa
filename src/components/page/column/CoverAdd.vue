@@ -100,6 +100,14 @@ export default {
   async beforeRouteUpdate() {
     this.fetchData()
   },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
+  },
   methods: {
     async fetchData() {
       if (this.$route.params.id) {

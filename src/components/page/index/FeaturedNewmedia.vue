@@ -140,7 +140,7 @@ export default {
     // 保存行
     async saveRow() {
       if (!this.rowObj.articleId || !this.rowObj.order) {
-        return this.$notify.error({ title: '保存失败', message: '请确认表达填写完整' })
+        return this.$notify.error({ title: '保存失败', message: '表单信息不完整' })
       }
       if (this.editing) {
         if (this.rowObj.articleId === this.rowObj.title) {

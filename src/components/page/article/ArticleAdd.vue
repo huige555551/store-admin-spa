@@ -121,6 +121,14 @@ export default {
     Simditor,
     UploadSingle
   },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
+  },
   async created() {
     this.fetchData()
   },
@@ -199,7 +207,7 @@ export default {
     async save() {
       console.log(this.article)
       if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.authorId || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
-        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/article/updateArticle', this.article)
@@ -223,11 +231,29 @@ export default {
   }
 }
 </script>
-<style type="text/css">
+<style type="text/css"  scoped>
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
   }
+
   .fade-enter, .fade-leave-active {
     opacity: 0
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px
   }
 </style>

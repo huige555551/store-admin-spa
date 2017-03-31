@@ -133,7 +133,7 @@ export default {
     },
     // 删除行
     async deleteRow(index) {
-      this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
+      this.$confirm('此操作将会清空与该栏目有关的所有文章，请谨慎操作，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -149,7 +149,7 @@ export default {
     // 保存行
     async saveRow() {
       if (!this.rowObj.name || !this.rowObj.order || !this.rowObj.bannerUrl) {
-        return this.$notify.error({ title: '失败', message: '请确认表单均填写正确' })
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       console.log(this.rowObj)
       if (this.editing) {

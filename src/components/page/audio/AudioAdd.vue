@@ -106,9 +106,13 @@ export default {
     document.querySelectorAll('.el-upload__input')[1].setAttribute('name', 'file')
   },
   // 组件复用，路由数据刷新
-  async beforeRouteUpdate() {
-    console.log(this.editing)
-    this.fetchData()
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
   },
   methods: {
     // 获取数据
@@ -138,9 +142,11 @@ export default {
     // 音频上传
     beforeAudioUpload(file) {
       if (file.type.indexOf('mp3') === -1) {
-        return this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
+        this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
+        return false
       }
       return api.get('/api/system/upload/getToken').then(response => {
+        console.log('1234')
         this.bucketPort = response.data.bucketPort
         this.uploadParams = {
           token: response.data.token
@@ -153,7 +159,6 @@ export default {
       this.uploadEnable = false
     },
     handleAudioSuccess(response, file) {
-      // TODO response.key是什么
       this.uploading = false
       this.audioName = file.name
       this.$notify.success({ title: '成功', message: '上传成功' })
@@ -180,7 +185,7 @@ export default {
     async save() {
       console.log(this.audio)
       if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.time || !this.audio.title || !this.audio.introduction || !this.audio.fileKey) {
-        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/audio/updateAudio', this.audio)

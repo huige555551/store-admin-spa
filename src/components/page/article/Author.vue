@@ -168,7 +168,7 @@ export default {
     // 删除行
     async deleteRow(index) {
       console.log(this.tableData[index], index)
-      this.$confirm('此操作将该删除该作者，是否继续?', '提示', {
+      this.$confirm('此操作将会清空与该作者有关的所有数据，请谨慎操作，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -185,7 +185,7 @@ export default {
     async saveRow() {
       console.log(this.rowObj)
       if (!this.rowObj.name || !this.rowObj.headImgUrl) {
-        return this.$notify.error({ title: '错误', message: '请填写完整用户名并上传头像' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/author/updateAuthor', this.rowObj)

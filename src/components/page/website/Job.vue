@@ -33,6 +33,9 @@
         <el-form-item label="名字">
           <el-input v-model="rowObj.job"></el-input>
         </el-form-item>
+        <el-form-item label="顺序">
+          <el-input v-model="rowObj.order"></el-input>
+        </el-form-item>
         <el-form-item label="岗位描述">
           <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input>
         </el-form-item>
@@ -83,6 +86,7 @@ export default {
       this.editingIndex = index
       this.rowObj.id = this.tableData[index].id
       this.rowObj.job = this.tableData[index].job
+      this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
       this.formDialog = true
     },

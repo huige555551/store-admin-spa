@@ -57,9 +57,16 @@
           <el-input v-model="newAd.url"></el-input>
         </el-form-item>
         <el-form-item label="选择位置">
-          <el-select v-model="newAd.advertismentTypeId">
-            <el-option label="选项一" :value="1"></el-option>
-            <el-option label="选项二" :value="2"></el-option>
+          <el-select v-model="newAd.advertismentTypeId" filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchPosition">
+            <el-option
+              v-for="item in positionResults"
+              :key="item.advertismentTypeId"
+              :label="item.location"
+              :value="item.advertismentTypeId"
+              :disabled="item.ifUse">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
@@ -103,11 +110,14 @@ export default {
       newAd: {
         advertismentTypeId: null,
         ifUse: null,
-        location: null
+        location: null,
+        imgUrl: null,
+        imgKey: null
       },
       // 表格
       tableData: [],
-      options: []
+      options: [],
+      positionResults: []
     }
   },
   components: {
@@ -132,9 +142,11 @@ export default {
       this.newAd.id = this.tableData[index].id
       this.newAd.location = this.tableData[index].location
       this.newAd.advertisers = this.tableData[index].advertisers
+      this.newAd.size = this.tableData[index].size
       this.newAd.url = this.tableData[index].url
       this.newAd.ifUse = this.tableData[index].ifUse
       this.newAd.imgUrl = this.tableData[index].imgUrl
+      this.newAd.imgKey = this.tableData[index].imgKey
       this.formDialog = true
     },
     addRow() {
@@ -145,6 +157,12 @@ export default {
         ifUse: null
       }
       this.formDialog = true
+    },
+    async searchPosition() {
+      const { code, data } = await api.get('/api/system/advertisment/listAdvertisment')
+      if (code === 200) {
+        this.positionResults = data
+      }
     },
     // 删除广告
     async deleteRow(index) {
@@ -162,9 +180,9 @@ export default {
     },
     // 保存修改
     async saveRow() {
-      // if (!this.newAd.location || !this.newAd.advertiser || !this.newAd.imgKey) {
-      //   return this.$notify.error({ title: '失败', message: '请确认表单填写完整' })
-      // }
+      if (!this.newAd.advertismentTypeId || !this.newAd.advertisers || !this.newAd.imgUrl) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
+      }
       console.log(this.newAd)
       if (this.editing) {
         const { code } = await api.post('/api/system/advertisment/updateAdvertisment', this.newAd)
@@ -172,6 +190,7 @@ export default {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.newAd))
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.formDialog = false
+          // this.fetchData()
         }
       } else {
         const { code } = await api.post('/api/system/advertisment/addAdvertisment', this.newAd)

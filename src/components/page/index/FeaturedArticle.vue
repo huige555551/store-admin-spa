@@ -141,6 +141,9 @@ export default {
     },
     // 保存行
     async saveRow() {
+      if (!this.rowObj.targetArticleId || !this.rowObj.order) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
+      }
       if (this.editing) {
         if (this.rowObj.targetArticleId === this.rowObj.title) {
           this.rowObj.targetArticleId = this.rowObj.articleId
