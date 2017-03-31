@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="LOGO"  width="200">
         <template scope="scope">
-          <img :src="scope.row.imgUrl" width="150" max-height="150" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img :src="scope.row.logo" width="150" max-height="150" @click="openImg(scope.row.logo)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -36,7 +36,7 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="formDialog = true">添加订阅网站</el-button>&nbsp&nbsp&nbsp最多{{max}}张
+        <el-button @click="addRow">添加订阅网站</el-button>&nbsp&nbsp&nbsp最多{{max}}个
       </el-form-item>
     </el-form>
 
@@ -51,7 +51,7 @@
         </el-form-item>
         <el-form-item label="LOGO">
         <UploadSingle
-            :imgUrl="rowObj.imgUrl"
+            :imgUrl="rowObj.logo"
             :imgKey="rowObj.imgKey"
             :size=1 dimension="240x240"
             @handleRemove="handleRemove"
@@ -81,7 +81,7 @@ export default {
       editing: false,
       editingIndex: null,
       formDialog: false,
-      rowObj: { imgUrl: null },
+      rowObj: { logo: null },
       tableData: []
     }
   },
@@ -107,12 +107,12 @@ export default {
     // 添加网上订阅
     addRow() {
       if (this.tableData.length >= this.max) {
-        return this.$notify.info({ title: '提示', message: `最多创建${this.max}张轮播` })
+        return this.$notify.info({ title: '提示', message: `最多创建${this.max}个订阅网站` })
       }
       this.editing = false
       this.rowObj.id = null
       this.rowObj.name = null
-      this.rowObj.imgUrl = null
+      this.rowObj.logo = null
       this.rowObj.url = null
       this.formDialog = true
     },
@@ -121,7 +121,7 @@ export default {
       this.editing = true
       this.editingIndex = index
       this.rowObj.id = this.tableData[index].id
-      this.rowObj.imgUrl = this.tableData[index].imgUrl
+      this.rowObj.logo = this.tableData[index].logo
       this.rowObj.url = this.tableData[index].url
       this.rowObj.name = this.tableData[index].name
       this.formDialog = true
@@ -144,17 +144,17 @@ export default {
     // 删除订阅LOGO
     handleRemove() {
       this.rowObj.imgKey = null
-      this.rowObj.imgUrl = null
+      this.rowObj.logo = null
     },
     // 订阅网站图片上传成功
     handleSuccess(response, bucketPort) {
-      this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.rowObj, 'logo', `${bucketPort}/${response.key}`)
       this.$set(this.rowObj, 'imgKey', response.key)
     },
     // 保存修改
     async saveRow() {
       console.log(this.rowObj)
-      if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.imgUrl) {
+      if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.logo) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {

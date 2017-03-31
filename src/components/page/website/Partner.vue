@@ -36,7 +36,7 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="partnerDialog = true">添加合作伙伴</el-button>
+        <el-button @click="addRow">添加合作伙伴</el-button>
       </el-form-item>
     </el-form>
 
@@ -110,7 +110,7 @@ export default {
       this.rowObj.name = null
       this.rowObj.imgUrl = null
       this.rowObj.url = null
-      this.formDialog = true
+      this.partnerDialog = true
     },
     // 编辑
     editRow(index) {
