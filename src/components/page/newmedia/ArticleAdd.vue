@@ -29,12 +29,12 @@
           </UploadSingle>
         </el-form-item>
         <el-form-item label="选择栏目">
-          <el-select v-model="article.navigationName" filterable placeholder="请输入栏目进行搜索">
+          <el-select v-model="article.navigationId" filterable placeholder="请输入栏目进行搜索">
             <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorName" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
+          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -46,8 +46,8 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="文章标签">
-          <el-select v-model="article.laberl" multiple filterable allow-create placeholder="请选择/输入文章标签">
-            <el-option v-for="item in optionTag" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="article.labels" multiple filterable allow-create placeholder="请选择/输入文章标签">
+            <!--<el-option v-for="item in optionTag" :label="item.name" :value="item.id"></el-option>-->
           </el-select>
         </el-form-item>
         <el-form-item label="日期" >
@@ -78,6 +78,8 @@
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
+
+const _ = require('lodash')
 
 export default {
   data() {
@@ -123,20 +125,16 @@ export default {
     //   }
     // },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/article/listNavigation')
+      const getNavigation = await api.get('/api/system/wechat/listNavigation')
       if (getNavigation.code === 200) {
         this.optionColumn = getNavigation.data
       }
-      this.optionTag = [{ name: '事件', id: 1 },
-        { name: '科技', id: 2 }]
-      // const getTag = await api.get('/api/system/author/listAuthor')
-      // if (getTag.code === 200) {
-      //   this.optionTag = getTag.data.array
-      // }
+      this.optionTag = []
       const getAuthor = await api.get('/api/system/author/listAuthor')
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
       }
+      // editing
       if (this.$route.params.id) {
         this.editing = true
         const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
@@ -144,12 +142,12 @@ export default {
           this.article = data
         }
       } else {
+      // new
         this.editing = false
-        this.article = { navigationName: null, authorName: null, publicationDate: null, laberl: [], content: '<p>a</p>' }
+        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '<p>a</p>' }
       }
     },
     handleDatePick(val) {
-      console.log('val', val)
       this.article.publicationDate = val
     },
     handleRemove(name) {
@@ -167,9 +165,12 @@ export default {
     async save() {
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationName || !this.article.authorName || !this.article.title || !this.article.laberl || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
+      // 对上post的key
+      this.article.labelList = _.clone(this.article.labels)
+      console.log('this.article.labelList', this.article.labelList)
       // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
       // console.log(this.publicationDate)
       if (this.editing) {
@@ -178,11 +179,11 @@ export default {
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/newmedia/list')
+        } else {
+          return this.$notify.error({ title: '失败', message: code + '保存失败' })
         }
       } else {
-        this.article.navigationId = this.article.navigationName
-        this.article.authorId = this.article.authorName
-        this.article.labelList = this.article.laberl
+        this.article.authorId = this.article.authorId
         const { code } = await api.post('/api/system/wechat/addArticle', this.article)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

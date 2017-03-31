@@ -59,7 +59,7 @@
         </UploadSingle>
       </el-form-item>
       <el-form-item label="杂志目录">
-        <el-input type="textarea" :rows="4" v-model="cover.story"></el-input>
+        <el-input type="textarea" :rows="4" v-model="cover.directory"></el-input>
         <el-button style="margin-top: 10px;">编辑</el-button>
       </el-form-item>
       <el-form-item label="目录图片">
@@ -115,7 +115,7 @@ export default {
     },
     handleDatePick(val) {
       console.log(val)
-      // this.cover.publicationDate = val
+      this.cover.publicationDate = val
     },
     handleRemove(name) {
       if (name === 'cover') {
@@ -147,6 +147,9 @@ export default {
       } else if (!this.cover.publicationDate || !this.cover.title || !this.cover.period || !this.cover.buyUrl || !this.cover.story || !this.cover.directory) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
+      let publicationDate = this.cover.publicationDate
+      publicationDate = publicationDate.substring(0, 10)
+      this.$set(this.cover, 'publicationDate', publicationDate)
       if (this.editing) {
         const { code } = await api.post('/api/system/cover/updateCover', this.cover)
         if (code === 200) {

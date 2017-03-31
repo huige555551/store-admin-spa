@@ -29,8 +29,8 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column prop="publicationDate" label="日期" width="120"></el-table-column>
-      <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
-      <el-table-column prop="term" label="期数" width="80"></el-table-column>
+      <el-table-column prop="authorName" label="作者" min-width="60"></el-table-column>
+      <el-table-column prop="period" label="期数" width="80"></el-table-column>
       <el-table-column label="封面" width="80">
         <template scope="scope">
           <img :src="scope.row.imgUrl" height="80" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
@@ -118,6 +118,7 @@ export default {
       console.log(code, data)
       if (code === 200) {
         this.tableData = data.array
+        this.total = data.total
       }
     },
     // 分页
@@ -132,13 +133,13 @@ export default {
       this.fetchData()
     },
     // 删除行
-    async deleteRow(index) {
+    deleteRow(index) {
       this.$confirm('此操作将该删除该封面，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
-      }).then(() => {
-        const { code } = api.post('/api/system/comicIllustration/deleteComicIllustrations', { id: this.tableData[index].id })
+      }).then(async () => {
+        const { code } = await api.post('/api/system/comicIllustration/deleteComicIllustrations', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.fetchData()
