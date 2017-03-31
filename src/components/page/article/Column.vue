@@ -18,8 +18,8 @@
       <el-table-column prop="order" label="顺序" width="80"></el-table-column>
       <el-table-column label="状态" width="80">
         <template scope="scope">
-          <el-tag v-if="scope.row.isUse" type="success">上线</el-tag>
-          <el-tag v-if="!scope.row.isUse" type="gray">下线</el-tag>
+          <el-tag v-if="scope.row.ifUse" type="success">上线</el-tag>
+          <el-tag v-if="!scope.row.ifUse" type="gray">下线</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="海报" width="200">
@@ -51,7 +51,7 @@
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="是否显示">
-          <el-radio-group v-model="rowObj.isUse">
+          <el-radio-group v-model="rowObj.ifUse">
             <el-radio :label="true">上线</el-radio>
             <el-radio :label="false">下线</el-radio>
           </el-radio-group>
@@ -89,7 +89,7 @@ export default {
       editing: false,
       editingIndex: null,
       rowObj: {
-        isUse: null,
+        ifUse: null,
         bannerUrl: null
       },
       // 表格
@@ -117,7 +117,7 @@ export default {
     // 添加行
     addRow() {
       this.editing = false
-      this.rowObj = { isUse: null }
+      this.rowObj = { ifUse: null }
       this.formDialog = true
     },
     // 编辑行
@@ -127,7 +127,7 @@ export default {
       this.rowObj.id = this.tableData[index].id
       this.rowObj.name = this.tableData[index].name
       this.rowObj.order = this.tableData[index].order
-      this.rowObj.isUse = this.tableData[index].isUse
+      this.rowObj.ifUse = this.tableData[index].ifUse
       this.rowObj.bannerUrl = this.tableData[index].bannerUrl
       this.formDialog = true
     },
@@ -157,7 +157,7 @@ export default {
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.$notify.success({ title: '成功', message: '修改成功' })
-          this.rowObj = { isUse: null }
+          this.rowObj = { ifUse: null }
           this.formDialog = false
         }
       } else {
@@ -165,7 +165,7 @@ export default {
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.fetchData()
-          this.rowObj = { isUse: null }
+          this.rowObj = { ifUse: null }
           this.formDialog = false
         }
       }

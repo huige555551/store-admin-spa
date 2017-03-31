@@ -44,7 +44,7 @@
         <el-form-item label="选择视频">
           <el-select v-model="rowObj.targetVideoId"
             filterable remote
-            placeholder="请输入文章标题搜索"
+            placeholder="请输入视频标题搜索"
             :remote-method="searchVideo">
             <el-option
               v-for="item in results"
@@ -56,12 +56,6 @@
         </el-form-item>
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
-        </el-form-item>
-        <el-form-item label="时长(秒)">
-          <el-input v-model="rowObj.time"></el-input>
-        </el-form-item>
-        <el-form-item label="视频链接">
-          <el-input v-model="rowObj.url"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,6 +98,7 @@ export default {
       const { code, data } = await api.get('/api/system/video/searchVideoByTitle', { title: val })
       if (code === 200) {
         this.results = data
+        this.length = 10
       }
     },
     // 添加精选
@@ -114,7 +109,6 @@ export default {
       this.editing = false
       this.rowObj = {
         title: null,
-        url: null,
         targetVideoId: null,
         order: null
       }
@@ -148,7 +142,13 @@ export default {
     },
     // 保存行
     async saveRow() {
+      if (!this.rowObj.targetVideoId || !this.rowObj.order) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
+      }
       if (this.editing) {
+        if (this.rowObj.targetVideoId === this.rowObj.title) {
+          this.rowObj.targetVideoId = this.rowObj.videoId
+        }
         const { code } = await api.post('/api/system/video/updateExquisiteVideo', this.rowObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '修改成功' })

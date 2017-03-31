@@ -28,10 +28,16 @@
           </UploadSingle>
         </el-form-item>
         <el-form-item label="选择分类">
-          <el-select v-model="audio.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option value="1" label="1"></el-option>
-            <el-option value="2" label="2"></el-option>
-          </el-select>
+          <el-select v-model="audio.navigationId" filterable remote
+            placeholder="请输入栏目进行搜索"
+            :remote-method="searchColumn">
+            <el-option
+              v-for="item in columnResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="音频标题">
           <el-input v-model="audio.title"></el-input>
@@ -40,17 +46,19 @@
           <el-input v-model="audio.time"></el-input>
         </el-form-item>
         <el-form-item label="音频链接">
+          <div v-show="uploading" style="font-size: 14px;color: #48576a;">上传中,请稍候……</div>
           <div v-show="audioName">
             <p>{{ audioName }}</p>
             <el-button @click="changeAudio">替换</el-button>
           </div>
           <el-upload
-            v-show="!audioName"
+            v-show="uploadEnable"
             action="//up-z2.qiniu.com"
             name = "file"
             accept="audio/*"
             :show-file-list="false"
             :multiple="false"
+            :on-progress="handleAudioUploading"
             :on-success="handleAudioSuccess"
             :on-error="handleAudioError"
             :before-upload="beforeAudioUpload"
@@ -78,6 +86,9 @@ import UploadSingle from '@/components/util/UploadSingle'
 export default {
   data() {
     return {
+      uploadEnable: true,
+      uploading: false,
+      columnResults: [],
       editing: false,
       audio: { navigationId: '', audioName: null },
       uploadParams: {},
@@ -115,21 +126,36 @@ export default {
         this.audio = { navigationId: null }
       }
     },
+    async searchColumn(val) {
+      const { code, data } = await api.get('/api/system/audio/listNavigation', { name: val })
+      if (code === 200) {
+        this.columnResults = data
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
+      }
+    },
     // 音频上传
     beforeAudioUpload(file) {
       if (file.type.indexOf('mp3') === -1) {
         return this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
       }
       return api.get('/api/system/upload/getToken').then(response => {
-        this.audioName = file.name
         this.bucketPort = response.data.bucketPort
         this.uploadParams = {
           token: response.data.token
         }
       })
     },
-    handleAudioSuccess(response) {
+    handleAudioUploading() {
+      this.audioName = null
+      this.uploading = true
+      this.uploadEnable = false
+    },
+    handleAudioSuccess(response, file) {
       // TODO response.key是什么
+      this.uploading = false
+      this.audioName = file.name
       this.$notify.success({ title: '成功', message: '上传成功' })
       this.$set(this.audio, 'fileKey', response.key)
     },
@@ -138,7 +164,8 @@ export default {
     },
     // 更换音频
     changeAudio() {
-      this.audioName = ''
+      this.audioName = null
+      this.uploadEnable = true
     },
     // 删除封面图片
     handleRemove() {
