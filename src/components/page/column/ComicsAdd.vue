@@ -162,7 +162,7 @@ export default {
     async save() {
       console.log(this.comics.title, this.comics.period, this.comics.authorId)
       if (!this.comics.imgUrl || !this.comics.comicsList.length) {
-        // return this.$notify.error({ title: '错误', message: '图片不能为空' })
+        return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.comics.title || !this.comics.period || !this.comics.authorId) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
@@ -180,7 +180,7 @@ export default {
         /* eslint-enable */
       })
       // post参数构造
-      this.comics.imgList = _.clone(imgUrl)
+      this.comics.imgList = JSON.stringify(_.clone(imgUrl))
       console.log(this.comics.imgList instanceof Array, imgUrl, this.comics.imgList)
       // period＝> string to nubmer
       this.$set(this.comics, 'period', Number(this.comics.period))

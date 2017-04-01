@@ -169,8 +169,9 @@ export default {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // 对上post的key
-      this.article.labelList = _.clone(this.article.labels)
-      console.log('this.article.labelList', this.article.labelList)
+      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
+      // this.article.labelList = ['12', '12'])
+      // console.log('this.article.labelList', this.article.labelList)
       // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
       // console.log(this.publicationDate)
       if (this.editing) {

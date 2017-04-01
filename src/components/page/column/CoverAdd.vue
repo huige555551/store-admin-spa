@@ -97,8 +97,13 @@ export default {
     this.fetchData()
   },
   // 组件复用，路由数据刷新
-  async beforeRouteUpdate() {
-    this.fetchData()
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      this.fetchData()
+    }
+    /* eslint-ensable */
+    
   },
   methods: {
     async fetchData() {
