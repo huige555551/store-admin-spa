@@ -1,15 +1,30 @@
 <template>
   <div>
+   <!-- 面包屑 -->
+    <el-form :inline="true">
+      <el-form-item label="网站：">
+        <span>视频管理</span>
+      </el-form-item>
+      <el-form-item label="菜单：">
+        <span>视频列表</span>
+      </el-form-item>
+    </el-form>
     <!-- 搜索 -->
     <el-form :inline="true" :model="searchKey">
       <el-form-item label="标题">
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
-        <el-select v-model="searchInput.catergoryId" filterable placeholder="请输入栏目进行搜索">
-          <el-option :label="1" :value="1" ></el-option>
-          <el-option :label="2" :value="2" ></el-option>
-        </el-select>
+        <el-select v-model="searchInput.catergoryId" filterable remote
+            placeholder="请输入栏目进行搜索"
+            :remote-method="searchColumn">
+            <el-option
+              v-for="item in columnResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click.native.prevent="search">搜索</el-button>
@@ -63,6 +78,7 @@ export default {
   data() {
     return {
       // 搜索
+      columnResults: [],
       searchInput: {
         id: 1,
         title: null,
@@ -90,16 +106,26 @@ export default {
     },
     search() {
       this.searchKey.title = this.searchInput.title
-      this.searchKey.categoryId = this.searchInput.catergoryId
+      this.searchKey.catergoryId = this.searchInput.catergoryId
       this.fetchData()
     },
     emptySearch() {
       this.searchInput.title = null
-      this.searchInput.categoryId = null
+      this.searchInput.catergoryId = null
       this.searchKey.title = null
-      this.searchKey.categoryId = null
+      this.searchKey.catergoryId = null
       this.currentPage = 1
       this.tableData = []
+      this.fetchData()
+    },
+    async searchColumn(val) {
+      const { code, data } = await api.get('/api/system/video/listNavigation', { name: val })
+      if (code === 200) {
+        this.columnResults = data
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
+      }
     },
     // 获取数据
     async fetchData() {
@@ -108,7 +134,7 @@ export default {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
-        navigationId: this.searchKey.catergory
+        navigationId: this.searchKey.catergoryId
       })
       if (code === 200) {
         this.tableData = data.array

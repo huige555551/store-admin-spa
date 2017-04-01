@@ -21,20 +21,20 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="addRow">添加分类</el-button>
+        <el-button @click="addRow">添加岗位</el-button>
       </el-form-item>
     </el-form>
-
-
     <!-- 添加栏目表单 -->
     <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
           <el-input v-model="rowObj.job"></el-input>
+        </el-form-item>
+        <el-form-item label="顺序">
+          <el-input v-model="rowObj.order"></el-input>
         </el-form-item>
         <el-form-item label="岗位描述">
           <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input>
@@ -86,6 +86,7 @@ export default {
       this.editingIndex = index
       this.rowObj.id = this.tableData[index].id
       this.rowObj.job = this.tableData[index].job
+      this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
       this.formDialog = true
     },

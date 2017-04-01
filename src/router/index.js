@@ -76,6 +76,7 @@ export default new Router({
         { path: '/website/job', component: resolve => require(['@/components/page/website/Job.vue'], resolve) },
         { path: '/website/partner', component: resolve => require(['@/components/page/website/Partner.vue'], resolve) },
         { path: '/website/reset', component: resolve => require(['@/components/page/website/Reset.vue'], resolve) },
+        { path: '/website/subscription', component: resolve => require(['@/components/page/website/subscription.vue'], resolve) },
       ]
     },
     { path: '*', redirect: '/welcome' }

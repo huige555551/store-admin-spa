@@ -15,9 +15,15 @@
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
-        <el-select v-model="searchInput.catergoryId" filterable placeholder="请输入栏目进行搜索">
-          <el-option value="1" label="选项1"></el-option>
-          <el-option value="2" label="选项2"></el-option>
+        <el-select v-model="searchInput.navigationId" filterable remote
+            placeholder="请输入栏目进行搜索"
+            :remote-method="searchColumn">
+            <el-option
+              v-for="item in columnResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -36,7 +42,7 @@
           <img :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
+      <el-table-column prop="publicationDate" label="时间" width="200"></el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small" @click.native.prevent="$router.push('/audio/edit/'+scope.row.id)">编辑</el-button>
@@ -67,15 +73,16 @@ export default {
   data() {
     return {
       // 搜索
+      columnResults: [],
       searchInput: {
         id: 1,
         title: null,
-        catergoryId: null
+        navigationId: null
       },
       searchKey: {
         id: null,
         title: null,
-        catergoryId: null
+        navigationId: null
       },
       // 分页
       currentPage: 1,
@@ -94,16 +101,26 @@ export default {
     },
     search() {
       this.searchKey.title = this.searchInput.title
-      this.searchKey.categoryId = this.searchInput.catergoryId
+      this.searchKey.navigationId = this.searchInput.navigationId
       this.fetchData()
     },
     emptySearch() {
       this.searchInput.title = null
-      this.searchInput.categoryId = null
+      this.searchInput.navigationId = null
       this.searchKey.title = null
-      this.searchKey.categoryId = null
+      this.searchKey.navigationId = null
       this.currentPage = 1
       this.tableData = []
+      this.fetchData()
+    },
+    async searchColumn(val) {
+      const { code, data } = await api.get('/api/system/audio/listNavigation', { name: val })
+      if (code === 200) {
+        this.columnResults = data
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
+      }
     },
     // 获取数据
     async fetchData() {
@@ -112,7 +129,7 @@ export default {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
-        navigationId: this.searchKey.catergory
+        navigationId: this.searchKey.navigationId
       })
       if (code === 200) {
         this.tableData = data.array

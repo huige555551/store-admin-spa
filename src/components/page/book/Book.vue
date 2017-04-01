@@ -132,6 +132,7 @@ export default {
       this.searchKey.title = null
       this.currentPage = 1
       this.tableData = []
+      this.fetchData()
     },
     // 查看图书详情
     checkBook(index) {

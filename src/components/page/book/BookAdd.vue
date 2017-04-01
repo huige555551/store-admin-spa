@@ -158,7 +158,7 @@ export default {
     async save() {
       console.log(this.book)
       if (!this.book.coverUrl || !this.book.introductionImgUrl || !this.book.directoryImgUrl || !this.book.name || !this.book.author || !this.book.publisher || !this.book.publicationDate || !this.book.introduction || !this.book.buyUrl || !this.book.douban) {
-        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/book/updateBook', this.book)

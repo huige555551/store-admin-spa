@@ -97,7 +97,7 @@ export default {
     },
     // 删除栏目
     async deleteRow(index) {
-      this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
+      this.$confirm('此操作将会清空与该栏目的所有视频，请谨慎操作，是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'

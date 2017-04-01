@@ -25,7 +25,7 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="名字" min-width="100"></el-table-column>
-      <el-table-column label="头像" width="80">
+      <el-table-column label="头像" width="120">
         <template scope="scope">
           <img :src="scope.row.headImgUrl" width="80" height="80" @click="openImg(scope.row.headImgUrl)" style="cursor: pointer">
         </template>
@@ -124,6 +124,7 @@ export default {
       this.searchKey.name = null
       this.currentPage = 1
       this.tableData = []
+      this.fetchData()
     },
     // 获取数据
     async fetchData() {
@@ -131,6 +132,7 @@ export default {
       const { code, data } = await api.get('/api/system/author/listAuthor', { currentPage: this.currentPage, perPage: this.perPage, authorName: this.searchKey.name })
       if (code === 200) {
         this.tableData = data.array
+        this.total = data.total
       }
     },
     // 分页
@@ -166,7 +168,7 @@ export default {
     // 删除行
     async deleteRow(index) {
       console.log(this.tableData[index], index)
-      this.$confirm('此操作将该删除该作者，是否继续?', '提示', {
+      this.$confirm('此操作将会清空与该作者有关的所有数据，请谨慎操作，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -183,7 +185,7 @@ export default {
     async saveRow() {
       console.log(this.rowObj)
       if (!this.rowObj.name || !this.rowObj.headImgUrl) {
-        return this.$notify.error({ title: '错误', message: '请填写完整用户名并上传头像' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/author/updateAuthor', this.rowObj)

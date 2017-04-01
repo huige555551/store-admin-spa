@@ -37,7 +37,7 @@
       <el-form label-width="100px">
         <el-form-item label="选择文章" >
           <el-select v-model="rowObj.targetArticleId"
-            filterable remote
+            filterable 
             placeholder="请输入文章标题搜索"
             :remote-method="searchArticle">
             <el-option
@@ -94,6 +94,7 @@ export default {
       const { code, data } = await api.get('/api/system/article/searchArticle', { title: val })
       if (code === 200) {
         this.results = data
+        this.results.length = 10
       }
     },
     // 添加精选
@@ -140,7 +141,9 @@ export default {
     },
     // 保存行
     async saveRow() {
-      console.log(this.rowObj)
+      if (!this.rowObj.targetArticleId || !this.rowObj.order) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
+      }
       if (this.editing) {
         if (this.rowObj.targetArticleId === this.rowObj.title) {
           this.rowObj.targetArticleId = this.rowObj.articleId

@@ -15,7 +15,7 @@
         <span>{{video.title}}</span>
       </el-form-item>
     </el-form>
-    <!-- 创建文章 -->
+    <!-- 添加表单 -->
     <div class="form-box">
       <el-form ref="form" abel-position="left" label-width="100px" style="width: 500px;">
         <el-form-item label="封面上传">
@@ -28,8 +28,15 @@
           </UploadSingle>
         </el-form-item>
         <el-form-item label="选择分类">
-          <el-select v-model="video.navigationId" filterable placeholder="请输入分类进行搜索">
-            <el-option :label="123" :value="2"></el-option>
+          <el-select v-model="video.navigationId" filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchColumn">
+            <el-option
+              v-for="item in columnResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="视频标题">
@@ -60,6 +67,7 @@ import UploadSingle from '@/components/util/UploadSingle'
 export default {
   data() {
     return {
+      columnResults: [],
       editing: false,
       video: { navigationId: '' },
       uploadParams: {}
@@ -75,6 +83,14 @@ export default {
   async beforeRouteUpdate() {
     this.fetchData()
   },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
+  },
   methods: {
     // 获取数据
     async fetchData() {
@@ -87,6 +103,15 @@ export default {
       } else {
         this.editing = false
         this.video = { navigationId: null }
+      }
+    },
+    async searchColumn(val) {
+      const { code, data } = await api.get('/api/system/video/listNavigation', { name: val })
+      if (code === 200) {
+        this.columnResults = data
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
       }
     },
     // 删除封面图片

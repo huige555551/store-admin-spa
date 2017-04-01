@@ -7,7 +7,7 @@
         <span>网站设置</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>合作伙伴</span>
+        <span>网上订阅</span>
       </el-form-item>
     </el-form>
 
@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="LOGO"  width="200">
         <template scope="scope">
-          <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img :src="scope.row.logo" width="150" max-height="150" @click="openImg(scope.row.logo)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -36,12 +36,12 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="addRow">添加合作伙伴</el-button>
+        <el-button @click="addRow">添加订阅网站</el-button>&nbsp&nbsp&nbsp最多{{max}}个
       </el-form-item>
     </el-form>
 
-    <!-- 添加合作伙伴 -->
-    <el-dialog title="添加合作伙伴" v-model="partnerDialog">
+    <!-- 添加订阅 -->
+    <el-dialog title="添加合作伙伴" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
           <el-input v-model="rowObj.name"></el-input>
@@ -51,7 +51,7 @@
         </el-form-item>
         <el-form-item label="LOGO">
         <UploadSingle
-            :imgUrl="rowObj.imgUrl"
+            :imgUrl="rowObj.logo"
             :imgKey="rowObj.imgKey"
             :size=1 dimension="240x240"
             @handleRemove="handleRemove"
@@ -61,7 +61,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native.prevent="partnerDialog=false">取 消</el-button>
+        <el-button @click.native.prevent="formDialog=false">取 消</el-button>
         <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
       </div>
     </el-dialog>
@@ -77,10 +77,11 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      max: 4,
       editing: false,
       editingIndex: null,
-      partnerDialog: false,
-      rowObj: { imgUrl: null },
+      formDialog: false,
+      rowObj: { logo: null },
       tableData: []
     }
   },
@@ -97,30 +98,33 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/partner/listPartner')
+      const { code, data } = await api.get('/api/syatem/orderOnline/listOrderOnline')
       if (code === 200) {
         this.tableData = data
         this.total = data.total
       }
     },
-    // 添加合作伙伴
+    // 添加网上订阅
     addRow() {
+      if (this.tableData.length >= this.max) {
+        return this.$notify.info({ title: '提示', message: `最多创建${this.max}个订阅网站` })
+      }
       this.editing = false
       this.rowObj.id = null
       this.rowObj.name = null
-      this.rowObj.imgUrl = null
+      this.rowObj.logo = null
       this.rowObj.url = null
-      this.partnerDialog = true
+      this.formDialog = true
     },
     // 编辑
     editRow(index) {
       this.editing = true
       this.editingIndex = index
       this.rowObj.id = this.tableData[index].id
-      this.rowObj.imgUrl = this.tableData[index].imgUrl
+      this.rowObj.logo = this.tableData[index].logo
       this.rowObj.url = this.tableData[index].url
       this.rowObj.name = this.tableData[index].name
-      this.partnerDialog = true
+      this.formDialog = true
     },
     // 删除行
     async deleteRow(index) {
@@ -129,7 +133,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/partner/deletePartner', { id: this.tableData[index].id })
+        const { code } = await api.post('/api/syatem/orderOnline/delete', { id: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
@@ -137,34 +141,34 @@ export default {
         }
       }).catch(() => {})
     },
-    // 删除合作伙伴图片
+    // 删除订阅LOGO
     handleRemove() {
       this.rowObj.imgKey = null
-      this.rowObj.imgUrl = null
+      this.rowObj.logo = null
     },
-    // 合作伙伴图片上传成功
+    // 订阅网站图片上传成功
     handleSuccess(response, bucketPort) {
-      this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.rowObj, 'logo', `${bucketPort}/${response.key}`)
       this.$set(this.rowObj, 'imgKey', response.key)
     },
     // 保存修改
     async saveRow() {
       console.log(this.rowObj)
-      if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.imgUrl) {
-        return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和链接,并上传相应logo图' })
+      if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.logo) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {
-        const { code } = await api.post('/api/system/partner/updatePartner', this.rowObj)
+        const { code } = await api.post('/api/syatem/orderOnline/update', this.rowObj)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.$notify.success({ title: '成功', message: '修改成功' })
-          this.partnerDialog = false
+          this.formDialog = false
         }
       } else {
-        const { code } = await api.post('/api/system/partner/addPartner', this.rowObj)
+        const { code } = await api.post('/api/syatem/orderOnline/add', this.rowObj)
         if (code === 200) {
           this.fetchData()
-          this.partnerDialog = false
+          this.formDialog = false
           this.$notify.success({ title: '成功', message: '添加成功' })
         }
       }

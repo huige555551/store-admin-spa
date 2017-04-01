@@ -25,15 +25,27 @@
           <div slot="tip" class="el-upload__tip">建议尺寸790x400，只能上传jpg/png文件，且不超过1MB</div>
         </el-form-item>
         <el-form-item label="选择栏目">
-          <el-select v-model="article.navigationId" filterable placeholder="请输入栏目进行搜索">
-            <el-option label="选项一" value="1">选项一</el-option>
-            <el-option label="选项二" value="2">选项二</el-option>
+          <el-select v-model="article.navigationId" filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchColumn">
+            <el-option
+              v-for="item in columnResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索">
-            <el-option label="选项一" value="1">选项一</el-option>
-            <el-option label="选项二" value="2">选项二</el-option>
+          <el-select v-model="article.authorId" filterable remote
+            placeholder="请输入文章标题搜索"
+            :remote-method="searchAuthor">
+            <el-option
+              v-for="item in authorResults"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="文章标题">
@@ -41,13 +53,16 @@
         </el-form-item>
         <el-form-item label="文章标签">
           <el-select v-model="article.tags" multiple filterable allow-create placeholder="请输入文章标签">
-            <el-option label="选项一" value="ofo">选项一</el-option>
-            <el-option label="选项二" value="uc">选项二</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="期数">
-          <el-input v-model="article.period"></el-input>
+          <el-input v-model="article.period" @change="ValidateNumber"></el-input>
         </el-form-item>
+        <transition name="fade">
+          <el-form-item v-show="!isNum" style="margin-bottom: 0;margin-top: -24px;">
+            <span style="color:red;font-size-12px;font-weight:300;">请输入大于零的整数</span>
+          </el-form-item>
+        </transition>
         <el-form-item label="发表时间">
           <el-date-picker
             v-model="article.publicationDate"
@@ -62,7 +77,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor  :content="content" :options="options2" v-model="article.content"></simditor>
+          <simditor  :content="article.content" :options="options2" v-model="article.content"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -83,11 +98,14 @@ export default {
     return {
       editing: false,
       searchKey: {},
+      isNum: true,
+      columnResults: [],
+      authorResults: [],
       article: {
         tags: [],
-        publicationDate: '',
-        navigationId: '',
-        authorId: '',
+        publicationDate: null,
+        navigationId: null,
+        authorId: null,
         content: '123'
       },
       options2: {
@@ -102,6 +120,14 @@ export default {
   components: {
     Simditor,
     UploadSingle
+  },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
   },
   async created() {
     this.fetchData()
@@ -147,10 +173,41 @@ export default {
     handleDatePick(val) {
       this.article.publicationDate = val
     },
+    ValidateNumber(val) {
+      if (val !== '') {
+        if (/^[1-9]\d*$/.test(val) === false) {
+          console.log('不是数字')
+          this.isNum = false
+        } else {
+          this.isNum = true
+        }
+      } else {
+        this.isNum = true
+      }
+    },
+    async searchColumn(val) {
+      const { code, data } = await api.get('/api/system/article/listNavigation', { name: val })
+      if (code === 200) {
+        this.columnResults = data
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
+      }
+    },
+    async searchAuthor(val) {
+      const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: val })
+      if (code === 200) {
+        console.log(data)
+        this.authorResults = data.array
+        if (this.columnResults.length > 10) {
+          this.columnResults.length = 10
+        }
+      }
+    },
     async save() {
       console.log(this.article)
       if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.authorId || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
-        return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/article/updateArticle', this.article)
@@ -174,3 +231,29 @@ export default {
   }
 }
 </script>
+<style type="text/css"  scoped>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  h3 {
+    font-size: 18px
+  }
+</style>
