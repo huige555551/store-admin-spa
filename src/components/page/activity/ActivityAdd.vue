@@ -8,30 +8,40 @@
         <div class="form-box">
           <el-form ref="form" :model="activity" label-width="100px" style="width: 500px;">
             <el-form-item label="封面上传">
-              <el-upload action="" :file-list="activity.cover">
-                <el-button size="small" type="primary">点击上传</el-button>
+                <UploadSingle
+                  :imgUrl="activity.imgUrl"
+                  :imgKey="activity.imgKey"
+                  :size=1 dimension="240x240"
+                  @handleRemove="handleRemove"
+                  @handleSuccess="handleSuccess">
+                </UploadSingle>
                 <div slot="tip" class="el-upload__tip">建议尺寸 1440x320，只能上传jpg/png文件，且不超过1MB</div>
-              </el-upload>
             </el-form-item>
             <el-form-item label="活动标题">
               <el-input v-model="activity.title"></el-input>
             </el-form-item>
             <el-form-item label="微博话题">
-              <el-input v-model="activity.title"></el-input>
+              <el-input v-model="activity.weibo"></el-input>
             </el-form-item>
             <el-form-item label="选择分类">
-              <el-select v-model="searchKey" filterable placeholder="请输入栏目进行搜索">
-                <el-option v-for="item in options" :label="item.label" :value="item.value" :key="item.id"></el-option>
+              <el-select v-model="activity.navigationId" filterable remote
+                placeholder="请输入栏目进行搜索">
+                  <el-option
+                  v-for="item in columnResults"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="视频连接(可选)">
-              <el-input v-model="activity.term"></el-input>
+              <el-input v-model="activity.video"></el-input>
             </el-form-item>
             <el-form-item label="活动简介">
-              <el-input type="textarea" :rows="4" v-model="activity.description"></el-input>
+              <el-input type="textarea" :rows="4" v-model="activity.introduction"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary">提交</el-button>
+              <el-button type="primary" @click="save">提交</el-button>
               <el-button>取消</el-button>
             </el-form-item>
           </el-form>
@@ -147,6 +157,9 @@
 </template>
 
 <script>
+import api from '@/api'
+import UploadSingle from '@/components/util/UploadSingle'
+
 export default {
   data() {
     return {
@@ -159,8 +172,9 @@ export default {
       partnerDialog: false,
       searchKey: '',
       activity: {
-        voteOn: true,
-        tags: []
+        imgUrl: null,
+        imgKey: null,
+        navigationId: null
       },
       options: [
         { id: '1', value: '选项1', label: '选项1' },
@@ -176,13 +190,54 @@ export default {
         { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
         { name: '合作伙伴5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
         { name: '合作伙伴6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
-      ]
+      ],
+      columnResults: []
     }
+  },
+  async created() {
+    // 拿回所有栏目
+    const { code, data } = await api.get('/api/system/activity/listNavigation')
+    if (code === 200) {
+      this.columnResults = data
+    }
+  },
+  components: {
+    UploadSingle
   },
   methods: {
     addOption() {
       console.log(1111)
       this.question.options.push('')
+    },
+    // 添加活动
+    // 删除活动封面图片
+    handleRemove() {
+      this.activity.imgKey = null
+      this.activity.imgUrl = null
+    },
+    // 活动封面图片上传成功
+    handleSuccess(response, bucketPort) {
+      this.$set(this.activity, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.activity, 'imgKey', response.key)
+    },
+    async save() {
+      console.log(this.activity)
+      if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.weibo || !this.activity.introduction) {
+        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+      }
+      if (this.editing) {
+        const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/activity/list')
+        }
+      } else {
+        const { code } = await api.post('/api/system/activity/addActivity', this.activity)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/activity/list')
+        }
+      }
     }
   },
   beforeRouteLeave(to, from, next) {

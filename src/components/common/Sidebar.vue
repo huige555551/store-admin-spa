@@ -94,7 +94,7 @@
         <el-menu-item index="/website/ad">广告设置✅-Lee</el-menu-item>
         <el-menu-item index="/website/job">岗位列表✅-Lee</el-menu-item>
         <el-menu-item index="/website/partner">合作伙伴✅-Lee</el-menu-item>
-        <el-menu-item index="/website/subscription">网上订阅-Lee</el-menu-item>
+        <el-menu-item index="/website/subscription">网上订阅✅-Lee</el-menu-item>
         <el-menu-item index="/website/reset">修改密码-Lee</el-menu-item>
       </el-submenu>
     </el-menu>

@@ -92,7 +92,7 @@ export default {
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: true,
-        // toolbar: ['title', 'image'],
+        toolbar: ['title', 'image'],
         cleanPaste: true
       },
       optionColumn: [],
