@@ -111,7 +111,7 @@ export default {
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: true,
-        // toolbar: ['title', 'image'],
+        toolBar: ['title', 'italic', 'underline'],
         cleanPaste: true
       }
     }
@@ -235,7 +235,7 @@ export default {
   }
 }
 </script>
-<style type="text/css"  scoped>
+<style type="text/css">
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
   }
@@ -244,20 +244,21 @@ export default {
     opacity: 0
   }
 
-  img {
-    width: 100%;
+  .simditor-body img {
+    display: block;
+    width: 100%!important;
     height: auto;
   }
 
-  h1 {
+  .simditor-body h1 {
     font-size: 22px;
   }
 
-  h2 {
+  .simditor-body h2 {
     font-size: 20px;
   }
 
-  h3 {
+  .simditor-body h3 {
     font-size: 18px
   }
 </style>

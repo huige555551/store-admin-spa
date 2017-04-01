@@ -166,6 +166,7 @@ export default {
     },
     // 保存行
     async saveRow() {
+      console.log(this.rowObj)
       if (!this.rowObj.imgUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
