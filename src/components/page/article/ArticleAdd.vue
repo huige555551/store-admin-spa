@@ -26,8 +26,7 @@
         </el-form-item>
         <el-form-item label="选择栏目">
           <el-select v-model="article.navigationId" filterable remote
-            placeholder="请输入文章标题搜索"
-            :remote-method="searchColumn">
+            placeholder="请输入文章标题搜索">
             <el-option
               v-for="item in columnResults"
               :key="item.id"
@@ -151,6 +150,11 @@ export default {
           content: '123'
         }
       }
+      // 拿回所有栏目
+      const { code, data } = await api.get('/api/system/article/listNavigation')
+      if (code === 200) {
+        this.columnResults = data
+      }
     },
     handlearticleSuccess(response) {
       // TODO response.key是什么
@@ -185,15 +189,15 @@ export default {
         this.isNum = true
       }
     },
-    async searchColumn(val) {
-      const { code, data } = await api.get('/api/system/article/listNavigation', { name: val })
-      if (code === 200) {
-        this.columnResults = data
-        if (this.columnResults.length > 10) {
-          this.columnResults.length = 10
-        }
-      }
-    },
+    // async searchColumn(val) {
+    //   const { code, data } = await api.get('/api/system/article/listNavigation', { name: val })
+    //   if (code === 200) {
+    //     this.columnResults = data
+    //     if (this.columnResults.length > 10) {
+    //       this.columnResults.length = 10
+    //     }
+    //   }
+    // },
     async searchAuthor(val) {
       const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: val })
       if (code === 200) {

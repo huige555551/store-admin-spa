@@ -29,8 +29,7 @@
         </el-form-item>
         <el-form-item label="选择分类">
           <el-select v-model="audio.navigationId" filterable remote
-            placeholder="请输入栏目进行搜索"
-            :remote-method="searchColumn">
+            placeholder="请输入栏目进行搜索">
             <el-option
               v-for="item in columnResults"
               :key="item.id"
@@ -129,16 +128,21 @@ export default {
         this.editing = false
         this.audio = { navigationId: null }
       }
-    },
-    async searchColumn(val) {
-      const { code, data } = await api.get('/api/system/audio/listNavigation', { name: val })
+      // 拿回所有栏目
+      const { code, data } = await api.get('/api/system/audio/listNavigation')
       if (code === 200) {
         this.columnResults = data
-        if (this.columnResults.length > 10) {
-          this.columnResults.length = 10
-        }
       }
     },
+    // async searchColumn(val) {
+    //   const { code, data } = await api.get('/api/system/audio/listNavigation', { name: val })
+    //   if (code === 200) {
+    //     this.columnResults = data
+    //     if (this.columnResults.length > 10) {
+    //       this.columnResults.length = 10
+    //     }
+    //   }
+    // },
     // 音频上传
     beforeAudioUpload(file) {
       if (file.type.indexOf('mp3') === -1) {
