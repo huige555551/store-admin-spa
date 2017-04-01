@@ -106,7 +106,7 @@ export default {
         publicationDate: null,
         navigationId: null,
         authorId: null,
-        content: '123'
+        content: ''
       },
       options2: {
         placeHolder: '输入文章内容',
@@ -148,7 +148,7 @@ export default {
           publicationDate: '',
           navigationId: '',
           authorId: '',
-          content: '123'
+          content: ''
         }
       }
     },
@@ -205,7 +205,9 @@ export default {
       }
     },
     async save() {
-      console.log(this.article)
+      if (!this.article.coverUrl) {
+        return this.$notify.error({ title: '错误', message: '图片不能为空' })
+      }
       if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.authorId || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }

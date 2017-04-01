@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
+          <el-select v-model="article.authorId" remote filterable :remote-method="searchAuthorName" placeholder="请输入作者进行搜索">
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -118,12 +118,6 @@ export default {
   methods: {
     change() {
     },
-    // async authorFilter() {
-    //   const getTag = await api.get('/api/system/author/listAuthor', {})
-    //   if (getTag.code === 200) {
-    //     this.optionTag = getTag.data.array
-    //   }
-    // },
     async fetchData() {
       const getNavigation = await api.get('/api/system/wechat/listNavigation')
       if (getNavigation.code === 200) {
@@ -147,6 +141,13 @@ export default {
         this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '<p>a</p>' }
       }
     },
+    async searchAuthorName(inputAuthorName) {
+      const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: inputAuthorName })
+      if (code === 200) {
+        this.optionAuthor = data.array
+      }
+    },
+    // 日期更改
     handleDatePick(val) {
       this.article.publicationDate = val
     },
@@ -170,10 +171,6 @@ export default {
       }
       // 对上post的key
       this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
-      // this.article.labelList = ['12', '12'])
-      // console.log('this.article.labelList', this.article.labelList)
-      // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
-      // console.log(this.publicationDate)
       if (this.editing) {
         // this.$set(this.cover, 'publicationDate', this.article.publicationDate.slice(0, 16))
         const { code } = await api.post('/api/system/wechat/updateArticle', this.article)

@@ -129,11 +129,14 @@
         <el-tab-pane label="投票选项" name="second">
           <el-form label-width="100px">
             <el-form-item  v-for="(item,index) in rowObj.problems" :label="'问题' + (index+1)">
-              <p>{{item.problem}}  <el-tag v-if="item.type==1"type="success">单选</el-tag>
+              <p>{{item.problem}}  <el-tag v-if="item.type==1" type="success">单选</el-tag>
                 <el-tag v-if="item.type==2"type="success">多选</el-tag></p>
-              <el-radio-group>
+              <el-radio-group  v-if="item.type==1">
                 <el-radio v-for="optionitem in item.options" :label="'选项' + (index+1)"></el-radio>
               </el-radio-group>
+              <el-checkbox-group  v-if="item.type==2">
+                <el-checkbox v-for="optionitem in item.options" :label="'选项' + (index+1)"></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-form>
         </el-tab-pane>

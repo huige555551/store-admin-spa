@@ -126,6 +126,10 @@ export default {
         this.comics = { imgKey: '', title: '', type: 1, authorId: '', period: null, comicsList: [], imgList: [] }
       }
     },
+    // 日期更改
+    handleDatePick(val) {
+      this.article.publicationDate = val
+    },
     /* eslint-disable */
     handleComicsRemove(file, fileList) {
     /* eslint-enable */

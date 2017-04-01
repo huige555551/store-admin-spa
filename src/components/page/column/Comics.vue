@@ -16,7 +16,14 @@
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="日期">
-        <el-date-picker v-model="searchInput.date" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+            v-model="searchInput.date"
+            format="yyyy-MM-dd"
+            @change="handleDatePick"
+            type="date"
+            :clearable="false"
+            placeholder="选择日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click.native.prevent="search">搜索</el-button>
@@ -97,6 +104,10 @@ export default {
       this.searchKey.date = null
       this.currentPage = 1
       this.fetchData()
+    },
+    // 日期更改
+    handleDatePick(val) {
+      this.searchKey.date = val
     },
     // 搜索
     search() {

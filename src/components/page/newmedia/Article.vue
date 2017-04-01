@@ -19,8 +19,7 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option value="1" label="1"></el-option>
-          <el-option value="2" label="2"></el-option>
+          <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -163,6 +162,11 @@ export default {
     // 获取文章列表数据
     async fetchData() {
       this.tableData = []
+      this.optionColumn = []
+      const getNavigation = await api.get('/api/system/wechat/listNavigation')
+      if (getNavigation.code === 200) {
+        this.optionColumn = getNavigation.data
+      }
       const { code, data } = await api.get('/api/system/wechat/listArticle', {
         currentPage: this.currentPage,
         perPage: this.perPage,

@@ -17,7 +17,8 @@ export default {
     options: {
       type: Object,
       default() {
-        return {}
+        return {
+        }
       }
     }
   },
@@ -33,11 +34,16 @@ export default {
   },
   mounted() {
     /* eslint-disable no-new */
-    (Object.assign({}, {
-      textarea: $('#editor')
-    }, this.options))
+    console.log('options', this.options)
     this.editor = new Simditor(Object.assign({}, {
-      textarea: $('#editor')
+      textarea: $('#editor'),
+      toolbar: [
+        'title',
+        'bold',
+        'italic',
+        'underline',
+        'link',
+        'image']// 自定义工具栏
     }, this.options))
     this.editor.on('valuechanged', (e, src) => {
       this.valueChange(e, src)
