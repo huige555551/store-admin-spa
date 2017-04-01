@@ -51,7 +51,7 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="文章标签">
-          <el-select v-model="article.tags" multiple filterable allow-create placeholder="请输入文章标签">
+          <el-select v-model="article.labels" multiple filterable allow-create placeholder="请选择/输入文章标签">
           </el-select>
         </el-form-item>
         <el-form-item label="期数">
@@ -76,7 +76,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor  :content="article.content" :options="options2" v-model="article.content"></simditor>
+          <simditor  @change="change" :content="article.content" :options="options2" v-model="article.content"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -101,7 +101,7 @@ export default {
       columnResults: [],
       authorResults: [],
       article: {
-        tags: [],
+        labels: [],
         publicationDate: null,
         navigationId: null,
         authorId: null,
@@ -143,7 +143,7 @@ export default {
       } else {
         this.editing = false
         this.article = {
-          tags: [],
+          labels: [],
           publicationDate: '',
           navigationId: '',
           authorId: '',
@@ -188,6 +188,9 @@ export default {
       } else {
         this.isNum = true
       }
+    },
+    change(html) {
+      this.article.content = html
     },
     // async searchColumn(val) {
     //   const { code, data } = await api.get('/api/system/article/listNavigation', { name: val })

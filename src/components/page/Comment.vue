@@ -32,9 +32,9 @@
           <img :src="scope.row.avatar" width="48" height="48" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column prop="user" label="用户" min-width="100"></el-table-column>
+      <el-table-column prop="nickname" label="用户" min-width="100"></el-table-column>
       <el-table-column prop="content" label="内容" min-width="140"></el-table-column>
-      <el-table-column prop="createdAt" label="时间" width="160"></el-table-column>
+      <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
       <el-table-column label="操作" width="100">
         <template scope="scope">
           <el-button type="default" size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
@@ -67,12 +67,12 @@ export default {
       searchKey: {},
       searchInput: {},
       tableData: [
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' }
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
+        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' }
       ]
     }
   },
@@ -110,7 +110,7 @@ export default {
         }
       } else if (this.$route.params.type === 'video') {
         this.title = '视频'
-        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
+        const { code, data } = await api.get('/api/system/comment/listVideoComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total

@@ -83,8 +83,8 @@
       <el-submenu index="activity">
         <template slot="title"><i class="el-icon-date"></i>活动管理</template>
         <el-menu-item index="/activity/category">活动分类✅-Lee</el-menu-item>
-        <el-menu-item index="/activity/list">活动列表✅-hui</el-menu-item>
-        <el-menu-item index="/activity/add">添加活动</el-menu-item>
+        <el-menu-item index="/activity/list">活动列表-hui</el-menu-item>
+        <el-menu-item index="/activity/add">添加活动-Lee</el-menu-item>
         <el-menu-item index="/activity/banner">轮播管理✅</el-menu-item>
       </el-submenu>
 

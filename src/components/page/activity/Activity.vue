@@ -271,8 +271,6 @@ export default {
         if (code === 200) {
           console.log(data)
           this.partners = data
-          // if()
-          // this.activityDialog =
         }
       }
     },
