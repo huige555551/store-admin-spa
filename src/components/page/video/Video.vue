@@ -16,8 +16,7 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.catergoryId" filterable remote
-            placeholder="请输入栏目进行搜索"
-            :remote-method="searchColumn">
+            placeholder="请输入栏目进行搜索">
             <el-option
               v-for="item in columnResults"
               :key="item.id"
@@ -97,8 +96,13 @@ export default {
       tableData: []
     }
   },
-  created() {
+  async created() {
     this.fetchData()
+    // 拿回所有栏目
+    const { code, data } = await api.get('/api/system/video/listNavigation')
+    if (code === 200) {
+      this.columnResults = data
+    }
   },
   methods: {
     openImg(url) {
@@ -118,15 +122,15 @@ export default {
       this.tableData = []
       this.fetchData()
     },
-    async searchColumn(val) {
-      const { code, data } = await api.get('/api/system/video/listNavigation', { name: val })
-      if (code === 200) {
-        this.columnResults = data
-        if (this.columnResults.length > 10) {
-          this.columnResults.length = 10
-        }
-      }
-    },
+    // async searchColumn(val) {
+    //   const { code, data } = await api.get('/api/system/video/listNavigation', { name: val })
+    //   if (code === 200) {
+    //     this.columnResults = data
+    //     if (this.columnResults.length > 10) {
+    //       this.columnResults.length = 10
+    //     }
+    //   }
+    // },
     // 获取数据
     async fetchData() {
       this.tableData = []

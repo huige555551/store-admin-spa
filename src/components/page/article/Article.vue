@@ -169,7 +169,7 @@ export default {
       })
       if (code === 200) {
         this.tableData = data.array
-        this.total = data.array.length
+        this.total = data.total
         this.currentPage = data.currentPage
       }
     },
