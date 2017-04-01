@@ -107,7 +107,8 @@ export default {
     },
     // 日期更改
     handleDatePick(val) {
-      this.searchKey.date = val
+      console.log(val)
+      this.searchInput.date = val
     },
     // 搜索
     search() {

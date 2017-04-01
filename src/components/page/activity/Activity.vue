@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column label="评论管理" width="120">
         <template scope="scope">
-          <el-button type="default" size="small" @click.native.prevent="$router.push('/welcome')">评论管理</el-button>
+          <el-button type="default" size="small"  @click.native.prevent="$router.push('/comment/activity/'+scope.row.id)">评论管理</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -72,13 +72,13 @@
               <span>{{rowObj.title}}</span>
             </el-form-item>
             <el-form-item label="分类">
-              <span>{{rowObj.column}}</span>
+              <span>{{rowObj.navigationName}}</span>
             </el-form-item>
             <el-form-item label="视频链接">
               <a :href="rowObj.video">{{rowObj.video}}</a>
             </el-form-item>
             <el-form-item label="微博话题">
-              <span>{{rowObj.weixin}}</span>
+              <span>{{rowObj.weibo}}</span>
             </el-form-item>
             <el-form-item label="发布时间">
               <span>{{rowObj.publicationDate}}</span>

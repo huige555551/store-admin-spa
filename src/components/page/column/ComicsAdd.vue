@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" :model="comics" label-width="100px" style="width: 500px;">
+    <el-form ref="form" :model="comics" label-width="100px" class="upload">
       <el-form-item label="封面上传">
         <UploadSingle
           :imgUrl="comics.imgUrl"
@@ -12,7 +12,7 @@
         </UploadSingle>
       </el-form-item>
 
-      <el-form-item label="漫画上传">
+      <el-form-item label="漫画上传" style="width:1000px">
         <!--<el-upload list-type="picture-card" class="avatar-uploader" action="//up-z2.qiniu.com" accept="image/*" list-type="picture-card" :show-file-list="false" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload">
           <img v-if="comics.comicsUrl" :src="comics.comicsUrl" class="avatar">
           <i class="el-icon-plus"></i>
@@ -209,6 +209,9 @@ export default {
 }
 </script>
 <style>
+form.upload .el-form-item {
+    width: 500px;
+}
 .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;

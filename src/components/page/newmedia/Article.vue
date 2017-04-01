@@ -48,7 +48,7 @@
       <el-table-column label="评论管理" width="120">
         <template scope="scope">
           <!-- TODO with hui -->
-          <el-button size="small">评论管理</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/comment/newmedia/'+scope.row.id)">评论管理</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">

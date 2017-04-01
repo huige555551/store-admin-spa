@@ -92,7 +92,6 @@ export default {
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: true,
-        toolbar: ['title', 'image'],
         cleanPaste: true
       },
       optionColumn: [],
@@ -116,7 +115,8 @@ export default {
   },
   /* eslint-enable */
   methods: {
-    change() {
+    change(html) {
+      this.article.content = html
     },
     async fetchData() {
       const getNavigation = await api.get('/api/system/wechat/listNavigation')
@@ -138,7 +138,7 @@ export default {
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '<p>a</p>' }
+        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
       }
     },
     async searchAuthorName(inputAuthorName) {
