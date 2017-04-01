@@ -117,8 +117,8 @@
           </el-table-column>
           <el-table-column label="操作" width="160">
             <template scope="scope">
-              <el-button type="default" size="small">编辑</el-button>
-              <el-button type="default" size="small">删除</el-button>
+              <el-button type="default" size="small" @click="editRow(scope.$index)">编辑</el-button>
+              <el-button type="default" size="small" @click="deleteRow(scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -126,7 +126,7 @@
         <!-- 添加按钮 -->
         <el-form style="margin-top: 20px">
           <el-form-item>
-            <el-button @click="partnerDialog = true">添加合作伙伴</el-button>
+            <el-button @click="addRow">添加合作伙伴</el-button>
           </el-form-item>
         </el-form>
 
@@ -140,15 +140,18 @@
               <el-input v-model="newPartner.url"></el-input>
             </el-form-item>
             <el-form-item label="LOGO">
-              <el-upload action="" :file-list="newPartner.fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过1MB</div>
-              </el-upload>
+              <UploadSingle
+                :imgUrl="newPartner.logo"
+                :imgKey="newPartner.imgKey"
+                :size=1 dimension="240x240"
+                @handleRemove="handlePartnerRemove"
+                @handleSuccess="handlePartnerSuccess">
+              </UploadSingle>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary">确 定</el-button>
-            <el-button>取 消</el-button>
+            <el-button @click.native.prevent="partnerDialog=false">取 消</el-button>
+            <el-button type="primary" @click.native.prevent="saveRow">确 定</el-button>
           </div>
         </el-dialog>
       </el-tab-pane>
@@ -160,9 +163,12 @@
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
 
+const _ = require('lodash')
+
 export default {
   data() {
     return {
+      editing: false,
       question: {
         title: '',
         options: []
@@ -171,10 +177,15 @@ export default {
       questionDialog: false,
       partnerDialog: false,
       searchKey: '',
+      vote: {},
       activity: {
+        voteOn: true,
         imgUrl: null,
         imgKey: null,
-        navigationId: null
+        navigationId: null,
+        title: null,
+        navigationName: null,
+        weibo: null
       },
       options: [
         { id: '1', value: '选项1', label: '选项1' },
@@ -195,6 +206,17 @@ export default {
     }
   },
   async created() {
+    if (this.$route.params.id) {
+      this.editing = true
+      const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
+      if (code === 200) {
+        this.activity = data
+        this.vote = data.vote
+      }
+    } else {
+      this.editing = false
+      this.video = {}
+    }
     // 拿回所有栏目
     const { code, data } = await api.get('/api/system/activity/listNavigation')
     if (code === 200) {
@@ -203,6 +225,14 @@ export default {
   },
   components: {
     UploadSingle
+  },
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      console.log('########')
+      this.fetchData()
+    /* eslint-enable */
+    }
   },
   methods: {
     addOption() {
@@ -236,6 +266,72 @@ export default {
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/activity/list')
+        }
+      }
+    },
+    // 添加合作伙伴
+    addRow() {
+      this.editing = false
+      this.newPartner.id = null
+      this.newPartner.name = null
+      this.newPartner.logo = null
+      this.newPartner.url = null
+      this.partnerDialog = true
+    },
+    // 编辑
+    editRow(index) {
+      this.editing = true
+      this.editingIndex = index
+      this.newPartner.id = this.tableData[index].id
+      this.newPartner.logo = this.tableData[index].logo
+      this.newPartner.url = this.tableData[index].url
+      this.newPartner.name = this.tableData[index].name
+      this.partnerDialog = true
+    },
+    // 删除行
+    async deleteRow(index) {
+      this.$confirm('此操作将该删除该合作伙伴，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(async () => {
+        const { code } = await api.post('/api/system/activity/deletePartner', { id: this.tableData[index].id })
+        if (code === 200) {
+          this.tableData.splice(index, 1)
+          this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
+        }
+      }).catch(() => {})
+    },
+    // 删除伙伴LOGO
+    handlePartnerRemove() {
+      this.newPartner.imgKey = null
+      this.newPartner.logo = null
+    },
+    // 合作伙伴Logo上传成功
+    handlePartnerSuccess(response, bucketPort) {
+      this.$set(this.newPartner, 'logo', `${bucketPort}/${response.key}`)
+      this.$set(this.newPartner, 'imgKey', response.key)
+    },
+    // 保存修改
+    async saveRow() {
+      console.log(this.newPartner)
+      if (!this.newPartner.url || !this.newPartner.name || !this.newPartner.logo) {
+        return this.$notify.error({ title: '失败', message: '表单信息不完整' })
+      }
+      if (this.editing) {
+        const { code } = await api.post('/api/system/activity/updatePartner', this.newPartner)
+        if (code === 200) {
+          this.tableData.splice(this.editingIndex, 1, _.clone(this.newPartner))
+          this.$notify.success({ title: '成功', message: '修改成功' })
+          this.partnerDialog = false
+        }
+      } else {
+        const { code } = await api.post('/api/system/activity/addPartner', this.newPartner)
+        if (code === 200) {
+          this.fetchData()
+          this.partnerDialog = false
+          this.$notify.success({ title: '成功', message: '添加成功' })
         }
       }
     }
