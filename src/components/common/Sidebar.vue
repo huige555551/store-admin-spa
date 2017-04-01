@@ -20,7 +20,7 @@
         <el-menu-item-group>
           <template slot="title">封面管理</template>
           <el-menu-item index="/cover/list">封面列表 - s</el-menu-item>
-          <el-menu-item index="/cover/add">添加封面</el-menu-item>
+          <el-menu-item index="/cover/add">添加封面✅-hui</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">漫画管理</template>

@@ -134,7 +134,7 @@ export default {
     },
     // 删除行
     deleteRow(index) {
-      this.$confirm('此操作将该删除该封面，是否继续?', '提示', {
+      this.$confirm('此操作将该删除该漫画，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'

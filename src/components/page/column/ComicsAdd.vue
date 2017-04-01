@@ -92,7 +92,6 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
@@ -111,12 +110,16 @@ export default {
           let comicsList = []
           this.comics = data
           data.imgList.forEach(function(item, index){
-            console.log(item.imgKey, item.imgUrl)
+            const imgKey = item.imgKey
+            const imgUrl = item.imgUrl
           /* eslint-enable */
-            comicsList.push({ name: item.imgKey, url: item.imgUrl })
+            comicsList.push({ name: imgKey, url: imgUrl })
           })
+          // 保证成功显示在页面
           this.comics.comicsList = comicsList
           this.editing = true
+          this.comics.coverKey = data.imgKey
+          this.comics.type = 1
         }
       } else {
         this.editing = false
@@ -132,7 +135,6 @@ export default {
     },
     // 漫画上传
     beforeAvatarUpload() {
-      console.log('comics success1')
       return api.get('/api/system/upload/getToken').then(response => {
         this.bucketPort = response.data.bucketPort
         this.uploadParams = {
@@ -151,23 +153,22 @@ export default {
       /* eslint-enable */
       // this.comics.comicsList.splice(this.comics.comicsList.length, 0, { 'imgKey': response.key })
     },
+    // 封面上传成功
     handleRemove() {
       this.comics.imgUrl = null
       this.comics.coverKey = null
     },
-    // 文件上传成功
+    // 上传成功
     handleSuccess(response, bucketPort) {
       this.$set(this.comics, 'imgUrl', `${bucketPort}/${response.key}`)
       this.$set(this.comics, 'coverKey', response.key)
     },
     async save() {
-      console.log(this.comics.title, this.comics.period, this.comics.authorId)
       if (!this.comics.imgUrl || !this.comics.comicsList.length) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.comics.title || !this.comics.period || !this.comics.authorId) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
-      console.log(this.comics.comicsList)
       const comicsList = _.clone(this.comics.comicsList)
       /* eslint-disable */
       let imgUrl = []
@@ -175,22 +176,17 @@ export default {
       comicsList.forEach((item) => {
         /* eslint-disable */
         if(item.response)
-          imgUrl.push({ 'imgKey': item.response.key })
+          imgUrl.push( item.response.key )
         else
-          imgUrl.push({ 'imgKey': item.name})
+          imgUrl.push( item.name)
         /* eslint-enable */
       })
       // post参数构造
       this.comics.imgList = JSON.stringify(_.clone(imgUrl))
-      console.log(this.comics.imgList instanceof Array, imgUrl, this.comics.imgList)
       // period＝> string to nubmer
       this.$set(this.comics, 'period', Number(this.comics.period))
-      // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
-      // console.log(this.publicationDate)
       if (this.editing) {
-        console.log(this.comics)
-        // this.$set(this.cover, 'publicationDate', this.comics.publicationDate.slice(0, 16))
-        console.log('comics', this.comics.imgKey)
+        this.$set(this.comics, 'imgKey', this.comics.coverKey)
         const { code } = await api.post('/api/system/comicIllustration/updateComicIllustrations', this.comics)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
@@ -198,7 +194,6 @@ export default {
         }
       } else {
         this.$set(this.comics, 'imgKey', this.comics.coverKey)
-        console.log('comics', this.comics)
         const { code } = await api.post('/api/system/comicIllustration/addComicIllustrations', this.comics)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
