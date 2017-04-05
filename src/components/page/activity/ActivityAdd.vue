@@ -46,63 +46,67 @@
             </el-form-item>
           </el-form>
         </div>
-      </el-tab-pane>
 
       <!-- 投票信息 -->
-      <el-tab-pane label="投票信息" name="second">
+      <!-- <el-tab-pane label="投票信息" name="second"> -->
         <div class="form-box">
           <el-form ref="form" :model="activity" label-width="100px">
             <el-form-item label="启用投票">
-              <el-switch v-model="activity.voteOn" on-color="#13ce66" off-color="#ff4949"></el-switch>
+              <el-switch v-model="activity.hasVote" change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
-            <el-form-item label="问题一">
-              <p>XXXXXXXXXXXXXXXX? <el-tag type="success">单选</el-tag><el-button type="default" style="margin-left: 10px">编辑</el-button></p>
-              <el-radio-group>
-                <el-radio disabled label="单选"></el-radio>
-                <el-radio disabled label="单选"></el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="问题二">
-              <p>XXXXXXXXXXXXXXXX? <el-tag type="success">多选</el-tag><el-button type="default" style="margin-left: 10px">编辑</el-button></p>
-              <el-checkbox disabled label="多选"></el-checkbox>
-              <el-checkbox disabled label="多选"></el-checkbox>
-            </el-form-item>
+            <div v-for="(item,index) in activity.question">
+              <el-form-item label="问题一">
+                <p>{{ item.title }}
+                <el-tag type="success" v-if="item.single">单选</el-tag>
+                <el-tag type="success" v-if="!item.single">多选</el-tag>
+                <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button></p>
+                <el-radio-group v-model="item.single">
+                  <el-radio :disabled="!activity.hasVote" :label="true">单选</el-radio>
+                  <el-radio :disabled="!activity.hasVote" :label="false">多选</el-radio>
+                </el-radio-group>
+                <el-radio-group v-for="option in item.options" style="display:block;">
+                  <el-radio :disabled="!activity.hasVote" :label="option.label" style="margin-top:15px">{{ option.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
             <el-form-item>
               <el-button type="default" @click.native.prevent="questionDialog = true">添加问题</el-button>
             </el-form-item>
           </el-form>
         </div>
+      </el-tab-pane>
 
         <!-- 添加问题 -->
         <el-dialog title="添加问题" v-model="questionDialog">
           <el-form label-width="100px" class="demo-dynamic">
             <el-form-item label="问题">
-              <el-input v-model="question.title"></el-input>
+              <el-input v-model="newQuestion.title"></el-input>
             </el-form-item>
             <el-form-item label="类型">
-              <el-radio-group>
-                <el-radio label="单选"></el-radio>
-                <el-radio label="多选"></el-radio>
+              <el-radio-group v-model="newQuestion.single">
+                <el-radio :label="true">单选</el-radio>
+                <el-radio :label="false">多选</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item v-for="(option, index) in question.options" :label="'选项' + (index+1)" :key="option.key">
-              <el-input :v-model="option"></el-input><el-button style="margin-left: 10px">删除</el-button>
+            <el-form-item v-for="(option, index) in newQuestion.options" :label="'选项' + (index+1)" :key="option.key">
+            <el-input v-model="option.label"></el-input>
+            <el-button style="margin-left: 20px" @click="deleteOption(index)">删除</el-button>
             </el-form-item>
             <el-form-item>
               <el-button @click="addOption">新增选项</el-button>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
-            <el-button type="primary">确 定</el-button>
-            <el-button>取 消</el-button>
+            <el-button type="primary" @click="addQuestion">确 定</el-button>
+            <el-button @click="questionDialog = false">取 消</el-button>
           </div>
         </el-dialog>     
       </el-tab-pane>
 
       <!-- 合作伙伴 -->
-      <el-tab-pane label="合作伙伴" name="third">
+      <el-tab-pane label="合作伙伴" name="third" v-if="editing">
         <!-- Table -->
-        <el-table :data="partners">
+        <el-table :data="tableData">
           <el-table-column type="index" label="#" width="60"></el-table-column>
           <el-table-column prop="name" label="名字" min-width="120"></el-table-column>
           <el-table-column label="跳转链接" min-width="120">
@@ -117,8 +121,8 @@
           </el-table-column>
           <el-table-column label="操作" width="160">
             <template scope="scope">
-              <el-button type="default" size="small" @click="editRow(scope.$index)">编辑</el-button>
-              <el-button type="default" size="small" @click="deleteRow(scope.$index)">删除</el-button>
+              <el-button type="default" size="small" @click="editPartner(scope.$index)">编辑</el-button>
+              <el-button type="default" size="small" @click="deletePartner(scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -126,7 +130,7 @@
         <!-- 添加按钮 -->
         <el-form style="margin-top: 20px">
           <el-form-item>
-            <el-button @click="addRow">添加合作伙伴</el-button>
+            <el-button @click="addPartner">添加合作伙伴</el-button>
           </el-form-item>
         </el-form>
 
@@ -169,38 +173,32 @@ export default {
   data() {
     return {
       editing: false,
-      question: {
-        title: '',
+      newPartner: {},
+      newQuestion: {
+        single: null,
         options: []
       },
-      newPartner: {},
       questionDialog: false,
       partnerDialog: false,
       searchKey: '',
       vote: {},
       activity: {
-        voteOn: true,
+        hasVote: true,
         imgUrl: null,
         imgKey: null,
         navigationId: null,
         title: null,
         navigationName: null,
-        weibo: null
+        weibo: null,
+        question: []
       },
-      options: [
-        { id: '1', value: '选项1', label: '选项1' },
-        { id: '2', value: '选项2', label: '选项2' },
-        { id: '3', value: '选项3', label: '选项3' },
-        { id: '4', value: '选项4', label: '选项4' },
-        { id: '5', value: '选项5', label: '选项5' }
-      ],
-      partners: [
-        { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { name: '合作伙伴3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { name: '合作伙伴5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        { name: '合作伙伴6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
+      tableData: [
+        // { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        // { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        // { name: '合作伙伴3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        // { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        // { name: '合作伙伴5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
+        // { name: '合作伙伴6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
       ],
       columnResults: []
     }
@@ -212,6 +210,7 @@ export default {
       if (code === 200) {
         this.activity = data
         this.vote = data.vote
+        this.actiity.question = data.question
       }
     } else {
       this.editing = false
@@ -237,7 +236,13 @@ export default {
   methods: {
     addOption() {
       console.log(1111)
-      this.question.options.push('')
+      if (this.newQuestion.options.length === 4) {
+        return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
+      }
+      this.newQuestion.options.push({ id: null, value: null, label: null })
+    },
+    deleteOption(index) {
+      this.newQuestion.options.splice(index, 1)
     },
     // 添加活动
     // 删除活动封面图片
@@ -269,8 +274,35 @@ export default {
         }
       }
     },
+    // 编辑问题
+    editQuestion(index) {
+      this.editing = true
+      this.editingIndex = index
+      this.questionDialog = true
+      this.newQuestion = _.clone(this.activity.question[index])
+      console.log(this.newQuestion)
+    },
+    // 添加问题
+    addQuestion() {
+      if (this.newQuestion.single === null || !this.newQuestion.title || this.newQuestion.options.length === 0) {
+        return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
+      }
+      if (this.editing === true) {
+        this.activity.question.splice(this.editingIndex, 1, _.clone(this.newQuestion))
+      } else {
+        this.activity.question.push(_.clone(this.newQuestion))
+      }
+      this.questionDialog = false
+      this.newQuestion = { single: null, options: [] }
+      this.editing = false
+    },
+    // 投票开关
+    changeSwitch() {
+      // console.log(this.activity.hasVote)
+      // this.activity.hasVote = !this.activity.hasVote
+    },
     // 添加合作伙伴
-    addRow() {
+    addPartner() {
       this.editing = false
       this.newPartner.id = null
       this.newPartner.name = null
@@ -278,8 +310,9 @@ export default {
       this.newPartner.url = null
       this.partnerDialog = true
     },
-    // 编辑
-    editRow(index) {
+    // 编辑合作伙伴
+    editPartner(index) {
+      console.log('123')
       this.editing = true
       this.editingIndex = index
       this.newPartner.id = this.tableData[index].id
@@ -289,7 +322,7 @@ export default {
       this.partnerDialog = true
     },
     // 删除行
-    async deleteRow(index) {
+    async deletePartner(index) {
       this.$confirm('此操作将该删除该合作伙伴，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
