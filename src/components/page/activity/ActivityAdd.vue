@@ -21,10 +21,22 @@
               <el-input v-model="activity.title"></el-input>
             </el-form-item>
             <el-form-item label="开始时间">
-              <el-input v-model="activity.startTime" placeholder="格式为XXXX年XX月XX日XX时XX分"></el-input>
+              <el-date-picker
+                v-model="activity.startTime"
+                type="date"
+                change="changeDate(val)"
+                format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="结束时间">
-              <el-input v-model="activity.endTime" placeholder="格式为XXXX年XX月XX日XX时XX分"></el-input>
+              <el-date-picker
+                v-model="activity.endTime"
+                type="date"
+                change="changeEndDate(val)"
+                format="yyyy-MM-dd"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
             <el-form-item label="微博话题">
               <el-input v-model="activity.weibo"></el-input>
@@ -67,11 +79,11 @@
                 <el-tag type="success" v-if="!item.single">多选</el-tag>
                 <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button></p>
                 <el-radio-group v-model="item.single">
-                  <el-radio :disabled="!activity.hasVote" :label="true">单选</el-radio>
-                  <el-radio :disabled="!activity.hasVote" :label="false">多选</el-radio>
+                  <el-radio :disabled="true" :label="true">单选</el-radio>
+                  <el-radio :disabled="true" :label="false">多选</el-radio>
                 </el-radio-group>
                 <el-radio-group v-for="option in item.options" style="display:block;">
-                  <el-radio :disabled="!activity.hasVote" :label="option.label" style="margin-top:15px">{{ option.label }}</el-radio>
+                  <el-radio :disabled="true" :label="option.label" style="margin-top:15px">{{ option.label }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </div>
@@ -196,6 +208,8 @@ export default {
         title: null,
         navigationName: null,
         weibo: null,
+        startTime: null,
+        endTime: null,
         question: []
       },
       tableData: [
@@ -301,6 +315,13 @@ export default {
       this.questionDialog = false
       this.newQuestion = { single: null, options: [] }
       this.editing = false
+    },
+    // 时间格式
+    changeDate(val) {
+      this.activity.startTime = val
+    },
+    changeEndDate(val) {
+      this.activity.endTime = val
     },
     // 投票开关
     changeSwitch() {
