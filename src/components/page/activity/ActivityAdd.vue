@@ -20,6 +20,12 @@
             <el-form-item label="活动标题">
               <el-input v-model="activity.title"></el-input>
             </el-form-item>
+            <el-form-item label="开始时间">
+              <el-input v-model="activity.startTime" placeholder="格式为XXXX年XX月XX日XX时XX分"></el-input>
+            </el-form-item>
+            <el-form-item label="结束时间">
+              <el-input v-model="activity.endTime" placeholder="格式为XXXX年XX月XX日XX时XX分"></el-input>
+            </el-form-item>
             <el-form-item label="微博话题">
               <el-input v-model="activity.weibo"></el-input>
             </el-form-item>
@@ -42,7 +48,7 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="save">提交</el-button>
-              <el-button>取消</el-button>
+              <el-button @click="$router.push('/activity/list')">取消</el-button>
             </el-form-item>
           </el-form>
         </div>

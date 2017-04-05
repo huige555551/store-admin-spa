@@ -37,6 +37,11 @@
           <el-button v-if="scope.row.hasVote" type="default" @click.native.prevent="showVoteDetail(scope.$index)">查看投票</el-button>
         </template>
       </el-table-column>
+      <el-table-column label="评论管理" width="120">
+        <template scope="scope">
+          <el-button type="default" size="small" @click.native.prevent="$router.push('/welcome')">评论管理</el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small" @click.native.prevent="$router.push('/activity/edit/' + scope.row.id)">编辑</el-button>
