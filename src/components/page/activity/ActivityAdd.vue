@@ -107,8 +107,8 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item v-for="(option, index) in newQuestion.options" :label="'选项' + (index+1)" :key="option.key">
-            <el-input v-model="option.label"></el-input>
-            <el-button style="margin-left: 20px" @click="deleteOption(index)">删除</el-button>
+              <el-input v-model="option.label"></el-input>
+              <el-button style="margin-left: 20px" @click="deleteOption(index)">删除</el-button>
             </el-form-item>
             <el-form-item>
               <el-button @click="addOption">新增选项</el-button>
