@@ -89,10 +89,9 @@ export default {
         publicationDate: ''
       },
       options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: true,
-        cleanPaste: true
+        placeHolder: '输入文章内容'
+        // toolbarFloat: false,
+        // cleanPaste: true
       },
       optionColumn: [],
       optionAuthor: [],

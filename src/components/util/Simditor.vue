@@ -3,7 +3,7 @@
 </template>
 
 <script>
-// import api from '@/api'
+import api from '@/api'
 import $ from 'jquery'
 import Simditor from 'simditor'
 import 'simditor/styles/simditor.css'
@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      editor: '',
+      editor: null,
       fileKey: '',
       uploadParams: null,
       bucketPort: null
@@ -53,36 +53,30 @@ export default {
         fileKey: 'file', // 服务器端获取文件数据的参数名
         params: null,
         connectionCount: 3,
-        leaveConfirm: '正在上传文件,你确定要离开这个页面吗？',
-        fileSize: 2097152
+        leaveConfirm: '正在上传文件,你确定要离开这个页面吗？'
       }
     }, this.options))
     this.editor.on('valuechanged', (e, src) => {
       this.valueChange(e, src)
     })
-    this.editor.on('pasting', (e, $pasteContent) => {
-      console.log(e, $pasteContent)
-      // this.pasting(c)
+    this.editor.uploader.on('uploadsuccess', (_this) => {
+      console.log('uploadsuccess', _this)
     })
+    this.editor.uploader.on('beforeupload', () => {
+      api.get('/api/system/upload/getToken').then(response => {
+        this.$set(this.uploadParams ,'unique_names', true)
+        this.$set(this.uploadParams ,'save_key', false)
+        this.$set(this.uploadParams ,'token', response.data.token)
+      })
+    })
+    this.$set(this.editor.opts, 'params', this.uploadParams)
+    console.log('opts', this.editor.opts, this.uploadParams)
     this.editor.setValue(this.content)
   },
   methods: {
     valueChange() {
       this.$emit('change', this.editor.getValue())
     }
-    // async pasting() {
-    //   console.log('pasting')
-    //   const { code } = await api.get('/api/system/upload/getToken').then(response => {
-    //     if (code === 200) {
-    //       this.bucketPort = response.data.bucketPort
-    //       this.uploadParams = {
-    //         unique_names: true,
-    //         save_key: false,
-    //         token: response.data.token
-    //       }
-    //     }
-    //   })
-    // }
   }
 }
 </script>
