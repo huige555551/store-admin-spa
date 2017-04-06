@@ -59,8 +59,8 @@
         </UploadSingle>
       </el-form-item>
       <el-form-item label="杂志目录">
-        <el-input type="textarea" disabled :rows="4" v-model="cover.directory"></el-input>
-        <el-button style="margin-top: 10px;" @click="catergoryDialog=true">编辑</el-button>
+        <el-tree :data="cover.directory" :props="defaultProps"></el-tree>
+        <el-button style="margin-top: 10px;" @click="editCatergory">编辑</el-button>
       </el-form-item>
       <el-form-item label="目录图片">
         <UploadSingle
@@ -97,7 +97,7 @@
       </el-form>
       <el-button class="add" @click="addFirst">新增一级目录</el-button>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="catergoryDialog = false">确 定</el-button>
+        <el-button type="primary" @click="saveDirectory">确 定</el-button>
         <el-button @click="catergoryDialog = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -139,20 +139,25 @@ export default {
       editing: false,
       cover: {},
       catergoryDialog: false,
+      directoryString: '',
       firstDir: {
-        name: null,
-        page: null,
+        name: '',
+        page: '',
         children: []
       },
       secondDir: {
-        name: null,
-        page: null
+        name: '',
+        page: ''
       },
       directory: [{
-        name: null,
-        page: null,
+        name: '',
+        page: '',
         children: []
-      }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     }
   },
   components: {
@@ -183,7 +188,7 @@ export default {
         }
       } else {
         this.editing = false
-        this.cover = { publicationDate: null }
+        this.cover = { publicationDate: null, directory: [] }
       }
     },
     handleDatePick(val) {
@@ -238,21 +243,40 @@ export default {
       }
     },
     addSecond(index) {
-      console.log(index)
-      this.directory[index].children.push(_.clone(this.secondDir))
+      this.directory[index].children.push(_.cloneDeep(this.secondDir))
     },
     addFirst() {
-      this.directory.push(_.clone(this.firstDir))
-      console.log(this.firstDir)
+      this.directory.push(_.cloneDeep(this.firstDir))
     },
     deleteFirstDir(index) {
-      console.log(index)
-      this.directory.splice(index, 1)
+      this.$confirm('此操作将删除此一级栏目及其下所有二级栏目, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.directory.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     deleteSecondDir(parentIndex, index) {
-      console.log(this.directory[parentIndex])
       this.directory[parentIndex].children.splice(index, 1)
-      console.log(parentIndex, index)
+    },
+    editCatergory() {
+      this.catergoryDialog = true
+      this.directory = _.cloneDeep(this.cover.directory)
+    },
+    saveDirectory() {
+      this.catergoryDialog = false
+      this.cover.directory = _.cloneDeep(this.directory)
+      console.log(this.cover)
     }
   }
 }
