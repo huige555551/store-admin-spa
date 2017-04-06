@@ -64,9 +64,9 @@ export default {
     })
     this.editor.uploader.on('beforeupload', () => {
       api.get('/api/system/upload/getToken').then(response => {
-        this.$set(this.uploadParams ,'unique_names', true)
-        this.$set(this.uploadParams ,'save_key', false)
-        this.$set(this.uploadParams ,'token', response.data.token)
+        this.$set(this.uploadParams, 'unique_names', true)
+        this.$set(this.uploadParams, 'save_key', false)
+        this.$set(this.uploadParams, 'token', response.data.token)
       })
     })
     this.$set(this.editor.opts, 'params', this.uploadParams)
