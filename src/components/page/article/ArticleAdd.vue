@@ -37,7 +37,7 @@
         </el-form-item>
         <el-form-item label="选择作者">
           <el-select v-model="article.authorId" filterable remote
-            placeholder="请输入文章标题搜索"
+            placeholder="请输入作者名进行搜索"
             :remote-method="searchAuthor">
             <el-option
               v-for="item in authorResults"
@@ -159,7 +159,8 @@ export default {
     handlearticleSuccess(response) {
       // TODO response.key是什么
       this.$notify.success({ title: '成功', message: '上传成功' })
-      this.$set(this.article, 'fileKey', response.key)
+      // this.$set(this.audio, 'imgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.article, 'imgKey', response.key)
     },
     handlearticleError(err, file, fileList) {
       console.log(err, file, fileList)
