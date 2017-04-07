@@ -22,6 +22,11 @@
       <el-form-item label="作者">
         <el-input v-model="searchInput.author" placeholder="作者"></el-input>
       </el-form-item>
+      <el-form-item label="栏目">
+        <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
+          <el-option v-for="item in newMediaColumn" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click.native.prevent="search">搜索</el-button>
         <el-button @click.native.prevent="emptySearch">清空</el-button>
@@ -108,12 +113,14 @@ export default {
       searchInput: {
         title: null,
         period: null,
-        author: null
+        author: null,
+        column: null
       },
       searchKey: {
         title: null,
         period: null,
-        author: null
+        author: null,
+        column: null
       },
       // 分页
       total: 0,

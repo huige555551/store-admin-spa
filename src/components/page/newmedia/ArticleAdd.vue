@@ -34,7 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索" :filter-method="authorFilter">
+          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索">
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -91,7 +91,12 @@ export default {
       options2: {
         placeHolder: '输入文章内容',
         toolbarFloat: false,
-        upload: true,
+        upload: {
+          url: '//up-z2.qiniu.com',
+          params: {
+            token: ''
+          }
+        },
         toolbar: ['title', 'image'],
         cleanPaste: true
       },
@@ -113,6 +118,14 @@ export default {
     '$route'() {
       this.fetchData()
     }
+  },
+  async mounted() {
+    const tokenData = await api.get('/api/system/upload/getToken')
+    console.log(tokenData)
+      if (tokenData.code === 200) {
+        this.options2.upload.params.token = tokenData.data.token
+        console.log(this.options2)
+      }
   },
   /* eslint-enable */
   methods: {

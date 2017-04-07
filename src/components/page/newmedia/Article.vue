@@ -14,13 +14,15 @@
       <el-form-item label="标题">
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
+      <el-form-item label="期数">
+        <el-input v-model="searchInput.period" placeholder="期数"></el-input>
+      </el-form-item>
       <el-form-item label="作者">
         <el-input v-model="searchInput.author" placeholder="作者"></el-input>
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option value="1" label="1"></el-option>
-          <el-option value="2" label="2"></el-option>
+          <el-option v-for="item in newMediaColumn" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -105,6 +107,7 @@ export default {
   data() {
     return {
       // 预览
+      newMediaColumn: [],
       articleDialog: false,
       rowObj: {
         id: null,
@@ -118,12 +121,14 @@ export default {
       searchInput: {
         title: null,
         author: null,
-        column: null
+        column: null,
+        period: null
       },
       searchKey: {
         title: null,
         author: null,
-        column: null
+        column: null,
+        period: null
       },
       // 分页
       total: 0,
