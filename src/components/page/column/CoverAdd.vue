@@ -185,6 +185,7 @@ export default {
         const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
         if (code === 200) {
           this.cover = data
+          console.log(data)
         }
       } else {
         this.editing = false
@@ -228,6 +229,7 @@ export default {
       let publicationDate = this.cover.publicationDate
       publicationDate = publicationDate.substring(0, 10)
       this.$set(this.cover, 'publicationDate', publicationDate)
+      this.cover.directory = JSON.stringify(this.cover.directory)
       if (this.editing) {
         const { code } = await api.post('/api/system/cover/updateCover', this.cover)
         if (code === 200) {

@@ -72,13 +72,13 @@
             <el-form-item label="启用投票">
               <el-switch v-model="activity.hasVote" change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
-            <div v-for="(item,index) in activity.question">
+            <div v-for="(item,index) in activity.vote">
               <el-form-item label="问题一">
                 <p>{{ item.title }}
-                <el-tag type="success" v-if="item.single">单选</el-tag>
-                <el-tag type="success" v-if="!item.single">多选</el-tag>
+                <el-tag type="success" v-if="item.ifSingle">单选</el-tag>
+                <el-tag type="success" v-if="!item.ifSingle">多选</el-tag>
                 <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button></p>
-                <el-radio-group v-model="item.single">
+                <el-radio-group v-model="item.ifSingle">
                   <el-radio :disabled="true" :label="true">单选</el-radio>
                   <el-radio :disabled="true" :label="false">多选</el-radio>
                 </el-radio-group>
@@ -101,7 +101,7 @@
               <el-input v-model="newQuestion.title"></el-input>
             </el-form-item>
             <el-form-item label="类型">
-              <el-radio-group v-model="newQuestion.single">
+              <el-radio-group v-model="newQuestion.ifSingle">
                 <el-radio :label="true">单选</el-radio>
                 <el-radio :label="false">多选</el-radio>
               </el-radio-group>
@@ -193,7 +193,7 @@ export default {
       editing: false,
       newPartner: {},
       newQuestion: {
-        single: null,
+        ifSingle: null,
         options: []
       },
       questionDialog: false,
@@ -210,7 +210,7 @@ export default {
         weibo: null,
         startTime: null,
         endTime: null,
-        question: []
+        vote: []
       },
       tableData: [
         // { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
@@ -229,8 +229,7 @@ export default {
       const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
       if (code === 200) {
         this.activity = data
-        this.vote = data.vote
-        this.actiity.question = data.question
+        this.actiity.vote = data.vote
       }
     } else {
       this.editing = false
@@ -299,21 +298,21 @@ export default {
       this.editing = true
       this.editingIndex = index
       this.questionDialog = true
-      this.newQuestion = _.clone(this.activity.question[index])
+      this.newQuestion = _.clone(this.activity.vote[index])
       console.log(this.newQuestion)
     },
     // 添加问题
     addQuestion() {
-      if (this.newQuestion.single === null || !this.newQuestion.title || this.newQuestion.options.length === 0) {
+      if (this.newQuestion.ifSingle === null || !this.newQuestion.title || this.newQuestion.options.length === 0) {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
-        this.activity.question.splice(this.editingIndex, 1, _.clone(this.newQuestion))
+        this.activity.vote.splice(this.editingIndex, 1, _.clone(this.newQuestion))
       } else {
-        this.activity.question.push(_.clone(this.newQuestion))
+        this.activity.vote.push(_.clone(this.newQuestion))
       }
       this.questionDialog = false
-      this.newQuestion = { single: null, options: [] }
+      this.newQuestion = { ifSingle: null, options: [] }
       this.editing = false
     },
     // 时间格式

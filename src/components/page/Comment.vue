@@ -5,7 +5,7 @@
       <el-form-item label="网站：">
         <span>评论管理</span>
       </el-form-item>
-      <el-form-item :label=title>
+      <el-form-item :label="title">
         <span>待完善</span>
       </el-form-item>
     </el-form>
@@ -66,14 +66,7 @@ export default {
       currentPage: 1,
       searchKey: {},
       searchInput: {},
-      tableData: [
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' },
-        // { user: '用户A', avatar: 'http://om4r3bojb.bkt.clouddn.com/avatar.jpg', content: '评论内容', createdAt: '2017-02-02 12:30' }
-      ]
+      tableData: []
     }
   },
   created() {
