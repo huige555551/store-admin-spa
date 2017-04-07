@@ -134,6 +134,11 @@ export default {
   methods: {
     // 获取数据
     async fetchData() {
+      const getAuthor = await api.get('/api/system/author/listAuthor')
+      if (getAuthor.code === 200) {
+        this.authorResults = getAuthor.data.array
+        console.log(this.authorResults.length)
+      }
       if (this.$route.params.id) {
         this.editing = true
         const { code, data } = await api.get('/api/system/article/getArticle?', { articleId: this.$route.params.id })

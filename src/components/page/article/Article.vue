@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option v-for="item in newMediaColumn" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="item in column" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -109,6 +109,7 @@ import api from '@/api'
 export default {
   data() {
     return {
+      column: [],
       // 搜索
       searchInput: {
         title: null,

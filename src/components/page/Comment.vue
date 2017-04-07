@@ -16,10 +16,10 @@
         <el-input v-model="searchInput.content" placeholder="内容"></el-input>
       </el-form-item>
       <el-form-item label="日期">
-        <el-date-picker v-model="searchInput.date" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker v-model="searchInput.date" type="date" @change="changeDate" placeholder="选择日期"></el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="searchComment">搜索</el-button>
+        <el-button type="primary" @click="search">搜索</el-button>
         <el-button>清空</el-button>
       </el-form-item>
     </el-form>
@@ -62,10 +62,17 @@ import api from '@/api'
 export default {
   data() {
     return {
+      total: null,
       title: null,
       currentPage: 1,
-      searchKey: {},
-      searchInput: {},
+      searchKey: {
+        date: null,
+        content: null
+      },
+      searchInput: {
+        date: null,
+        content: null
+      },
       tableData: []
     }
   },
@@ -93,6 +100,10 @@ export default {
       this.currentPage = 1
       this.fetchData()
     },
+    changeDate(val) {
+      this.searchInput.date = val
+      console.log(val)
+    },
     async fetchData() {
       if (this.$route.params.type === 'article') {
         this.title = '文章'
@@ -116,9 +127,6 @@ export default {
           this.total = data.total
         }
       }
-    },
-    async searchComment() {
-      this.fetchData()
     },
     // 删除评论
     async deleteRow(index) {

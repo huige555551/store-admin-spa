@@ -34,11 +34,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
-<<<<<<< HEAD
-          <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索">
-=======
           <el-select v-model="article.authorId" remote filterable :remote-method="searchAuthorName" placeholder="请输入作者进行搜索">
->>>>>>> 07ba3dbdd31521bdd3e5c3ce3f3972a1612fb82b
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -93,7 +89,6 @@ export default {
         publicationDate: ''
       },
       options2: {
-<<<<<<< HEAD
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: {
@@ -104,11 +99,8 @@ export default {
         },
         toolbar: ['title', 'image'],
         cleanPaste: true
-=======
-        placeHolder: '输入文章内容'
         // toolbarFloat: false,
         // cleanPaste: true
->>>>>>> 07ba3dbdd31521bdd3e5c3ce3f3972a1612fb82b
       },
       optionColumn: [],
       optionAuthor: [],
