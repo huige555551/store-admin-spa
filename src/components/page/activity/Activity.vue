@@ -37,11 +37,6 @@
           <el-button v-if="scope.row.hasVote" type="default" @click.native.prevent="showVoteDetail(scope.$index)">查看投票</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="评论管理" width="120">
-        <template scope="scope">
-          <el-button type="default" size="small" @click.native.prevent="$router.push('/welcome')">评论管理</el-button>
-        </template>
-      </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button type="default" size="small" @click.native.prevent="$router.push('/activity/edit/' + scope.row.id)">编辑</el-button>
@@ -72,13 +67,13 @@
               <span>{{rowObj.title}}</span>
             </el-form-item>
             <el-form-item label="分类">
-              <span>{{rowObj.column}}</span>
+              <span>{{rowObj.navigationName}}</span>
             </el-form-item>
             <el-form-item label="视频链接">
               <a :href="rowObj.video">{{rowObj.video}}</a>
             </el-form-item>
             <el-form-item label="微博话题">
-              <span>{{rowObj.weixin}}</span>
+              <span>{{rowObj.weibo}}</span>
             </el-form-item>
             <el-form-item label="发布时间">
               <span>{{rowObj.publicationDate}}</span>
@@ -129,11 +124,14 @@
         <el-tab-pane label="投票选项" name="second">
           <el-form label-width="100px">
             <el-form-item  v-for="(item,index) in rowObj.problems" :label="'问题' + (index+1)">
-              <p>{{item.problem}}  <el-tag v-if="item.type==1"type="success">单选</el-tag>
+              <p>{{item.problem}}  <el-tag v-if="item.type==1" type="success">单选</el-tag>
                 <el-tag v-if="item.type==2"type="success">多选</el-tag></p>
-              <el-radio-group>
+              <el-radio-group  v-if="item.type==1">
                 <el-radio v-for="optionitem in item.options" :label="'选项' + (index+1)"></el-radio>
               </el-radio-group>
+              <el-checkbox-group  v-if="item.type==2">
+                <el-checkbox v-for="optionitem in item.options" :label="'选项' + (index+1)"></el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-form>
         </el-tab-pane>

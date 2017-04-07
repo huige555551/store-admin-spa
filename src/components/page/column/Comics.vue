@@ -16,7 +16,14 @@
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="日期">
-        <el-date-picker v-model="searchInput.date" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker
+            v-model="searchInput.date"
+            format="yyyy-MM-dd"
+            @change="handleDatePick"
+            type="date"
+            :clearable="false"
+            placeholder="选择日期">
+        </el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click.native.prevent="search">搜索</el-button>
@@ -98,6 +105,11 @@ export default {
       this.currentPage = 1
       this.fetchData()
     },
+    // 日期更改
+    handleDatePick(val) {
+      console.log(val)
+      this.searchInput.date = val
+    },
     // 搜索
     search() {
       this.searchKey.title = this.searchInput.title
@@ -134,7 +146,7 @@ export default {
     },
     // 删除行
     deleteRow(index) {
-      this.$confirm('此操作将该删除该封面，是否继续?', '提示', {
+      this.$confirm('此操作将该删除该漫画，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'

@@ -17,7 +17,7 @@
         <el-input v-model="searchInput.title" placeholder="标题"></el-input>
       </el-form-item>
       <el-form-item label="期数">
-        <el-input v-model="searchInput.period" placeholder="期数"></el-input>
+        <el-input v-model="searchInput.period" placeholder="期数" type="number"></el-input>
       </el-form-item>
       <el-form-item label="作者">
         <el-input v-model="searchInput.author" placeholder="作者"></el-input>

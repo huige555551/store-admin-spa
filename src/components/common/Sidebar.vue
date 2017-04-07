@@ -20,7 +20,7 @@
         <el-menu-item-group>
           <template slot="title">封面管理</template>
           <el-menu-item index="/cover/list">封面列表 - s</el-menu-item>
-          <el-menu-item index="/cover/add">添加封面</el-menu-item>
+          <el-menu-item index="/cover/add">添加封面✅-hui</el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group>
           <template slot="title">漫画管理</template>
@@ -62,11 +62,11 @@
 
       <!-- 新媒体管理 -->
       <el-submenu index="newmedia">
-        <template slot="title"><i class="el-icon-date"></i>新媒体管理－hui</template>
-        <el-menu-item index="/newmedia/category">分类管理✅</el-menu-item>
-        <el-menu-item index="/newmedia/list">文章列表✅</el-menu-item>
-        <el-menu-item index="/newmedia/add">添加文章✅</el-menu-item>
-        <el-menu-item index="/newmedia/banner">轮播管理✅</el-menu-item>
+        <template slot="title"><i class="el-icon-date"></i>新媒体管理</template>
+        <el-menu-item index="/newmedia/category">分类管理✅－hui</el-menu-item>
+        <el-menu-item index="/newmedia/list">文章列表✅－hui</el-menu-item>
+        <el-menu-item index="/newmedia/add">添加文章✅－hui</el-menu-item>
+        <el-menu-item index="/newmedia/banner">轮播管理✅－hui</el-menu-item>
       </el-submenu>
 
       <!-- 评论管理 -->

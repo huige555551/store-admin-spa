@@ -34,7 +34,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择作者">
+<<<<<<< HEAD
           <el-select v-model="article.authorId" filterable placeholder="请输入作者进行搜索">
+=======
+          <el-select v-model="article.authorId" remote filterable :remote-method="searchAuthorName" placeholder="请输入作者进行搜索">
+>>>>>>> 07ba3dbdd31521bdd3e5c3ce3f3972a1612fb82b
             <el-option
               v-for="item in optionAuthor"
               :label="item.name"
@@ -89,6 +93,7 @@ export default {
         publicationDate: ''
       },
       options2: {
+<<<<<<< HEAD
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: {
@@ -99,6 +104,11 @@ export default {
         },
         toolbar: ['title', 'image'],
         cleanPaste: true
+=======
+        placeHolder: '输入文章内容'
+        // toolbarFloat: false,
+        // cleanPaste: true
+>>>>>>> 07ba3dbdd31521bdd3e5c3ce3f3972a1612fb82b
       },
       optionColumn: [],
       optionAuthor: [],
@@ -129,14 +139,9 @@ export default {
   },
   /* eslint-enable */
   methods: {
-    change() {
+    change(html) {
+      this.article.content = html
     },
-    // async authorFilter() {
-    //   const getTag = await api.get('/api/system/author/listAuthor', {})
-    //   if (getTag.code === 200) {
-    //     this.optionTag = getTag.data.array
-    //   }
-    // },
     async fetchData() {
       const getNavigation = await api.get('/api/system/wechat/listNavigation')
       if (getNavigation.code === 200) {
@@ -157,9 +162,16 @@ export default {
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '<p>a</p>' }
+        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
       }
     },
+    async searchAuthorName(inputAuthorName) {
+      const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: inputAuthorName })
+      if (code === 200) {
+        this.optionAuthor = data.array
+      }
+    },
+    // 日期更改
     handleDatePick(val) {
       this.article.publicationDate = val
     },
@@ -182,10 +194,7 @@ export default {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // 对上post的key
-      this.article.labelList = _.clone(this.article.labels)
-      console.log('this.article.labelList', this.article.labelList)
-      // this.publicationDate = new Moment(this.publicationDate).format('yyyy-MM-dd')
-      // console.log(this.publicationDate)
+      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
       if (this.editing) {
         // this.$set(this.cover, 'publicationDate', this.article.publicationDate.slice(0, 16))
         const { code } = await api.post('/api/system/wechat/updateArticle', this.article)

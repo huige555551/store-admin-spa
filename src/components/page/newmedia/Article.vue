@@ -22,7 +22,7 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option v-for="item in newMediaColumn" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -51,7 +51,7 @@
       <el-table-column label="评论管理" width="120">
         <template scope="scope">
           <!-- TODO with hui -->
-          <el-button size="small">评论管理</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/comment/newmedia/'+scope.row.id)">评论管理</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -107,7 +107,7 @@ export default {
   data() {
     return {
       // 预览
-      newMediaColumn: [],
+      optionColumn: [],
       articleDialog: false,
       rowObj: {
         id: null,
@@ -168,6 +168,11 @@ export default {
     // 获取文章列表数据
     async fetchData() {
       this.tableData = []
+      this.optionColumn = []
+      const getNavigation = await api.get('/api/system/wechat/listNavigation')
+      if (getNavigation.code === 200) {
+        this.optionColumn = getNavigation.data
+      }
       const { code, data } = await api.get('/api/system/wechat/listArticle', {
         currentPage: this.currentPage,
         perPage: this.perPage,

@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 创建活动 -->
-    <el-tabs value="first">
+    <el-tabs value="first" @tab-click="handleClick">
 
       <!-- 活动信息 -->
       <el-tab-pane label="活动信息" name="first">
@@ -122,7 +122,7 @@
       </el-tab-pane>
 
       <!-- 合作伙伴 -->
-      <el-tab-pane label="合作伙伴" name="third" v-if="editing">
+      <el-tab-pane label="合作伙伴" name="third" v-if="editing" >
         <!-- Table -->
         <el-table :data="tableData">
           <el-table-column type="index" label="#" width="60"></el-table-column>
@@ -134,7 +134,7 @@
           </el-table-column>
           <el-table-column label="LOGO" width="200">
             <template scope="scope">
-              <img :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
+              <img :src="scope.row.logo" width="200" max-height="200" @click="openImg(scope.row.logo)" style="cursor: pointer">
             </template>
           </el-table-column>
           <el-table-column label="操作" width="160">
@@ -190,12 +190,14 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      activeName: 'first',
       editing: false,
       newPartner: {},
       newQuestion: {
         ifSingle: null,
         options: []
       },
+      editingPartner: false,
       questionDialog: false,
       partnerDialog: false,
       searchKey: '',
@@ -247,14 +249,25 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
   },
   methods: {
+    openImg(url) {
+      window.open(url)
+    },
+    // 点击tab标签
+    async handleClick(tab) {
+      if (tab.name === 'third') {
+        const { code, data } = await api.get('/api/system/activity/listPartners', { activityId: this.activity.id })
+        if (code === 200) {
+          console.log(data)
+          this.tableData = data
+        }
+      }
+    },
     addOption() {
-      console.log(1111)
       if (this.newQuestion.options.length === 4) {
         return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
       }
@@ -329,17 +342,16 @@ export default {
     },
     // 添加合作伙伴
     addPartner() {
-      this.editing = false
-      this.newPartner.id = null
-      this.newPartner.name = null
-      this.newPartner.logo = null
-      this.newPartner.url = null
+      // this.editing = false
+      // this.newPartner.id = null
+      // this.newPartner.name = null
+      // this.newPartner.logo = null
+      // this.newPartner.url = null
       this.partnerDialog = true
     },
     // 编辑合作伙伴
     editPartner(index) {
-      console.log('123')
-      this.editing = true
+      this.editingPartner = true
       this.editingIndex = index
       this.newPartner.id = this.tableData[index].id
       this.newPartner.logo = this.tableData[index].logo
@@ -364,8 +376,8 @@ export default {
     },
     // 删除伙伴LOGO
     handlePartnerRemove() {
-      this.newPartner.imgKey = null
-      this.newPartner.logo = null
+      this.$set(this.newPartner, 'imgKey', null)
+      this.$set(this.newPartner, 'logo', null)
     },
     // 合作伙伴Logo上传成功
     handlePartnerSuccess(response, bucketPort) {
@@ -378,7 +390,7 @@ export default {
       if (!this.newPartner.url || !this.newPartner.name || !this.newPartner.logo) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
-      if (this.editing) {
+      if (this.editingPartner) {
         const { code } = await api.post('/api/system/activity/updatePartner', this.newPartner)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.newPartner))
@@ -386,11 +398,14 @@ export default {
           this.partnerDialog = false
         }
       } else {
+        console.log('addPartner')
+        this.$set(this.newPartner, 'activityId', this.activity.id)
+        this.$set(this.newPartner, 'logoKey', this.newPartner.logo)
         const { code } = await api.post('/api/system/activity/addPartner', this.newPartner)
         if (code === 200) {
-          this.fetchData()
           this.partnerDialog = false
           this.$notify.success({ title: '成功', message: '添加成功' })
+          this.$router.push('/activity/list')
         }
       }
     }

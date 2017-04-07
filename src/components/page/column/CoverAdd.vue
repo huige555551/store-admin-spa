@@ -41,7 +41,7 @@
         <el-input v-model="cover.title"></el-input>
       </el-form-item>
       <el-form-item label="期数">
-        <el-input v-model="cover.period"></el-input>
+        <el-input v-model="cover.period" type="number"></el-input>
       </el-form-item>
       <el-form-item label="购买链接">
         <el-input v-model="cover.buyUrl"></el-input>
@@ -167,13 +167,17 @@ export default {
     this.fetchData()
   },
   // 组件复用，路由数据刷新
-  async beforeRouteUpdate() {
-    this.fetchData()
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      this.fetchData()
+    }
+    /* eslint-ensable */
+    
   },
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
@@ -193,7 +197,6 @@ export default {
       }
     },
     handleDatePick(val) {
-      console.log(val)
       this.cover.publicationDate = val
     },
     handleRemove(name) {
