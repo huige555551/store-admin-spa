@@ -49,6 +49,8 @@ export default {
         'image'],
       defaultImage: '/assets/avatar.jpg',
       upload: {
+        placeHolder: '输入文章内容',
+        toolbarFloat: false,
         url: 'http://up-z2.qiniu.com',
         params: {
           unique_names: true,
@@ -61,9 +63,9 @@ export default {
         fileSize: 2097152
       }
     }, this.options))
-    this.editor.on('valuechanged', (e, src) => {
-      this.valueChange(e, src)
-    })
+    // this.editor.on('valuechanged', (e, src) => {
+    //   this.valueChange(e, src)
+    // })
   },
   methods: {
     valueChange() {

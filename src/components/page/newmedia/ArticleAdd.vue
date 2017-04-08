@@ -50,7 +50,6 @@
         </el-form-item>
         <el-form-item label="文章标签">
           <el-select v-model="article.labels" multiple filterable allow-create placeholder="请选择/输入文章标签">
-            <!--<el-option v-for="item in optionTag" :label="item.name" :value="item.id"></el-option>-->
           </el-select>
         </el-form-item>
         <el-form-item label="日期" >
@@ -78,6 +77,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
@@ -93,22 +93,7 @@ export default {
       },
       // 图片上传七牛参考: https://my.oschina.net/u/1760791/blog/643768
       // http://blog.csdn.net/jiangtianhao13269230/article/details/50699737
-      options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: {
-          url: 'http://up-z2.qiniu.com',
-          params: {
-            unique_names: true,
-            save_key: false,
-            token: 'v_d4R_-nzDOrMJUnB5tynyL5IRfTtM9clDKj8Gtr:ZQykCVDMEvDRjMzE6cmOhIN_Y2w=:eyJzY29wZSI6Im5ld3dlZWtseS1maWxlIiwiZGVhZGxpbmUiOjE0OTE3MjYxMzd9'
-          },
-          fileKey: 'file', // 服务器端获取文件数据的参数名
-          connectionCount: 3,
-          leaveConfirm: '正在上传文件,你确定要离开这个页面吗？',
-          fileSize: 2097152
-        }
-      },
+      options2: {},
       optionColumn: [],
       optionAuthor: [],
       optionTag: []
@@ -187,6 +172,7 @@ export default {
       }
     },
     async save() {
+      this.$set(this.article, 'content', $('.simditor-body').html())
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {

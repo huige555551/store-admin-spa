@@ -91,6 +91,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 import Simditor from '@/components/util/Simditor'
 import api from '@/api'
 import UploadSingle from '@/components/util/UploadSingle'
@@ -110,13 +111,7 @@ export default {
         authorId: null,
         content: ''
       },
-      options2: {
-        placeHolder: '输入文章内容',
-        toolbarFloat: false,
-        upload: true,
-        toolBar: ['title', 'italic', 'underline'],
-        cleanPaste: true
-      }
+      options2: {}
     }
   },
   components: {
@@ -221,6 +216,7 @@ export default {
       }
     },
     async save() {
+      this.$set(this.article, 'content', $('.simditor-body').html())
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
