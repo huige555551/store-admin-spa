@@ -20,6 +20,9 @@
             <el-form-item label="活动标题">
               <el-input v-model="activity.title"></el-input>
             </el-form-item>
+            <el-form-item label="投票标题">
+              <el-input v-model="activity.name"></el-input>
+            </el-form-item>
             <el-form-item label="开始时间">
               <el-date-picker
                 v-model="activity.vote.startTime"
