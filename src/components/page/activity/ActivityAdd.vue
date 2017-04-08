@@ -24,7 +24,7 @@
               <el-date-picker
                 v-model="activity.vote.startTime"
                 type="date"
-                change="changeDate(val)"
+                @change="changeDate"
                 format="yyyy-MM-dd"
                 placeholder="选择日期">
               </el-date-picker>
@@ -33,7 +33,7 @@
               <el-date-picker
                 v-model="activity.vote.endTime"
                 type="date"
-                change="changeEndDate(val)"
+                @change="changeEndDate"
                 format="yyyy-MM-dd"
                 placeholder="选择日期">
               </el-date-picker>
@@ -341,9 +341,12 @@ export default {
     },
     // 时间格式
     changeDate(val) {
+      console.log(val)
       this.activity.vote.startTime = val
     },
     changeEndDate(val) {
+      console.log(val)
+
       this.activity.vote.endTime = val
     },
     // 投票开关
