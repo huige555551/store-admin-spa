@@ -287,7 +287,8 @@ export default {
       this.$set(this.activity, 'imgKey', response.key)
     },
     async save() {
-      console.log(this.activity)
+      console.log(this.activity.vote)
+      this.activity.vote = JSON.stringify(this.activity.vote)
       if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.weibo || !this.activity.introduction) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }

@@ -29,7 +29,7 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column label="头像" width="80">
         <template scope="scope">
-          <img :src="scope.row.avatar" width="48" height="48" @click="openImg(scope.row.cover)" style="cursor: pointer">
+          <img :src="scope.row.headImgUrl" width="48" height="48" @click="openImg(scope.row.cover)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column prop="nickname" label="用户" min-width="100"></el-table-column>
