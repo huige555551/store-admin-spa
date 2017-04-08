@@ -190,8 +190,10 @@ const _ = require('lodash')
 export default {
   data() {
     return {
-      dateStr: null,
-      milliSeconds: null,
+      startdateStr: null,
+      startmilliSeconds: null,
+      enddateStr: null,
+      endmilliSeconds: null,
       activeName: 'first',
       editing: false,
       newPartner: {},
@@ -293,8 +295,15 @@ export default {
       if (typeof this.activity.vote === 'object') {
         this.activity.vote = JSON.stringify(this.activity.vote)
       }
+      if (this.endmilliSeconds < this.startmilliSeconds) {
+        this.$notify.error({ title: '错误', message: '活动结束时间应大于开始时间' })
+        this.activity.vote = JSON.parse(this.activity.vote)
+        return false
+      }
       if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.weibo || !this.activity.introduction) {
-        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+        this.$notify.error({ title: '错误', message: '表单信息不完整' })
+        this.activity.vote = JSON.parse(this.activity.vote)
+        return false
       }
       if (this.editing) {
         const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
@@ -309,7 +318,6 @@ export default {
           this.$router.push('/activity/list')
         }
       }
-      // this.activity.vote = []
     },
     // 编辑问题
     editQuestion(index) {
@@ -347,13 +355,16 @@ export default {
     // 时间格式
     changeDate(val) {
       console.log(val)
-      // this.dateStr = val.replace(/-/g, '/')
-      // this.milliSeconds = Date.parse(this.dateStr) / 1000
-      // console.log(this.milliSeconds)
+      this.startdateStr = val.replace(/-/g, '/')
+      this.startmilliSeconds = Date.parse(this.startdateStr) / 1000
+      console.log(this.startmilliSeconds)
       this.activity.vote.startTime = val
     },
     changeEndDate(val) {
       console.log(val)
+      this.enddateStr = val.replace(/-/g, '/')
+      this.endmilliSeconds = Date.parse(this.enddateStr) / 1000
+      console.log(this.endmilliSeconds)
       this.activity.vote.endTime = val
     },
     // 投票开关
