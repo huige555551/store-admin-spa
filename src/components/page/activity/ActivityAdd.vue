@@ -288,7 +288,9 @@ export default {
     },
     async save() {
       console.log(this.activity.vote)
-      this.activity.vote = JSON.stringify(this.activity.vote)
+      if (typeof this.activity.vote === 'object') {
+        this.activity.vote = JSON.stringify(this.activity.vote)
+      }
       if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.weibo || !this.activity.introduction) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
@@ -305,6 +307,7 @@ export default {
           this.$router.push('/activity/list')
         }
       }
+      // this.activity.vote = []
     },
     // 编辑问题
     editQuestion(index) {
