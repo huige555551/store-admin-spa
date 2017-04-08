@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import api from '@/api'
 import $ from 'jquery'
 import Simditor from 'simditor'
 import 'simditor/styles/simditor.css'
@@ -48,30 +47,23 @@ export default {
         'underline',
         'link',
         'image'],
+      defaultImage: '/assets/avatar.jpg',
       upload: {
-        url: '//up.qiniu.com', // 文件上传的接口地址
+        url: 'http://up-z2.qiniu.com',
+        params: {
+          unique_names: true,
+          save_key: false,
+          token: 'v_d4R_-nzDOrMJUnB5tynyL5IRfTtM9clDKj8Gtr:ZQykCVDMEvDRjMzE6cmOhIN_Y2w=:eyJzY29wZSI6Im5ld3dlZWtseS1maWxlIiwiZGVhZGxpbmUiOjE0OTE3MjYxMzd9'
+        },
         fileKey: 'file', // 服务器端获取文件数据的参数名
-        params: null,
         connectionCount: 3,
-        leaveConfirm: '正在上传文件,你确定要离开这个页面吗？'
+        leaveConfirm: '正在上传文件,你确定要离开这个页面吗？',
+        fileSize: 2097152
       }
     }, this.options))
     this.editor.on('valuechanged', (e, src) => {
       this.valueChange(e, src)
     })
-    this.editor.uploader.on('uploadsuccess', (_this) => {
-      console.log('uploadsuccess', _this)
-    })
-    this.editor.uploader.on('beforeupload', () => {
-      api.get('/api/system/upload/getToken').then(response => {
-        this.$set(this.uploadParams, 'unique_names', true)
-        this.$set(this.uploadParams, 'save_key', false)
-        this.$set(this.uploadParams, 'token', response.data.token)
-      })
-    })
-    this.$set(this.editor.opts, 'params', this.uploadParams)
-    console.log('opts', this.editor.opts, this.uploadParams)
-    this.editor.setValue(this.content)
   },
   methods: {
     valueChange() {
