@@ -42,7 +42,7 @@ export default {
     return {
       formDialog: false,
       featuredObj: {},
-      featuredAudio: {},
+      featuredAudio: { title: null },
       results: {}
     }
   },

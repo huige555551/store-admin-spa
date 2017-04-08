@@ -22,7 +22,7 @@
             </el-form-item>
             <el-form-item label="开始时间">
               <el-date-picker
-                v-model="activity.startTime"
+                v-model="activity.vote.startTime"
                 type="date"
                 change="changeDate(val)"
                 format="yyyy-MM-dd"
@@ -31,7 +31,7 @@
             </el-form-item>
             <el-form-item label="结束时间">
               <el-date-picker
-                v-model="activity.endTime"
+                v-model="activity.vote.endTime"
                 type="date"
                 change="changeEndDate(val)"
                 format="yyyy-MM-dd"
@@ -72,9 +72,9 @@
             <el-form-item label="启用投票">
               <el-switch v-model="activity.hasVote" change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
-            <div v-for="(item,index) in activity.vote">
+            <div v-for="(item,index) in activity.vote.problems">
               <el-form-item label="问题一">
-                <p>{{ item.title }}
+                <p>{{ item.problem }}
                 <el-tag type="success" v-if="item.ifSingle">单选</el-tag>
                 <el-tag type="success" v-if="!item.ifSingle">多选</el-tag>
                 <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button></p>
@@ -83,7 +83,7 @@
                   <el-radio :disabled="true" :label="false">多选</el-radio>
                 </el-radio-group>
                 <el-radio-group v-for="option in item.options" style="display:block;">
-                  <el-radio :disabled="true" :label="option.label" style="margin-top:15px">{{ option.label }}</el-radio>
+                  <el-radio :disabled="true" :label="option.option" style="margin-top:15px">{{ option.option }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </div>
@@ -98,7 +98,7 @@
         <el-dialog title="添加问题" v-model="questionDialog">
           <el-form label-width="100px" class="demo-dynamic">
             <el-form-item label="问题">
-              <el-input v-model="newQuestion.title"></el-input>
+              <el-input v-model="newQuestion.problem"></el-input>
             </el-form-item>
             <el-form-item label="类型">
               <el-radio-group v-model="newQuestion.ifSingle">
@@ -107,7 +107,7 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item v-for="(option, index) in newQuestion.options" :label="'选项' + (index+1)" :key="option.key">
-              <el-input v-model="option.label"></el-input>
+              <el-input v-model="option.option"></el-input>
               <el-button style="margin-left: 20px" @click="deleteOption(index)">删除</el-button>
             </el-form-item>
             <el-form-item>
@@ -203,7 +203,7 @@ export default {
       searchKey: '',
       vote: {},
       activity: {
-        hasVote: true,
+        hasVote: false,
         imgUrl: null,
         imgKey: null,
         navigationId: null,
@@ -212,7 +212,11 @@ export default {
         weibo: null,
         startTime: null,
         endTime: null,
-        vote: []
+        vote: {
+          startTime: null,
+          endTime: null,
+          problems: []
+        }
       },
       tableData: [
         // { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
@@ -226,18 +230,8 @@ export default {
     }
   },
   async created() {
-    if (this.$route.params.id) {
-      this.editing = true
-      const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
-      if (code === 200) {
-        this.activity = data
-        this.actiity.vote = data.vote
-      }
-    } else {
-      this.editing = false
-      this.video = {}
-    }
     // 拿回所有栏目
+    this.fetchData()
     const { code, data } = await api.get('/api/system/activity/listNavigation')
     if (code === 200) {
       this.columnResults = data
@@ -257,6 +251,20 @@ export default {
     openImg(url) {
       window.open(url)
     },
+    async fetchData() {
+      if (this.$route.params.id) {
+        this.editing = true
+        const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
+        // console.log(data)
+        if (code === 200) {
+          this.activity = data
+          console.log(this.activity)
+          // this.actiity.vote = data.vote
+        }
+      } else {
+        this.editing = false
+      }
+    },
     // 点击tab标签
     async handleClick(tab) {
       if (tab.name === 'third') {
@@ -266,15 +274,6 @@ export default {
           this.tableData = data
         }
       }
-    },
-    addOption() {
-      if (this.newQuestion.options.length === 4) {
-        return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
-      }
-      this.newQuestion.options.push({ id: null, value: null, label: null })
-    },
-    deleteOption(index) {
-      this.newQuestion.options.splice(index, 1)
     },
     // 添加活动
     // 删除活动封面图片
@@ -311,34 +310,45 @@ export default {
       this.editing = true
       this.editingIndex = index
       this.questionDialog = true
-      this.newQuestion = _.clone(this.activity.vote[index])
+      this.newQuestion = _.clone(this.activity.vote.problems[index])
       console.log(this.newQuestion)
     },
     // 添加问题
     addQuestion() {
-      if (this.newQuestion.ifSingle === null || !this.newQuestion.title || this.newQuestion.options.length === 0) {
+      if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
+        console.log(this.newQuestion)
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
-        this.activity.vote.splice(this.editingIndex, 1, _.clone(this.newQuestion))
+        this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
       } else {
-        this.activity.vote.push(_.clone(this.newQuestion))
+        this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
+        console.log(this.activity)
       }
       this.questionDialog = false
-      this.newQuestion = { ifSingle: null, options: [] }
+      this.newQuestion = { ifSingle: null, options: [], problem: null }
       this.editing = false
+    },
+    addOption() {
+      if (this.newQuestion.options.length === 4) {
+        return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
+      }
+      this.newQuestion.options.push({ id: null, value: null, label: null })
+    },
+    deleteOption(index) {
+      this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
     changeDate(val) {
-      this.activity.startTime = val
+      this.activity.vote.startTime = val
     },
     changeEndDate(val) {
-      this.activity.endTime = val
+      this.activity.vote.endTime = val
     },
     // 投票开关
     changeSwitch() {
-      // console.log(this.activity.hasVote)
-      // this.activity.hasVote = !this.activity.hasVote
+      console.log(this.activity.hasVote)
+      this.activity.hasVote = !this.activity.hasVote
     },
     // 添加合作伙伴
     addPartner() {
