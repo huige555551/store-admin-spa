@@ -173,20 +173,6 @@ export default {
       // 表格
       tableData: [],
       partners: [],
-      // tableData: [
-      //   { title: '这是标题1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: null, video: 'http://baidu.com' },
-      //   { title: '这是标题2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: null, video: 'http://baidu.com' },
-      //   { title: '这是标题3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: null, video: '' },
-      //   { title: '这是标题4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: { title: '这是标题1', description: '这是描述', startTime: '2016-03-01', endTime: '2016-03-03', questions: [{ name: '问题', answer: ['选项1', '选项2', '选项3'] }, { name: '问题', answer: ['选项1', '选项2', '选项3'] }] }, video: '' },
-      //   { title: '这是标题5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: null, video: 'http://baidu.com' },
-      //   { title: '这是标题6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', category: '分类', description: '简介', voteTitle: '投票标题', createdAt: '2017-02-02 12:30', weiboTag: '#新周刊', partner: [], vote: null, video: 'http://baidu.com' }
-      // ],
-      // partners: [
-      //   { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-      //   { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-      //   { name: '合作伙伴3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-      //   { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
-      // ],
       rowObj: {
         id: null,
         title: null,

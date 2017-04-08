@@ -63,7 +63,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor :content="article.content" :options="options2" @change="change"></simditor>
+          <simditor :content="article.content" :options="options2" @change="change" @simditorHandleSuccess="simditorHandleSuccess"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -178,6 +178,10 @@ export default {
         this.$set(this.article, 'coverUrl', `${bucketPort}/${response.key}`)
         this.$set(this.article, 'coverKey', response.key)
       }
+    },
+    simditorHandleSuccess(response, bucketPort) {
+      this.$set(this.article, 'simditorImgUrl', `${bucketPort}/${response.key}`)
+      this.$set(this.article, 'simditorImgKey', response.key)
     },
     async save() {
       if (!this.article.coverUrl) {

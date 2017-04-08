@@ -59,19 +59,20 @@ export default {
     this.editor.on('valuechanged', (e, src) => {
       this.valueChange(e, src)
     })
-    this.editor.uploader.on('uploadsuccess', (_this) => {
-      console.log('uploadsuccess', _this)
+    this.editor.uploader.on('uploadsuccess', () => {
+      console.log('uploadsuccess')
     })
     this.editor.uploader.on('beforeupload', () => {
+      console.log('beforeupload')
       api.get('/api/system/upload/getToken').then(response => {
+        this.bucketPort = response.data.bucketPort
         this.$set(this.uploadParams, 'unique_names', true)
         this.$set(this.uploadParams, 'save_key', false)
         this.$set(this.uploadParams, 'token', response.data.token)
+        this.$emit('simditorHandleSuccess', response, this.bucketPort)
       })
     })
     this.$set(this.editor.opts, 'params', this.uploadParams)
-    console.log('opts', this.editor.opts, this.uploadParams)
-    this.editor.setValue(this.content)
   },
   methods: {
     valueChange() {
