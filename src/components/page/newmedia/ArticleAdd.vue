@@ -63,7 +63,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor :content="article.content" :options="options2" @change="change" @simditorHandleSuccess="simditorHandleSuccess"></simditor>
+          <simditor :content="article.content" :options="options2" @change="change"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -88,19 +88,23 @@ export default {
       article: {
         publicationDate: ''
       },
+      // 图片上传七牛参考: https://my.oschina.net/u/1760791/blog/643768
+      // http://blog.csdn.net/jiangtianhao13269230/article/details/50699737
       options2: {
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         upload: {
-          url: '//up-z2.qiniu.com',
+          url: 'http://up-z2.qiniu.com',
           params: {
-            token: ''
-          }
-        },
-        toolbar: ['title', 'image'],
-        cleanPaste: true
-        // toolbarFloat: false,
-        // cleanPaste: true
+            unique_names: true,
+            save_key: false,
+            token: 'v_d4R_-nzDOrMJUnB5tynyL5IRfTtM9clDKj8Gtr:ZQykCVDMEvDRjMzE6cmOhIN_Y2w=:eyJzY29wZSI6Im5ld3dlZWtseS1maWxlIiwiZGVhZGxpbmUiOjE0OTE3MjYxMzd9'
+          },
+          fileKey: 'file', // 服务器端获取文件数据的参数名
+          connectionCount: 3,
+          leaveConfirm: '正在上传文件,你确定要离开这个页面吗？',
+          fileSize: 2097152
+        }
       },
       optionColumn: [],
       optionAuthor: [],
@@ -122,12 +126,12 @@ export default {
     }
   },
   async mounted() {
-    const tokenData = await api.get('/api/system/upload/getToken')
-    console.log(tokenData)
-      if (tokenData.code === 200) {
-        this.options2.upload.params.token = tokenData.data.token
-        console.log(this.options2)
-      }
+    // const tokenData = await api.get('/api/system/upload/getToken')
+    // console.log(tokenData)
+    //   if (tokenData.code === 200) {
+    //     this.options2.upload.params.token = tokenData.data.token
+    //     console.log(this.tokenData)
+    //   }
   },
   /* eslint-enable */
   methods: {
@@ -179,10 +183,6 @@ export default {
         this.$set(this.article, 'coverKey', response.key)
       }
     },
-    simditorHandleSuccess(response, bucketPort) {
-      this.$set(this.article, 'simditorImgUrl', `${bucketPort}/${response.key}`)
-      this.$set(this.article, 'simditorImgKey', response.key)
-    },
     async save() {
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
@@ -192,7 +192,6 @@ export default {
       // 对上post的key
       this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
       if (this.editing) {
-        // this.$set(this.cover, 'publicationDate', this.article.publicationDate.slice(0, 16))
         const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
