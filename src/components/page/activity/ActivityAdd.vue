@@ -190,6 +190,8 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      dateStr: null,
+      milliSeconds: null,
       activeName: 'first',
       editing: false,
       newPartner: {},
@@ -345,11 +347,13 @@ export default {
     // 时间格式
     changeDate(val) {
       console.log(val)
+      // this.dateStr = val.replace(/-/g, '/')
+      // this.milliSeconds = Date.parse(this.dateStr) / 1000
+      // console.log(this.milliSeconds)
       this.activity.vote.startTime = val
     },
     changeEndDate(val) {
       console.log(val)
-
       this.activity.vote.endTime = val
     },
     // 投票开关
