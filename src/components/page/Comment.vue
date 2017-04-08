@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="search">搜索</el-button>
-        <el-button>清空</el-button>
+        <el-button @click="emptySearch">清空</el-button>
       </el-form-item>
     </el-form>
 
@@ -45,6 +45,8 @@
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="[10, 20, 50]"
         :page-size="10"
@@ -107,21 +109,21 @@ export default {
     async fetchData() {
       if (this.$route.params.type === 'article') {
         this.title = '文章'
-        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { articleId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
+        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { articleId: this.$route.params.id, currentPage: this.currentPage, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total
         }
       } else if (this.$route.params.type === 'video') {
         this.title = '视频'
-        const { code, data } = await api.get('/api/system/comment/listVideoComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
+        const { code, data } = await api.get('/api/system/comment/listVideoComment?', { videoId: this.$route.params.id, currentPage: this.currentPage, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total
         }
       } else {
         this.title = '活动'
-        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, content: this.searchKey.content, date: this.searchKey.date })
+        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, currentPage: this.currentPage, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total
@@ -142,6 +144,17 @@ export default {
           this.fetchData()
         }
       }).catch(() => {})
+    },
+    // 分页
+    handleSizeChange(val) {
+      this.perPage = val
+      this.currentPage = 1
+      this.fetchData()
+    },
+    // 分页
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.fetchData()
     }
   }
 }

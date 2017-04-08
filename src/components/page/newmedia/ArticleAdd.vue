@@ -33,7 +33,7 @@
             <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="选择作者">
+        <el-form-item label="选择第一作者">
           <el-select v-model="article.authorId" remote filterable :remote-method="searchAuthorName" placeholder="请输入作者进行搜索">
             <el-option
               v-for="item in optionAuthor"
@@ -41,6 +41,9 @@
               :value="item.id">
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="第二作者">
+          <el-input v-model="article.secondAuthor"></el-input>
         </el-form-item>
         <el-form-item label="文章标题">
           <el-input v-model="article.title"></el-input>

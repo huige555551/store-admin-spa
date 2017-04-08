@@ -39,7 +39,8 @@
       <el-table-column prop="title" label="标题" min-width="200"></el-table-column>
       <el-table-column prop="navigationName" label="栏目" width="100"></el-table-column>
       <el-table-column prop="period" label="期数" width="80"></el-table-column>
-      <el-table-column prop="author" label="作者" min-width="90"></el-table-column>
+      <el-table-column prop="author" label="第一作者" min-width="90"></el-table-column>
+      <el-table-column prop="secondAuthor" label="第二作者" min-width="90"></el-table-column>
       <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
       <el-table-column label="封面" width="200">
         <template scope="scope">
@@ -94,6 +95,9 @@
         </el-form-item>
         <el-form-item label="作者">
           <span>{{previewObj.author}}</span>
+        </el-form-item>
+        <el-form-item label="第二作者">
+          <span>{{previewObj.secondAuthor}}</span>
         </el-form-item>
         <el-form-item label="发布时间">
           <span>{{previewObj.publicationDate}}</span>

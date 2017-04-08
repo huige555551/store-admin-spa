@@ -42,7 +42,7 @@ export default {
     return {
       formDialog: false,
       featuredObj: {},
-      featuredAudio: {},
+      featuredAudio: { title: null },
       results: {}
     }
   },
@@ -53,8 +53,14 @@ export default {
     async fetchData() {
       this.tableData = []
       const { code, data } = await api.get('/api/system/audio/getExquisiteAudio')
+      console.log(data)
       if (code === 200) {
-        this.featuredAudio = data
+        if (data) {
+          this.featuredAudio = data
+        } else {
+          this.featuredAudio.title = '暂无精选音频，请添加'
+          console.log(data)
+        }
       }
     },
     async searchAudio(val) {
