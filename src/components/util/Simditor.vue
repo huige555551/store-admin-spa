@@ -4,6 +4,7 @@
 
 <script>
 import $ from 'jquery'
+import api from '@/api'
 import Simditor from 'simditor'
 import 'simditor/styles/simditor.css'
 
@@ -24,19 +25,19 @@ export default {
   },
   data() {
     return {
+      token: null,
       editor: null,
       fileKey: '',
       uploadParams: null,
       bucketPort: null
     }
   },
-  watch: {
-    content(val) {
-      this.editor.setValue(val)
+  async mounted() {
+    const { code, data } = await api.get('/api/system/upload/getToken')
+    if (code === 200) {
+      this.token = data.token
     }
-  },
-  mounted() {
-    /* eslint-disable no-new */
+    const getToken = this.token
     this.editor = new Simditor(Object.assign({}, {
       textarea: $('#editor'),
       // 自定义工具栏
@@ -55,7 +56,7 @@ export default {
         params: {
           unique_names: true,
           save_key: false,
-          token: 'v_d4R_-nzDOrMJUnB5tynyL5IRfTtM9clDKj8Gtr:ZQykCVDMEvDRjMzE6cmOhIN_Y2w=:eyJzY29wZSI6Im5ld3dlZWtseS1maWxlIiwiZGVhZGxpbmUiOjE0OTE3MjYxMzd9'
+          token: getToken
         },
         fileKey: 'file', // 服务器端获取文件数据的参数名
         connectionCount: 3,
@@ -63,14 +64,6 @@ export default {
         fileSize: 2097152
       }
     }, this.options))
-    // this.editor.on('valuechanged', (e, src) => {
-    //   this.valueChange(e, src)
-    // })
-  },
-  methods: {
-    valueChange() {
-      this.$emit('change', this.editor.getValue())
-    }
   }
 }
 </script>
