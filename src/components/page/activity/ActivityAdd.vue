@@ -267,6 +267,9 @@ export default {
           this.activity = data
           console.log(this.activity)
           // this.actiity.vote = data.vote
+          if (!this.activity.vote.problems) {
+            this.activity.vote.problems = []
+          }
         }
       } else {
         this.editing = false
@@ -337,8 +340,10 @@ export default {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
+        // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
       } else {
+        // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
         console.log(this.activity)
       }
