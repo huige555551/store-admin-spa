@@ -17,7 +17,7 @@ router.beforeEach((to, from, next) => {
   const { code, data } = api.get('/api/system/sysUser/login')
   if (code === 200) {
     if (!data.islogin) {
-      return router.replace('login')
+      return router.replace('/login')
     }
   }
   next()
