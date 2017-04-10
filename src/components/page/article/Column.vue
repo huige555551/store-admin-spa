@@ -151,7 +151,6 @@ export default {
       if (!this.rowObj.name || !this.rowObj.order || !this.rowObj.bannerUrl) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
-      console.log(this.rowObj)
       if (this.editing) {
         const { code } = await api.post('/api/system/article/updateNavigation', this.rowObj)
         if (code === 200) {

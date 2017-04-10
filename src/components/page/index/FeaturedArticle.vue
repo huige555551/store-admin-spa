@@ -131,7 +131,6 @@ export default {
         type: 'info'
       }).then(async () => {
         const { code } = await api.post('/api/system/article/deleteExquisiteArticle', { articleId: this.tableData[index].id })
-        console.log(code)
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })

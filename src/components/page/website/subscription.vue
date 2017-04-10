@@ -153,7 +153,6 @@ export default {
     },
     // 保存修改
     async saveRow() {
-      console.log(this.rowObj)
       if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.logo) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }

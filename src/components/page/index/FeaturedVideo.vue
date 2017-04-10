@@ -158,7 +158,6 @@ export default {
         }
       } else {
         this.rowObj.videoId = this.rowObj.targetVideoId
-        console.log(this.rowObj)
         const { code } = await api.post('/api/system/video/addExquisiteVideo', this.rowObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '添加成功' })

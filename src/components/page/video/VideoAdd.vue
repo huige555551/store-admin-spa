@@ -85,7 +85,6 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
@@ -130,7 +129,6 @@ export default {
       this.$set(this.video, 'coverKey', response.key)
     },
     async save() {
-      console.log(this.video)
       if (!this.video.coverUrl || !this.video.navigationId || !this.video.time || !this.video.title || !this.video.remark || !this.video.url) {
         return this.$notify.error({ title: '错误', message: '表单信息或图片信息不完整' })
       }

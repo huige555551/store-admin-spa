@@ -146,7 +146,6 @@ export default {
         if (this.rowObj.articleId === this.rowObj.title) {
           this.rowObj.articleId = this.rowObj.newMediaId
         }
-        console.log(this.rowObj)
         const { code } = await api.post('/api/system/wechat/updateNewMedia', this.rowObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '修改成功' })
@@ -156,7 +155,6 @@ export default {
           this.formDialog = false
         }
       } else {
-        console.log(this.rowObj)
         const { code } = await api.post('/api/system/wechat/addNewMedia', this.rowObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '添加成功' })

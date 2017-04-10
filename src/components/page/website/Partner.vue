@@ -149,7 +149,6 @@ export default {
     },
     // 保存修改
     async saveRow() {
-      console.log(this.rowObj)
       if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.imgUrl) {
         return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和链接,并上传相应logo图' })
       }

@@ -126,7 +126,6 @@ export default {
     },
     // 上传成功
     handleSuccess(response, bucketPort) {
-      console.log(response)
       this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
       this.$set(this.rowObj, 'imgKey', response.key)
     },
@@ -166,7 +165,6 @@ export default {
     },
     // 保存行
     async saveRow() {
-      console.log(this.rowObj)
       if (!this.rowObj.imgUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }

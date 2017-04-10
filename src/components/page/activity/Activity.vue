@@ -250,7 +250,6 @@ export default {
       if (tab.name === 'second') {
         const { code, data } = await api.get('/api/system/activity/listPartners', { activityId: this.selectIndexId })
         if (code === 200) {
-          console.log(data)
           this.partners = data
         }
       }

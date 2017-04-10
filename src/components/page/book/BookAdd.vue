@@ -181,7 +181,6 @@ export default {
   },
   // 组件复用，路由数据刷新
   async beforeRouteUpdate() {
-    console.log(this.editing)
     this.fetchData()
   },
   methods: {
@@ -192,7 +191,6 @@ export default {
         const { code, data } = await api.get('/api/system/book/getBook?', { bookId: this.$route.params.id })
         if (code === 200) {
           this.book = data
-          console.log(data)
         }
       } else {
         this.editing = false
@@ -202,14 +200,12 @@ export default {
     // 删除封面图片
     handleRemove(name) {
       if (name === 'cover') {
-        console.log('directory')
         this.book.coverUrl = null
         this.book.coverKey = null
       } else if (name === 'introduction') {
         this.book.storyImgUrl = null
         this.book.storyImgKey = null
       } else if (name === 'directory') {
-        console.log('directory')
         this.book.directoryUrl = null
         this.book.directoryImgKey = null
       }

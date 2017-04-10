@@ -81,12 +81,12 @@
     <el-dialog title="编辑目录" v-model="catergoryDialog" size="small">
       <el-form ref="form" label-position="left" label-width="100px" style="width: 600px;">
         <!-- 一级目录 -->
-        <el-form-item label="一级目录" v-for="(item, index) in directory" :key="item.name">
+        <el-form-item label="一级目录" v-for="(item, index) in directory">
           <el-input v-model="item.name" placeholder="一级目录名" class="inline"></el-input>
           <el-input v-model="item.page" placeholder="页码" class="inline pages"></el-input>
           <el-button type="text" style="margin-left:20px" @click="deleteFirstDir(index)">删除一级</el-button>
           <!-- 二级目录 -->
-            <el-form-item  v-for="(subItem, index1) in item.children" :key="item.name">
+            <el-form-item  v-for="(subItem, index1) in item.children">
               <el-input v-model="subItem.name" size="small" class="secondCatergory inline" placeholder="二级目录名"></el-input>
               <el-input v-model="subItem.page" size="small"  placeholder="页码" class="inline pages secondCatergory"></el-input>
               <el-button type="text" style="margin-left:20px" @click="deleteSecondDir(index,index1)">删除</el-button>
@@ -189,7 +189,6 @@ export default {
         const { code, data } = await api.get('/api/system/cover/getCover', { coverId: this.$route.params.id })
         if (code === 200) {
           this.cover = data
-          console.log(data)
         }
       } else {
         this.editing = false
@@ -281,7 +280,6 @@ export default {
     saveDirectory() {
       this.catergoryDialog = false
       this.cover.directory = _.cloneDeep(this.directory)
-      console.log(this.cover)
     }
   }
 }

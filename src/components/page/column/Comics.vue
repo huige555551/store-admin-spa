@@ -107,7 +107,6 @@ export default {
     },
     // 日期更改
     handleDatePick(val) {
-      console.log(val)
       this.searchInput.date = val
     },
     // 搜索
@@ -127,7 +126,6 @@ export default {
         date: this.searchKey.date,
         type: 1
       })
-      console.log(code, data)
       if (code === 200) {
         this.tableData = data.array
         this.total = data.total

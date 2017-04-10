@@ -183,7 +183,6 @@ export default {
       if (!this.newAd.advertismentTypeId || !this.newAd.advertisers || !this.newAd.imgUrl) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
-      console.log(this.newAd)
       if (this.editing) {
         const { code } = await api.post('/api/system/advertisment/updateAdvertisment', this.newAd)
         if (code === 200) {

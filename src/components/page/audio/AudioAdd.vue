@@ -59,7 +59,6 @@
             :multiple="false"
             :on-progress="handleAudioUploading"
             :on-success="handleAudioSuccess"
-            :on-error="handleAudioError"
             :before-upload="beforeAudioUpload"
             :data="uploadParams">
             <el-button size="small" type="primary">点击上传</el-button>
@@ -108,7 +107,6 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
@@ -122,7 +120,6 @@ export default {
         if (code === 200) {
           this.audio = data
           this.audioName = data.fileKey
-          console.log(!this.audio.audioName)
         }
       } else {
         this.editing = false
@@ -150,7 +147,6 @@ export default {
         return false
       }
       return api.get('/api/system/upload/getToken').then(response => {
-        console.log('1234')
         this.bucketPort = response.data.bucketPort
         this.uploadParams = {
           token: response.data.token
@@ -168,9 +164,6 @@ export default {
       this.$notify.success({ title: '成功', message: '上传成功' })
       this.$set(this.audio, 'fileKey', response.key)
     },
-    handleAudioError(err, file, fileList) {
-      console.log(err, file, fileList)
-    },
     // 更换音频
     changeAudio() {
       this.audioName = null
@@ -187,7 +180,6 @@ export default {
       this.$set(this.audio, 'imgKey', response.key)
     },
     async save() {
-      console.log(this.audio)
       if (!this.audio.imgUrl || !this.audio.navigationId || !this.audio.time || !this.audio.title || !this.audio.introduction || !this.audio.fileKey) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }

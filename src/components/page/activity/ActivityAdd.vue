@@ -262,11 +262,8 @@ export default {
       if (this.$route.params.id) {
         this.editing = true
         const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
-        // console.log(data)
         if (code === 200) {
           this.activity = data
-          console.log(this.activity)
-          // this.actiity.vote = data.vote
           if (!this.activity.vote.problems) {
             this.activity.vote.problems = []
           }
@@ -280,7 +277,6 @@ export default {
       if (tab.name === 'third') {
         const { code, data } = await api.get('/api/system/activity/listPartners', { activityId: this.activity.id })
         if (code === 200) {
-          console.log(data)
           this.tableData = data
         }
       }
@@ -297,7 +293,6 @@ export default {
       this.$set(this.activity, 'imgKey', response.key)
     },
     async save() {
-      console.log(this.activity.vote)
       if (typeof this.activity.vote === 'object') {
         this.activity.vote = JSON.stringify(this.activity.vote)
       }
@@ -331,12 +326,10 @@ export default {
       this.editingIndex = index
       this.questionDialog = true
       this.newQuestion = _.clone(this.activity.vote.problems[index])
-      console.log(this.newQuestion)
     },
     // 添加问题
     addQuestion() {
       if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
-        console.log(this.newQuestion)
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
@@ -345,7 +338,6 @@ export default {
       } else {
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
-        console.log(this.activity)
       }
       this.questionDialog = false
       this.newQuestion = { ifSingle: null, options: [], problem: null }
@@ -362,22 +354,17 @@ export default {
     },
     // 时间格式
     changeDate(val) {
-      console.log(val)
       this.startdateStr = val.replace(/-/g, '/')
       this.startmilliSeconds = Date.parse(this.startdateStr) / 1000
-      console.log(this.startmilliSeconds)
       this.activity.vote.startTime = val
     },
     changeEndDate(val) {
-      console.log(val)
       this.enddateStr = val.replace(/-/g, '/')
       this.endmilliSeconds = Date.parse(this.enddateStr) / 1000
-      console.log(this.endmilliSeconds)
       this.activity.vote.endTime = val
     },
     // 投票开关
     changeSwitch() {
-      console.log(this.activity.hasVote)
       this.activity.hasVote = !this.activity.hasVote
     },
     // 添加合作伙伴
@@ -426,7 +413,6 @@ export default {
     },
     // 保存修改
     async saveRow() {
-      console.log(this.newPartner)
       if (!this.newPartner.url || !this.newPartner.name || !this.newPartner.logo) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
@@ -438,7 +424,6 @@ export default {
           this.partnerDialog = false
         }
       } else {
-        console.log('addPartner')
         this.$set(this.newPartner, 'activityId', this.activity.id)
         this.$set(this.newPartner, 'logoKey', this.newPartner.logo)
         const { code } = await api.post('/api/system/activity/addPartner', this.newPartner)
