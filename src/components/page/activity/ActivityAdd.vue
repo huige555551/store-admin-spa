@@ -344,9 +344,9 @@ export default {
       this.editing = false
     },
     addOption() {
-      if (this.newQuestion.options.length === 4) {
-        return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
-      }
+      // if (this.newQuestion.options.length === 4) {
+      //   return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
+      // }
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
