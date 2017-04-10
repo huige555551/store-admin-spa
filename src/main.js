@@ -19,13 +19,13 @@ router.beforeEach(async (to, from, next) => {
   } else {
     const { code, data } = await api.get('/api/system/sysUser/login')
     if (code === 200) {
-      if (!data.islogin) {
-        return router.replace('/login')
-      }
+      next()
+    }else{
+      return router.replace('/login')
     }
-    next()
   }
 })
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
