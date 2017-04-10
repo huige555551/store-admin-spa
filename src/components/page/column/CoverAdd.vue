@@ -81,19 +81,19 @@
     <el-dialog title="编辑目录" v-model="catergoryDialog" size="small">
       <el-form ref="form" label-position="left" label-width="100px" style="width: 600px;">
         <!-- 一级目录 -->
-        <el-form-item label="一级目录" v-for="(item, index) in directory">
+        <el-form-item label="一级目录" v-for="(item, index) in directory" :key="index">
           <el-input v-model="item.name" placeholder="一级目录名" class="inline"></el-input>
           <el-input v-model="item.page" placeholder="页码" class="inline pages"></el-input>
           <el-button type="text" style="margin-left:20px" @click="deleteFirstDir(index)">删除一级</el-button>
           <!-- 二级目录 -->
-            <el-form-item  v-for="(subItem, index1) in item.children">
+            <el-form-item  v-for="(subItem, index1) in item.children" :key="index1">
               <el-input v-model="subItem.name" size="small" class="secondCatergory inline" placeholder="二级目录名"></el-input>
               <el-input v-model="subItem.page" size="small"  placeholder="页码" class="inline pages secondCatergory"></el-input>
               <el-button type="text" style="margin-left:20px" @click="deleteSecondDir(index,index1)">删除</el-button>
             </el-form-item>
           <el-button type="text" class="inline" @click="addSecond(index)">添加二级目录</el-button>
         </el-form-item>
-        
+
       </el-form>
       <el-button class="add" @click="addFirst">新增一级目录</el-button>
       <div slot="footer" class="dialog-footer">
@@ -173,7 +173,7 @@ export default {
       this.fetchData()
     }
     /* eslint-ensable */
-    
+
   },
   watch: {
     /* eslint-disable */

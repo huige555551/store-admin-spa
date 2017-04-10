@@ -9,9 +9,10 @@ import qs from 'qs'
 import NProgress from 'nprogress'
 import { Notification } from 'element-ui'
 import router from '@/router'
+import config2 from '../../serverHost'
 
 // API 服务器地址
-const serverHost = ''
+const serverHost = config2.serverHost
 
 // 请求时的拦截器
 axios.interceptors.request.use(config => {

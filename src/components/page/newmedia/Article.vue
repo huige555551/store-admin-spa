@@ -22,7 +22,7 @@
       </el-form-item>
       <el-form-item label="栏目">
         <el-select v-model="searchInput.column" filterable placeholder="请输入栏目进行搜索">
-          <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
+          <el-option v-for="(item, index) in optionColumn" :label="item.name" :value="item.id" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>

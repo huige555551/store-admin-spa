@@ -85,7 +85,7 @@
                   <el-radio :disabled="true" :label="true">单选</el-radio>
                   <el-radio :disabled="true" :label="false">多选</el-radio>
                 </el-radio-group>
-                <el-radio-group v-for="option in item.options" style="display:block;">
+                <el-radio-group v-for="(option, index) in item.options" style="display:block;" :key="index">
                   <el-radio :disabled="true" :label="option.option" style="margin-top:15px">{{ option.option }}</el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -121,7 +121,7 @@
             <el-button type="primary" @click="addQuestion">确 定</el-button>
             <el-button @click="questionDialog = false">取 消</el-button>
           </div>
-        </el-dialog>     
+        </el-dialog>
       </el-tab-pane>
 
       <!-- 合作伙伴 -->

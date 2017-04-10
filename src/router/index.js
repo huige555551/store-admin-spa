@@ -4,6 +4,7 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 export default new Router({
+  base: 'admin',
   mode: 'history',
   /* eslint-disable */
   scrollBehavior(to, from, savedPosition) {

@@ -30,13 +30,14 @@
         </el-form-item>
         <el-form-item label="选择栏目">
           <el-select v-model="article.navigationId" filterable placeholder="请输入栏目进行搜索">
-            <el-option v-for="item in optionColumn" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="(item,index) in optionColumn" :key="index" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="选择第一作者">
           <el-select v-model="article.authorId" remote filterable :remote-method="searchAuthorName" placeholder="请输入作者进行搜索">
             <el-option
-              v-for="item in optionAuthor"
+              v-for="(item,index) in optionAuthor"
+              :key="index"
               :label="item.name"
               :value="item.id">
             </el-option>
