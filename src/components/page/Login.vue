@@ -44,8 +44,6 @@ export default {
       if (!data.islogin) {
         return this.$router.replace('/')
       }
-    } else {
-      // next()
     }
   },
   methods: {
