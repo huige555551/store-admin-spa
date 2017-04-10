@@ -38,6 +38,16 @@ export default {
       }
     }
   },
+  async created() {
+    const { code, data } = await api.get('/api/system/sysUser/login')
+    if (code === 200) {
+      if (!data.islogin) {
+        return this.$router.replace('/')
+      }
+    } else {
+      // next()
+    }
+  },
   methods: {
     async submitForm() {
       const { code } = await api.post('/api/system/login', this.ruleForm)

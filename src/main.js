@@ -13,7 +13,6 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 // 导航钩子，每次变动都会检查登录状态
-<<<<<<< HEAD
 router.beforeEach(async (to, from, next) => {
   if (to.path === '/login') {
     next()
