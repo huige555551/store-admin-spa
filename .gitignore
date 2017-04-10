@@ -5,4 +5,4 @@ bulid/config
 npm-debug.log
 yarn-error.log
 config/index.js
-config.js
+*.private.js

@@ -9,7 +9,7 @@ import qs from 'qs'
 import NProgress from 'nprogress'
 import { Notification } from 'element-ui'
 import router from '@/router'
-import config2 from '../../serverHost'
+import config2 from '../../config.private'
 
 // API 服务器地址
 const serverHost = config2.serverHost
