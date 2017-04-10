@@ -64,7 +64,7 @@ function checkCode(res) {
 }
 
 export default {
-  post(url, data) {
+  post(url, data, req) {
     return axios({
       method: 'post',
       url: serverHost + url,
@@ -77,7 +77,7 @@ export default {
       }
     }).then(checkStatus).then(checkCode)
   },
-  get(url, params) {
+  get(url, params, req) {
     return axios({
       method: 'get',
       url: serverHost + url,
