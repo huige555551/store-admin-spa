@@ -172,6 +172,10 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
+      const getNavigation = await api.get('/api/system/article/listNavigation')
+      if (getNavigation.code === 200) {
+        this.column = getNavigation.data
+      }
       const { code, data } = await api.get('/api/system/article/listArticle', {
         currentPage: this.currentPage,
         perPage: this.perPage,
