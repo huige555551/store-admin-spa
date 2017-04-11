@@ -113,6 +113,7 @@ export default {
     search() {
       this.searchKey.title = this.searchInput.title
       this.searchKey.date = this.searchInput.date
+      console.log(this.searchKey)
       this.currentPage = 1
       this.fetchData()
     },
@@ -124,7 +125,7 @@ export default {
         perPage: this.perPage,
         title: this.searchKey.title,
         date: this.searchKey.date,
-        type: 1
+        type: 1，
       })
       if (code === 200) {
         this.tableData = data.array
