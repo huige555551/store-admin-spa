@@ -21,6 +21,7 @@
 
 <script>
 // import $ from 'jquery'
+import api from '@/api'
 
 export default {
   data() {
@@ -29,10 +30,13 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
+    async handleCommand(command) {
       if (command === 'loginout') {
         // $.cookie('name', null, { path: '/' })
-        this.$router.push('/login')
+        const { code } = await api.post('/api/system/sysUser/logout')
+        if (code === 200) {
+          this.$router.push('/login')
+        }
       } else if (command === 'reset') {
         this.$router.push('/website/reset')
       }
