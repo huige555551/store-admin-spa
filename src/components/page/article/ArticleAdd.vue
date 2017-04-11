@@ -90,6 +90,7 @@
   </div>
 </template>
 
+<!-- <script type="text/javascript" src="../../../../static/simditor.js"></script> -->
 <script>
 import $ from 'jquery'
 import Simditor from '@/components/util/Simditor'

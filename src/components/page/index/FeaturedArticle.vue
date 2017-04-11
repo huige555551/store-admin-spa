@@ -37,7 +37,7 @@
       <el-form label-width="100px">
         <el-form-item label="选择文章" >
           <el-select v-model="rowObj.targetArticleId"
-            filterable 
+            filterable remote
             placeholder="请输入文章标题搜索"
             :remote-method="searchArticle">
             <el-option
