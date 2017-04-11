@@ -170,8 +170,8 @@ export default {
     },
     // 删除封面图片
     handleRemove() {
-      this.article.imgKey = null
-      this.article.imgUrl = null
+      this.article.coverKey = null
+      this.article.coverUrl = null
     },
     // 封面图片上传成功
     handleSuccess(response, bucketPort) {

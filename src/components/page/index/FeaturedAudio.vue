@@ -71,6 +71,7 @@ export default {
       const { code } = await api.post('/api/system/audio/changeAudio', this.featuredObj)
       if (code === 200) {
         this.$notify.success({ title: '成功', message: '音频替换成功' })
+        this.featuredAudio = this.featuredObj
         this.formDialog = false
       }
     }
