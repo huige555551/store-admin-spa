@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       formDialog: false,
-      featuredObj: {},
+      featuredObj: { title: null },
       featuredAudio: { title: null },
       results: {}
     }
