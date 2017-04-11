@@ -17,7 +17,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.path === '/login') {
     next()
   } else {
-    const { code } = await api.get('/api/system/sysUser/login')
+    const { code } = await api.get('/api/system/sysUser/isLogin')
     if (code === 200) {
       next()
     } else {
