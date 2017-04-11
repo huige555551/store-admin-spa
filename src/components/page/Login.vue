@@ -49,6 +49,7 @@ export default {
   methods: {
     async submitForm() {
       const { code } = await api.post('/api/system/login', this.ruleForm)
+      console.log(code)
       if (code === 200) {
         this.$notify.success({ title: '成功', message: '登录成功' })
         this.$router.push('/welcome')
