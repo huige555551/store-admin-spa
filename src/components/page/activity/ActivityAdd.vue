@@ -271,6 +271,7 @@ export default {
       } else {
         this.editing = false
       }
+      console.log(this.editing)
     },
     // 点击tab标签
     async handleClick(tab) {
@@ -306,6 +307,7 @@ export default {
         this.activity.vote = JSON.parse(this.activity.vote)
         return false
       }
+      console.log(this.editing)
       if (this.editing) {
         const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
         if (code === 200) {
@@ -315,7 +317,7 @@ export default {
       } else {
         const { code } = await api.post('/api/system/activity/addActivity', this.activity)
         if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$notify.success({ title: '成功', message: '添加成功' })
           this.$router.push('/activity/list')
         }
       }
