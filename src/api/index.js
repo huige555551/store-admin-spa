@@ -64,26 +64,24 @@ function checkCode(res) {
 }
 
 export default {
-  post(url, data, req) {
+  post(url, data) {
     return axios({
       method: 'post',
       url: serverHost + url,
       data: qs.stringify(data),
       timeout: 30000,
-      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       }
     }).then(checkStatus).then(checkCode)
   },
-  get(url, params, req) {
+  get(url, params) {
     return axios({
       method: 'get',
       url: serverHost + url,
       params,
       timeout: 30000,
-      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }

@@ -17,10 +17,10 @@ router.beforeEach(async (to, from, next) => {
   if (to.path === '/login') {
     next()
   } else {
-    const { code, data } = await api.get('/api/system/sysUser/login')
+    const { code } = await api.get('/api/system/sysUser/login')
     if (code === 200) {
       next()
-    }else{
+    } else {
       return router.replace('/login')
     }
   }

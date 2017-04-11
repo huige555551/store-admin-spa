@@ -40,10 +40,8 @@ export default {
   },
   async created() {
     const { code, data } = await api.get('/api/system/sysUser/login')
-    if (code === 200) {
-      if (!data.islogin) {
-        return this.$router.replace('/')
-      }
+    if (code !== 200) {
+      return this.$router.replace('/')
     }
   },
   methods: {
