@@ -94,7 +94,9 @@ export default {
       const { code, data } = await api.get('/api/system/article/searchArticle', { title: val })
       if (code === 200) {
         this.results = data
-        this.results.length = 10
+        if (this.results.length > 10) {
+          this.results.length = 10
+        }
       }
     },
     // 添加精选
