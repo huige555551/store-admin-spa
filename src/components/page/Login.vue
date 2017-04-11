@@ -39,7 +39,7 @@ export default {
     }
   },
   async created() {
-    const { code, data } = await api.get('/api/system/sysUser/login')
+    const { code } = await api.get('/api/system/sysUser/login')
     if (code !== 200) {
       return this.$router.replace('/')
     }
