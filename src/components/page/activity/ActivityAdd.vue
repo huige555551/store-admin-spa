@@ -349,7 +349,6 @@ export default {
       }
       this.questionDialog = false
       this.newQuestion = { ifSingle: null, options: [], problem: null }
-      this.editing = false
     },
     addOption() {
       // if (this.newQuestion.options.length === 4) {
@@ -358,9 +357,9 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
-      if(typeof this.newQuestion.options === 'string'){
-        this.newQuestion.options = JSON.parse(this.newQuestion.options)
-      }
+      // if(typeof this.newQuestion.options === 'string'){
+      //   this.newQuestion.options = JSON.parse(this.newQuestion.options)
+      // }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
