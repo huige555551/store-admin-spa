@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import $ from 'jquery'
+
 export default {
   data() {
     return {
@@ -29,6 +31,7 @@ export default {
   methods: {
     handleCommand(command) {
       if (command === 'loginout') {
+        $.cookie('name', null, { path: '/' })
         this.$router.push('/login')
       } else if (command === 'reset') {
         this.$router.push('/website/reset')

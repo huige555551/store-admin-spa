@@ -73,7 +73,7 @@
         <div class="form-box">
           <el-form ref="form" :model="activity" label-width="100px">
             <el-form-item label="启用投票">
-              <el-switch v-model="activity.hasVote" change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
+              <el-switch v-model="activity.hasVote" @change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
             <div v-for="(item,index) in activity.vote.problems">
               <el-form-item label="问题一">
@@ -374,8 +374,8 @@ export default {
       this.activity.vote.endTime = val
     },
     // 投票开关
-    changeSwitch() {
-      this.activity.hasVote = !this.activity.hasVote
+    changeSwitch(val) {
+      this.activity.hasVote = val
     },
     // 添加合作伙伴
     addPartner() {
