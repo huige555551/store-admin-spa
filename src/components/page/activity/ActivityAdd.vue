@@ -339,7 +339,7 @@ export default {
           this.activity.vote = JSON.parse(this.activity.vote)
         }
         // this.activity.vote = JSON.parse(this.activity.vote)
-        this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
+        this.activity.vote.problems.splice(this.editingIndex, 0, _.cloneDeep(this.newQuestion))
       } else {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
