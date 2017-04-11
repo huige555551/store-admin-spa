@@ -335,9 +335,15 @@ export default {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
+        if (typeof this.activity.vote === 'string') {
+          this.activity.vote = JSON.parse(this.activity.vote)
+        }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
       } else {
+        if (typeof this.activity.vote === 'string') {
+          this.activity.vote = JSON.parse(this.activity.vote)
+        }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
       }
@@ -352,6 +358,9 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
+      if(typeof this.newQuestion.options === 'string'){
+        this.newQuestion.options = JSON.parse(this.newQuestion.options)
+      }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
