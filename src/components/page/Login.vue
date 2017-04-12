@@ -3,11 +3,11 @@
     <div class="ms-title">新周刊管理后台</div>
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
-        <el-form-item prop="username">
+        <el-form-item prop="account">
           <el-input v-model="ruleForm.account" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" placeholder="密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
+          <el-input type="password" placeholder="密码" v-model="ruleForm.password"></el-input>
         </el-form-item>
         <div class="login-btn">
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -47,13 +47,16 @@ export default {
     }
   },
   methods: {
-    async submitForm() {
-      const { code } = await api.post('/api/system/login', this.ruleForm)
-      console.log(code)
-      if (code === 200) {
-        this.$notify.success({ title: '成功', message: '登录成功' })
-        this.$router.push('/welcome')
-      }
+    submitForm(formName) {
+      this.$refs[formName].validate(async (valid) => {
+        if (valid) {
+          const { code } = await api.post('/api/system/login', this.ruleForm)
+          if (code === 200) {
+            this.$notify.success({ title: '成功', message: '登录成功' })
+            this.$router.replace('/')
+          }
+        }
+      })
     }
   }
 }
