@@ -171,20 +171,11 @@ Uploader = (function(superClass) {
           return _this.trigger('uploaderror', [file, xhr, status]);
         };
       })(this),
-      // success: (function(_this) {
-      //   return function(result) {
-      //     _this.trigger('uploadprogress', [file, file.size, file.size]);
-      //     _this.trigger('uploadsuccess', [file, result]);
-      //     return $(document).trigger('uploadsuccess', [file, result, _this]);
-      //   };
-      // })(this),
       success: (function(_this) {
         return function(result) {
-          var newresult = JSON.parse("{\"file_path\":\"http://on0hf5xbv.bkt.clouddn.com/"+ result.key +"\"}");
           _this.trigger('uploadprogress', [file, file.size, file.size]);
-          _this.trigger('uploadsuccess', [file, newresult]);
-          console.log('newresult', newresult)
-          return $(document).trigger('uploadsuccess', [file, newresult, _this]);
+          _this.trigger('uploadsuccess', [file, result]);
+          return $(document).trigger('uploadsuccess', [file, result, _this]);
         };
       })(this),
       complete: (function(_this) {

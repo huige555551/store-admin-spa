@@ -1,3 +1,8 @@
+/*!
+* Simditor v2.3.6
+* http://simditor.tower.im/
+* 2015-12-21
+*/
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module unless amdModuleId is set
@@ -8,7 +13,7 @@
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
-    module.exports = factory(require("jquery"),require("simple-module"),require("simple-hotkeys"),require("../simple-uploader"));
+    module.exports = factory(require("jquery"),require("simple-module"),require("simple-hotkeys"),require("@/module/simple-uploader"));
   } else {
     root['Simditor'] = factory(jQuery,SimpleModule,simple.hotkeys,simple.uploader);
   }
