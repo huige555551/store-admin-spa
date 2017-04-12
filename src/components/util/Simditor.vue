@@ -5,8 +5,8 @@
 <script>
 import $ from 'jquery'
 import api from '@/api'
-import Simditor from 'simditor'
 import 'simditor/styles/simditor.css'
+import Simditor from '../../../static/simditor'
 
 export default {
   name: 'simditor',
@@ -36,6 +36,7 @@ export default {
     const { code, data } = await api.get('/api/system/upload/getToken')
     if (code === 200) {
       this.token = data.token
+      this.bucketPort = data.bucketPort
     }
     const getToken = this.token
     this.editor = new Simditor(Object.assign({}, {
@@ -50,6 +51,7 @@ export default {
         'image'],
       defaultImage: '/assets/avatar.jpg',
       upload: {
+        bucketPort: this.bucketPort,
         placeHolder: '输入文章内容',
         toolbarFloat: false,
         url: 'http://up-z2.qiniu.com',
