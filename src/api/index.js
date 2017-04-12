@@ -58,7 +58,6 @@ function checkCode(res) {
     return router.replace('login')
   } else if (res.code !== 200) {
     Notification.error({ title: '警告', message: `${res.code} ${res.data}. ` })
-    console.log(res.data)
   }
   return res
 }

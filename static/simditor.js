@@ -4434,13 +4434,13 @@ ImageButton = (function(superClass) {
             };
           }
         }
-        // if (result.success === false) {
-        //   msg = result.msg || _this._t('uploadFailed');
-        //   alert(msg);
-        //   img_path = _this.defaultImage;
-        // } else {
-          img_path = result.file_path;
-        // }
+        if (result.success === false) {
+          msg = result.msg || _this._t('uploadFailed');
+          alert(msg);
+          img_path = _this.defaultImage;
+        } else {
+          img_path = this.opts.bucketPort + '/' + result.key;
+        }
         _this.loadImage($img, img_path, function() {
           var $mask;
           $img.removeData('file');

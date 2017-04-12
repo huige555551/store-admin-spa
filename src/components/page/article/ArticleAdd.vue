@@ -122,7 +122,6 @@ export default {
   watch: {
     /* eslint-disable */
     '$route'() {
-      console.log('########')
       this.fetchData()
     /* eslint-enable */
     }
@@ -136,7 +135,6 @@ export default {
       const getAuthor = await api.get('/api/system/author/listAuthor')
       if (getAuthor.code === 200) {
         this.authorResults = getAuthor.data.array
-        console.log(this.authorResults.length)
       }
       if (this.$route.params.id) {
         this.editing = true
@@ -209,7 +207,6 @@ export default {
     async searchAuthor(val) {
       const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: val })
       if (code === 200) {
-        console.log(data)
         this.authorResults = data.array
         if (this.columnResults.length > 10) {
           this.columnResults.length = 10
