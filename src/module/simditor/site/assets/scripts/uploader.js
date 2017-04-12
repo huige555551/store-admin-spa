@@ -44,7 +44,7 @@ Uploader = (function(superClass) {
         _this.files.splice($.inArray(file, _this.files), 1);
         if (_this.queue.length > 0 && _this.files.length < _this.opts.connectionCount) {
           return _this.upload(_this.queue.shift());
-        } else if (_this.files.length === 0) {
+        } else {
           return _this.uploading = false;
         }
       };
@@ -171,20 +171,11 @@ Uploader = (function(superClass) {
           return _this.trigger('uploaderror', [file, xhr, status]);
         };
       })(this),
-      // success: (function(_this) {
-      //   return function(result) {
-      //     _this.trigger('uploadprogress', [file, file.size, file.size]);
-      //     _this.trigger('uploadsuccess', [file, result]);
-      //     return $(document).trigger('uploadsuccess', [file, result, _this]);
-      //   };
-      // })(this),
       success: (function(_this) {
         return function(result) {
-          var newresult = JSON.parse("{\"file_path\":\"http://on0hf5xbv.bkt.clouddn.com/"+ result.key +"\"}");
           _this.trigger('uploadprogress', [file, file.size, file.size]);
-          _this.trigger('uploadsuccess', [file, newresult]);
-          console.log('newresult', newresult)
-          return $(document).trigger('uploadsuccess', [file, newresult, _this]);
+          _this.trigger('uploadsuccess', [file, result]);
+          return $(document).trigger('uploadsuccess', [file, result, _this]);
         };
       })(this),
       complete: (function(_this) {

@@ -5,8 +5,8 @@
 <script>
 import $ from 'jquery'
 import api from '@/api'
-import Simditor from 'simditor'
-import 'simditor/styles/simditor.css'
+import Simditor from '@/module/simditor'
+import '@/module/simditor/styles/simditor.css'
 
 export default {
   name: 'simditor',
