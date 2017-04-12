@@ -127,10 +127,10 @@
               <p>{{item.problem}}  <el-tag v-if="item.type==1" type="success">单选</el-tag>
                 <el-tag v-if="item.type==2"type="success">多选</el-tag></p>
               <el-radio-group  v-if="item.type==1">
-                <el-radio v-for="(optionitem, index2) in item.options" :label="'选项' + (index+1)" :key="index2"></el-radio>
+                <el-radio v-for="(optionitem, index2) in item.option" :label="'选项' + (index+1)" :key="index2"></el-radio>
               </el-radio-group>
               <el-checkbox-group  v-if="item.type==2">
-                <el-checkbox v-for="(optionitem, index2) in item.options" :label="'选项' + (index+1)" :key="index2"></el-checkbox>
+                <el-checkbox v-for="(optionitem, index2) in item.option" :label="'选项' + (index+1)" :key="index2"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </el-form>
