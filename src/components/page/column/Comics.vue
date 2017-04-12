@@ -113,6 +113,7 @@ export default {
     search() {
       this.searchKey.title = this.searchInput.title
       this.searchKey.date = this.searchInput.date
+      console.log(this.searchKey)
       this.currentPage = 1
       this.fetchData()
     },

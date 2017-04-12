@@ -90,6 +90,7 @@
   </div>
 </template>
 
+<!-- <script type="text/javascript" src="../../../../static/simditor.js"></script> -->
 <script>
 import $ from 'jquery'
 import Simditor from '@/components/util/Simditor'
@@ -170,8 +171,8 @@ export default {
     },
     // 删除封面图片
     handleRemove() {
-      this.article.imgKey = null
-      this.article.imgUrl = null
+      this.article.coverKey = null
+      this.article.coverUrl = null
     },
     // 封面图片上传成功
     handleSuccess(response, bucketPort) {

@@ -99,7 +99,7 @@ export default {
     },
     // 删除栏目
     async deleteRow(index) {
-      this.$confirm('此操作将该删除该栏目，是否继续?', '提示', {
+      this.$confirm('此操作将该删除该岗位，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'info'
@@ -116,6 +116,7 @@ export default {
       if (!this.rowObj.description || !this.rowObj.job) {
         return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和岗位描述' })
       }
+      this.rowObj.description = this.rowObj.description.replace('/([.\n\r]+)/i', '</br>')
       if (this.editing) {
         const { code } = await api.post('/api/system/job/updateRecruitment', this.rowObj)
         if (code === 200) {

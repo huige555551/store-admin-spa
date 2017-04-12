@@ -203,8 +203,8 @@ export default {
         this.book.coverUrl = null
         this.book.coverKey = null
       } else if (name === 'introduction') {
-        this.book.storyImgUrl = null
-        this.book.storyImgKey = null
+        this.book.introductionImgUrl = null
+        this.book.introductionImgKey = null
       } else if (name === 'directory') {
         this.book.directoryUrl = null
         this.book.directoryImgKey = null

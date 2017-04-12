@@ -73,7 +73,7 @@
         <div class="form-box">
           <el-form ref="form" :model="activity" label-width="100px">
             <el-form-item label="启用投票">
-              <el-switch v-model="activity.hasVote" change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
+              <el-switch v-model="activity.hasVote" @change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
             <div v-for="(item,index) in activity.vote.problems">
               <el-form-item label="问题一">
@@ -271,6 +271,7 @@ export default {
       } else {
         this.editing = false
       }
+      console.log(this.editing)
     },
     // 点击tab标签
     async handleClick(tab) {
@@ -306,6 +307,7 @@ export default {
         this.activity.vote = JSON.parse(this.activity.vote)
         return false
       }
+      console.log(this.editing)
       if (this.editing) {
         const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
         if (code === 200) {
@@ -315,7 +317,7 @@ export default {
       } else {
         const { code } = await api.post('/api/system/activity/addActivity', this.activity)
         if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$notify.success({ title: '成功', message: '添加成功' })
           this.$router.push('/activity/list')
         }
       }
@@ -333,15 +335,20 @@ export default {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
       if (this.editing === true) {
+        if (typeof this.activity.vote === 'string') {
+          this.activity.vote = JSON.parse(this.activity.vote)
+        }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
       } else {
+        if (typeof this.activity.vote === 'string') {
+          this.activity.vote = JSON.parse(this.activity.vote)
+        }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
       }
       this.questionDialog = false
       this.newQuestion = { ifSingle: null, options: [], problem: null }
-      this.editing = false
     },
     addOption() {
       // if (this.newQuestion.options.length === 4) {
@@ -350,6 +357,9 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
+      // if(typeof this.newQuestion.options === 'string'){
+      //   this.newQuestion.options = JSON.parse(this.newQuestion.options)
+      // }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
@@ -364,8 +374,8 @@ export default {
       this.activity.vote.endTime = val
     },
     // 投票开关
-    changeSwitch() {
-      this.activity.hasVote = !this.activity.hasVote
+    changeSwitch(val) {
+      this.activity.hasVote = val
     },
     // 添加合作伙伴
     addPartner() {

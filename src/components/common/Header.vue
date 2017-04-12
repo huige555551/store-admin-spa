@@ -20,6 +20,9 @@
 </template>
 
 <script>
+// import $ from 'jquery'
+import api from '@/api'
+
 export default {
   data() {
     return {
@@ -27,9 +30,13 @@ export default {
     }
   },
   methods: {
-    handleCommand(command) {
+    async handleCommand(command) {
       if (command === 'loginout') {
-        this.$router.push('/login')
+        // $.cookie('name', null, { path: '/' })
+        const { code } = await api.post('/api/system/sysUser/logout')
+        if (code === 200) {
+          this.$router.push('/login')
+        }
       } else if (command === 'reset') {
         this.$router.push('/website/reset')
       }
