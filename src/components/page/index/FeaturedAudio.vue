@@ -73,6 +73,7 @@ export default {
         this.$notify.success({ title: '成功', message: '音频替换成功' })
         this.featuredAudio = this.featuredObj
         this.formDialog = false
+        this.$router.push('/feature/audio')
       }
     }
   }
