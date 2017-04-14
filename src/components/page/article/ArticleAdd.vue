@@ -79,7 +79,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor  @change="change" :content="article.content" :options="options2" v-model="article.content"></simditor>
+          <simditor  @valuechanged ="valuechange" :content="article.content" :options="options2" v-model="article.content"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -110,7 +110,8 @@ export default {
         publicationDate: null,
         navigationId: null,
         authorId: null,
-        content: ''
+        content: null,
+        period: null
       },
       options2: {}
     }
@@ -141,6 +142,8 @@ export default {
         const { code, data } = await api.get('/api/system/article/getArticle?', { articleId: this.$route.params.id })
         if (code === 200) {
           this.article = data
+          this.content = this.article.content
+          $('.simditor-body').html(this.content)
         }
       } else {
         this.editing = false
@@ -149,7 +152,7 @@ export default {
           publicationDate: '',
           navigationId: '',
           authorId: '',
-          content: ''
+          content: '请输入内容'
         }
       }
       // 拿回所有栏目
@@ -192,7 +195,7 @@ export default {
         this.isNum = true
       }
     },
-    change(html) {
+    valuechanged(html) {
       this.article.content = html
     },
     // async searchColumn(val) {

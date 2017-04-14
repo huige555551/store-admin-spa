@@ -143,6 +143,7 @@ export default {
         const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
         if (code === 200) {
           this.article = data
+          $('.simditor-body').html(this.article.content)
         }
       } else {
       // new
