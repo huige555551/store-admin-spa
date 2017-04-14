@@ -211,6 +211,11 @@ export default {
     opacity: 0
   }
 
+  .simditor-body {
+    max-height: 600px;
+    overflow: scroll;
+  }
+
   .simditor-body img {
     display: block;
     width: 100%!important;
