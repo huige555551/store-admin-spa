@@ -41,7 +41,7 @@ export default {
   async created() {
     const { code } = await api.get('/api/system/sysUser/isLogin')
     if (code === 200) {
-      return this.$router.replace('/')
+      this.$router.replace('/')
     }
   },
   methods: {
