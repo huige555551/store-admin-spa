@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="form" :model="featuredAudio" label-width="80px">
-      <el-form-item label="音频">
+      <el-form-item label="音频名">
         <span>{{featuredAudio.title}}</span>
       </el-form-item>
       <el-form-item>
@@ -36,13 +36,20 @@
 
 <script>
 import api from '@/api'
+import $ from 'jquery'
 
 export default {
   data() {
     return {
       formDialog: false,
-      featuredObj: { title: null },
-      featuredAudio: { title: null },
+      featuredObj: {
+        title: null,
+        audioId: null
+      },
+      featuredAudio: {
+        title: null,
+        audioId: null
+      },
       results: {}
     }
   },
@@ -77,6 +84,7 @@ export default {
         this.$notify.success({ title: '成功', message: '音频替换成功' })
         this.featuredAudio = this.featuredObj
         this.formDialog = false
+        this.$set(this.featuredAudio, 'title', $('.el-input__inner').val())
       }
     }
   }
