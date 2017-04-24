@@ -109,6 +109,7 @@ export default {
       this.rowObj.id = null
       this.rowObj.name = null
       this.rowObj.imgUrl = null
+      this.rowObj.imgKey = null
       this.rowObj.url = null
       this.partnerDialog = true
     },
@@ -118,6 +119,7 @@ export default {
       this.editingIndex = index
       this.rowObj.id = this.tableData[index].id
       this.rowObj.imgUrl = this.tableData[index].imgUrl
+      this.rowObj.imgKey = this.tableData[index].imgKey
       this.rowObj.url = this.tableData[index].url
       this.rowObj.name = this.tableData[index].name
       this.partnerDialog = true
