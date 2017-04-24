@@ -37,7 +37,8 @@
           <el-input v-model="rowObj.order"></el-input>
         </el-form-item>
         <el-form-item label="岗位描述">
-          <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input>
+          <simditor :content="rowObj.description" v-model="rowObj.description"></simditor>
+          <!-- <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input> -->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -50,6 +51,8 @@
 
 <script>
 import api from '@/api'
+import Simditor from '@/components/util/Simditor'
+import $ from 'jquery'
 
 const _ = require('lodash')
 
@@ -68,6 +71,9 @@ export default {
       // 表格
       tableData: []
     }
+  },
+  components: {
+    Simditor
   },
   created() {
     this.fetchData()
@@ -89,6 +95,7 @@ export default {
       this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
       this.formDialog = true
+      $('.simditor-body').html(this.rowObj.description)
     },
     addRow() {
       this.editing = false
@@ -113,6 +120,7 @@ export default {
     },
     // 保存修改
     async saveRow() {
+      this.$set(this.rowObj, 'description', $('.simditor-body').html())
       if (!this.rowObj.description || !this.rowObj.job) {
         return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和岗位描述' })
       }
