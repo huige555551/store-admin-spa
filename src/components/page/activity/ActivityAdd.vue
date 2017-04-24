@@ -302,12 +302,11 @@ export default {
         this.activity.vote = JSON.parse(this.activity.vote)
         return false
       }
-      if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.weibo || !this.activity.introduction) {
+      if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.introduction) {
         this.$notify.error({ title: '错误', message: '表单信息不完整' })
         this.activity.vote = JSON.parse(this.activity.vote)
         return false
       }
-      console.log(this.editing)
       if (this.editing) {
         const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
         if (code === 200) {

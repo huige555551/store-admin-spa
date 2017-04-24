@@ -38,14 +38,14 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
       if (!this.form.oldPassword || !this.form.newPassword || !this.form.oldPassword || this.form.newPassword !== this.form.rePassword) {
         return this.$notify.error({ title: '失败', message: '密码框不能为空且新密码与确认密码应一致' })
       }
-      const { code } = api.post('/api/system/sysUser/updatePassword', this.form)
+      const { code } = await api.post('/api/system/sysUser/updatePassword', this.form)
       if (code === 200) {
         this.$notify.success({ title: '成功', message: '修改成功' })
-        this.router.push('/login')
+        this.$router.push('/login')
       }
     }
   }
