@@ -48,10 +48,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const { code } = await api.post('/api/system/login', this.ruleForm)
+          const { code, data } = await api.post('/api/system/login', this.ruleForm)
           if (code === 200) {
             this.$notify.success({ title: '成功', message: '登录成功' })
             this.$router.replace('/')
+          } else {
+            this.$notify.error({ title: '失败', message: data })
           }
         }
       })

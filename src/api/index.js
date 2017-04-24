@@ -60,7 +60,7 @@ function checkCode(res) {
     if (window.location.href.indexOf('login') !== -1) {
       return false
     }
-    Notification.error({ title: '警告', message: `${res.code} ${res.data}. ` })
+    Notification.error({ title: '警告', message: `${res.code} ${res.data.message}. ` })
   }
   return res
 }
@@ -72,6 +72,7 @@ export default {
       url: serverHost + url,
       data: qs.stringify(data),
       timeout: 30000,
+      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -84,6 +85,7 @@ export default {
       url: serverHost + url,
       params,
       timeout: 30000,
+      withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }
