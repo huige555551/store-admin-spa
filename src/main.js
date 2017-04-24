@@ -21,7 +21,7 @@ router.beforeEach(async (to, from, next) => {
     if (code === 200) {
       next()
     } else {
-      return router.replace('/login')
+      return router.push('/login')
     }
   }
 })

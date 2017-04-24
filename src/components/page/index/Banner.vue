@@ -64,7 +64,7 @@
           <UploadSingle
             :imgUrl="rowObj.imgUrl"
             :imgKey="rowObj.imgKey"
-            :size=1 dimension="1440x520"
+            dimension="1440x520"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>

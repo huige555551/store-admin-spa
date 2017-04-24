@@ -52,6 +52,8 @@ export default {
           if (code === 200) {
             this.$notify.success({ title: '成功', message: '登录成功' })
             this.$router.replace('/')
+          } else {
+            this.$notify.error({ title: '失败', message: '登录失败，账号或密码错误' })
           }
         }
       })

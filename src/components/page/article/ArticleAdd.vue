@@ -79,7 +79,7 @@
           <el-input type="textarea" :rows="4" v-model="article.introduction"></el-input>
         </el-form-item>
         <el-form-item label="文章内容" style="width: 800px">
-          <simditor  @valuechanged ="valuechange" :content="article.content" :options="options2" v-model="article.content"></simditor>
+          <simditor :content="article.content" :options="options2" v-model="article.content"></simditor>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
