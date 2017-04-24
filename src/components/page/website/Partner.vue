@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="LOGO"  width="200">
         <template scope="scope">
-          <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img class="u-logo" :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -67,6 +67,13 @@
     </el-dialog>
   </div>
 </template>
+
+<style type="text/css" scoped="">
+  .u-logo {
+    width: 100%;
+    height: 100%;
+  }
+</style>
 
 <script>
 import api from '@/api'

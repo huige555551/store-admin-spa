@@ -79,7 +79,7 @@
           <span>{{ dialogObj.price }}</span>
         </el-form-item>
         <el-form-item label="出版时间">
-          <span>{{ dialogObj.name }}</span>
+          <span>{{ dialogObj.publicationDate }}</span>
         </el-form-item>
       </el-form>
     </el-dialog>
