@@ -51,6 +51,9 @@
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
+         <el-form-item label="内容">
+          <el-input v-model="rowObj.content" placeholder="轮播内容"></el-input>
+        </el-form-item>
         <el-form-item label="上传图片">
           <UploadSingle
             :imgUrl="rowObj.imgUrl"
