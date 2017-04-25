@@ -44,7 +44,7 @@
       <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
       <el-table-column label="封面" width="200">
         <template scope="scope">
-          <img :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
+          <img class="articleImg" :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="预览" width="80">
@@ -106,6 +106,14 @@
     </el-dialog>
   </div>
 </template>
+
+<style type="text/css">
+  .articleImg {
+    display: inline-block;
+    width: 200px;
+    height: 100px;
+  }
+</style>
 
 <script>
 import api from '@/api'

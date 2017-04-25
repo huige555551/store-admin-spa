@@ -24,7 +24,7 @@
       </el-table-column>
       <el-table-column label="海报" width="200">
         <template scope="scope">
-          <img :src="scope.row.bannerUrl" width="200" max-height="200" @click="openImg(scope.row.bannerUrl)" style="cursor: pointer">
+          <img class="posture" :src="scope.row.bannerUrl" width="200" max-height="200" @click="openImg(scope.row.bannerUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160">
@@ -60,7 +60,7 @@
           <UploadSingle
             :imgUrl="rowObj.bannerUrl"
             :imgKey="rowObj.banner"
-            :size=1 dimension="520x676" name="article"
+            :size=1 dimension="1440x320" name="article"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
@@ -74,6 +74,14 @@
     </el-dialog>
   </div>
 </template>
+
+<style type="text/css">
+  .posture {
+    width: 250px;
+    height: 100px;
+    display: inline-block;
+  }
+</style>
 
 <script>
 import api from '@/api'
