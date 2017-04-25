@@ -271,7 +271,6 @@ export default {
       } else {
         this.editing = false
       }
-      console.log(this.editing)
     },
     // 点击tab标签
     async handleClick(tab) {
