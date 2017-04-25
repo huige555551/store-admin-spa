@@ -143,7 +143,7 @@
                 <el-tag v-if="item.type==2"type="success">多选</el-tag>
               </p>
               <div v-for="(optionitem, index2) in item.option" :key="index2">
-              <p>选项{{$index}}：{{optionitem.option}}</p>
+              <p>选项{{index2 + 1}}：{{optionitem.option}}</p>
               <el-progress :percentage="optionitem.votes"></el-progress>
               </div>
             </el-form-item>
