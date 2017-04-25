@@ -69,7 +69,7 @@
         <div slot="tip" class="el-upload__tip">建议尺寸560x440，只能上传jpg/png文件，且不超过1MB</div>
       </el-form-item>
       <el-form-item label="图书目录">
-        <el-tree :data="book.directory" :props="defaultProps"></el-tree>
+        <el-tree :data="directory" :props="defaultProps"></el-tree>
         <el-button style="margin-top: 10px;" @click="editCatergory">编辑</el-button>
       </el-form-item>
       <el-form-item label="目录图片">
@@ -191,6 +191,7 @@ export default {
         const { code, data } = await api.get('/api/system/book/getBook?', { bookId: this.$route.params.id })
         if (code === 200) {
           this.book = data
+          this.directory = this.book.directory
         }
       } else {
         this.editing = false
@@ -226,12 +227,10 @@ export default {
       this.book.publicationDate = val
     },
     async save() {
-      console.log(this.book)
       if (!this.book.coverUrl || !this.book.introductionImgUrl || !this.book.directoryUrl || !this.book.name || !this.book.author || !this.book.publisher || !this.book.publicationDate || !this.book.introduction || !this.book.buyUrl || !this.book.douban) {
         this.$notify.error({ title: '错误', message: '表单信息不完整' })
         return false
       }
-      console.log(typeof this.book.directory)
       if (typeof this.book.directory === 'object') {
         this.book.directory = JSON.stringify(this.book.directory)
       }
@@ -253,7 +252,6 @@ export default {
       this.directory[index].children.push(_.cloneDeep(this.secondDir))
     },
     addFirst() {
-      console.log(this.directory)
       this.directory.push(_.cloneDeep(this.firstDir))
     },
     deleteFirstDir(index) {
@@ -284,7 +282,6 @@ export default {
     saveDirectory() {
       this.catergoryDialog = false
       this.book.directory = _.cloneDeep(this.directory)
-      console.log(this.book)
     }
   }
 }

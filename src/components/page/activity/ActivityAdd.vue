@@ -440,8 +440,6 @@ export default {
           this.partnerDialog = false
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.tableData.push(_.clone(this.newPartner))
-          // this.$router.push('/activity/edit/' + this.activity.id)
-          // window.location.
         }
       }
     }

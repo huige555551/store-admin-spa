@@ -49,7 +49,7 @@
           <el-input v-model="rowObj.title"></el-input>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="rowObj.content"></el-input>
+          <el-input type="textarea" :rows="6" v-model="rowObj.content"></el-input>
         </el-form-item>
         <el-form-item label="跳转链接">
           <el-input v-model="rowObj.url"></el-input>

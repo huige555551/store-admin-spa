@@ -28,7 +28,7 @@
       </el-form-item>
     </el-form>
     <!-- 添加栏目表单 -->
-    <el-dialog title="添加轮播" v-model="formDialog">
+    <el-dialog @open="setRequirement" title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
           <el-input v-model="rowObj.job"></el-input>
@@ -83,7 +83,7 @@ export default {
   },
   created() {
     this.fetchData()
-    $('.simditor-body').html(this.rowObj.description)
+    // $('.simditor-body').html(this.rowObj.description)
   },
   methods: {
     // 获取分类数据
@@ -101,9 +101,10 @@ export default {
       this.rowObj.job = this.tableData[index].job
       this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
-      console.log(this.rowObj.description)
-      $('.simditor-body').html(this.rowObj.description)
       this.formDialog = true
+    },
+    setRequirement() {
+      $('.simditor-body').html(this.rowObj.description)
     },
     addRow() {
       this.editing = false
@@ -139,7 +140,6 @@ export default {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.formDialog = false
-          // this.rowObj = { id: null, job: null, description: 1 }
         }
       } else {
         const { code } = await api.post('/api/system/job/addRecruitment', this.rowObj)
