@@ -79,7 +79,8 @@
           <UploadSingle
             :imgUrl="newAd.imgUrl"
             :imgKey="newAd.imgKey"
-            :size=1 dimension="520x676" name="article"
+            :size=1 
+            :dimension="newAd.size" name="article"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>

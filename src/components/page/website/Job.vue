@@ -77,6 +77,7 @@ export default {
   },
   created() {
     this.fetchData()
+    $('.simditor-body').html(this.rowObj.description)
   },
   methods: {
     // 获取分类数据
@@ -94,8 +95,8 @@ export default {
       this.rowObj.job = this.tableData[index].job
       this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
-      this.formDialog = true
       $('.simditor-body').html(this.rowObj.description)
+      this.formDialog = true
     },
     addRow() {
       this.editing = false

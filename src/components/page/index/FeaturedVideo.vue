@@ -155,6 +155,7 @@ export default {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {}
           this.formDialog = false
+          this.fetchData()
         }
       } else {
         this.rowObj.videoId = this.rowObj.targetVideoId
@@ -163,6 +164,7 @@ export default {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.fetchData()
           this.formDialog = false
+          this.fetchData()
         }
       }
     }

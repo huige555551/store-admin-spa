@@ -153,7 +153,11 @@ export default {
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
-          this.rowObj = {}
+          this.rowObj = {
+            articleId: null,
+            title: null,
+            order: null
+          }
           this.formDialog = false
           this.fetchData()
         }
