@@ -101,7 +101,9 @@ export default {
   data() {
     return {
       editing: false,
-      searchKey: {},
+      searchKey: {
+        authorId: null
+      },
       isNum: true,
       columnResults: [],
       authorResults: [],
