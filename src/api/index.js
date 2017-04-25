@@ -37,18 +37,21 @@ function checkStatus(response) {
     if (response.data.status.errCode === 200) {
       return {
         code: response.data.status.errCode,
-        data: response.data.data
+        data: response.data.data,
+        message: response.data.status.message
       }
     }
     return {
       code: response.data.status.errCode,
-      data: response.data.status.message
+      data: response.data.status.message,
+      message: response.data.status.message
     }
   }
   // 异常状态下, 把错误信息返回去
   return {
     code: response.status,
-    data: response.statusText
+    data: response.statusText,
+    message: response.status.message
   }
 }
 
@@ -60,7 +63,8 @@ function checkCode(res) {
     if (window.location.href.indexOf('login') !== -1) {
       return false
     }
-    Notification.error({ title: '警告', message: `${res.code} ${res.data.message}. ` })
+    console.log(res)
+    Notification.error({ title: '警告', message: `${res.code} ${res.message}. ` })
   }
   return res
 }
