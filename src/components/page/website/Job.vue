@@ -37,7 +37,7 @@
           <el-input v-model="rowObj.order"></el-input>
         </el-form-item>
         <el-form-item label="岗位描述">
-          <simditor :content="rowObj.description" v-model="rowObj.description"></simditor>
+          <simditor :content="rowObj.description"  v-model="rowObj.description"></simditor>
           <!-- <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input> -->
         </el-form-item>
       </el-form>
@@ -48,6 +48,12 @@
     </el-dialog>
   </div>
 </template>
+
+<style type="text/css" scpoed>
+  .simditor ,.simditor-wrapper {
+    max-width: 600px;
+  }
+</style>
 
 <script>
 import api from '@/api'
@@ -66,7 +72,7 @@ export default {
       rowObj: {
         id: null,
         job: null,
-        description: null
+        description: 1
       },
       // 表格
       tableData: []
@@ -95,6 +101,7 @@ export default {
       this.rowObj.job = this.tableData[index].job
       this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
+      console.log(this.rowObj.description)
       $('.simditor-body').html(this.rowObj.description)
       this.formDialog = true
     },
@@ -102,7 +109,7 @@ export default {
       this.editing = false
       this.rowObj.id = null
       this.rowObj.job = null
-      this.rowObj.description = null
+      this.rowObj.description = '请填写要求'
       this.formDialog = true
     },
     // 删除栏目
@@ -125,13 +132,14 @@ export default {
       if (!this.rowObj.description || !this.rowObj.job) {
         return this.$notify.error({ title: '失败', message: '请填写完整有效的名字和岗位描述' })
       }
-      this.rowObj.description = this.rowObj.description.replace('/([.\n\r]+)/i', '</br>')
+      // this.rowObj.description = this.rowObj.description.replace('/([.\n\r]+)/i', '</br>')
       if (this.editing) {
         const { code } = await api.post('/api/system/job/updateRecruitment', this.rowObj)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.formDialog = false
+          // this.rowObj = { id: null, job: null, description: 1 }
         }
       } else {
         const { code } = await api.post('/api/system/job/addRecruitment', this.rowObj)

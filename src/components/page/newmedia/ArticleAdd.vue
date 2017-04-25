@@ -23,7 +23,7 @@
           <UploadSingle
             :imgUrl="article.coverUrl"
             :imgKey="article.coverKey"
-            :size=1 dimension="520x676" name="article"
+            :size=1 dimension="800x400" name="article"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>

@@ -77,7 +77,7 @@
 
 <style type="text/css">
   .posture {
-    width: 250px;
+    width: 200px;
     height: 100px;
     display: inline-block;
   }
@@ -164,7 +164,7 @@ export default {
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.$notify.success({ title: '成功', message: '修改成功' })
-          this.rowObj = { ifUse: null }
+          this.rowObj = { ifUse: null, bannerUrl: null }
           this.formDialog = false
         }
       } else {
@@ -172,7 +172,7 @@ export default {
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.fetchData()
-          this.rowObj = { ifUse: null }
+          this.rowObj = { ifUse: null, bannerUrl: null }
           this.formDialog = false
         }
       }

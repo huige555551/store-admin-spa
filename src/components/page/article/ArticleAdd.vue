@@ -18,7 +18,7 @@
           <UploadSingle
             :imgUrl="article.coverUrl"
             :imgKey="article.coverKey"
-            :size=1 dimension="240x240"
+            :size=1 dimension="800x400"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
@@ -90,7 +90,6 @@
   </div>
 </template>
 
-<!-- <script type="text/javascript" src="../../../../static/simditor.js"></script> -->
 <script>
 import $ from 'jquery'
 import Simditor from '@/components/util/Simditor'
@@ -111,7 +110,7 @@ export default {
         labels: [],
         publicationDate: null,
         navigationId: null,
-        authorId: null,
+        authorId: '',
         content: null,
         period: null
       },
@@ -200,15 +199,6 @@ export default {
     valuechanged(html) {
       this.article.content = html
     },
-    // async searchColumn(val) {
-    //   const { code, data } = await api.get('/api/system/article/listNavigation', { name: val })
-    //   if (code === 200) {
-    //     this.columnResults = data
-    //     if (this.columnResults.length > 10) {
-    //       this.columnResults.length = 10
-    //     }
-    //   }
-    // },
     async searchAuthor(val) {
       const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: val })
       if (code === 200) {
