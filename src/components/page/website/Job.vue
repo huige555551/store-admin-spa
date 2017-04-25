@@ -28,7 +28,7 @@
       </el-form-item>
     </el-form>
     <!-- 添加栏目表单 -->
-    <el-dialog @open="setRequirement" title="添加轮播" v-model="formDialog">
+    <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
           <el-input v-model="rowObj.job"></el-input>
@@ -101,10 +101,8 @@ export default {
       this.rowObj.job = this.tableData[index].job
       this.rowObj.order = this.tableData[index].order
       this.rowObj.description = this.tableData[index].description
-      this.formDialog = true
-    },
-    setRequirement() {
       $('.simditor-body').html(this.rowObj.description)
+      this.formDialog = true
     },
     addRow() {
       this.editing = false

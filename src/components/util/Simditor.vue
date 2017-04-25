@@ -66,6 +66,9 @@ export default {
         fileSize: 2097152
       }
     }, this.options))
+    if (this.content !== '') {
+      $('.simditor-body').html(this.content)
+    }
   }
 }
 </script>
