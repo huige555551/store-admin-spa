@@ -22,7 +22,7 @@
           <UploadSingle
             :imgUrl="video.coverUrl"
             :imgKey="video.coverKey"
-            :size=1 dimension="240x240"
+            :size=1 dimension="268x150"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
