@@ -38,7 +38,7 @@
       <el-table-column prop="time" label="时长" width="120"></el-table-column>
       <el-table-column label="封面" width="200">
         <template scope="scope">
-          <img :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.cover)" style="cursor: pointer">
+          <img :src="scope.row.coverUrl" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column prop="publicationDate" label="时间" width="160"></el-table-column>
