@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label="选择位置">
           <el-select v-model="newAd.advertismentTypeId" filterable remote
-            placeholder="请输入文章标题搜索"
+            placeholder="请输入广告位位置"
             :remote-method="searchPosition" @change="selectItem">
             <el-option
               v-for="item in positionResults"
@@ -160,14 +160,14 @@ export default {
       this.formDialog = true
     },
     async searchPosition() {
-      const { code, data } = await api.get('/api/system/advertisment/listAdvertisment')
+      const { code, data } = await api.get('/api/system/advertisment/getLocation')
       if (code === 200) {
         this.positionResults = data
       }
     },
     // 添加广告时更新建议图片的尺寸提示
     async selectItem(selected) {
-      const { code, data } = await api.get('/api/system/advertisment/listAdvertisment')
+      const { code, data } = await api.get('/api/system/advertisment/getLocation')
       if (code === 200) {
         this.newAd.size = data[selected - 1].size
       }
