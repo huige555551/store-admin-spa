@@ -76,7 +76,7 @@
               <el-switch v-model="activity.hasVote" @change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
             <div v-for="(item,index) in activity.vote.problems">
-              <el-form-item label="问题一">
+              <el-form-item label="问题">
                 <p>{{ item.problem }}
                 <el-tag type="success" v-if="item.ifSingle">单选</el-tag>
                 <el-tag type="success" v-if="!item.ifSingle">多选</el-tag>
@@ -204,6 +204,7 @@ export default {
         ifSingle: null,
         options: []
       },
+      editingIndex: null,
       editingPartner: false,
       questionDialog: false,
       partnerDialog: false,
@@ -225,6 +226,7 @@ export default {
           problems: []
         }
       },
+      activityObj: {},
       tableData: [
         // { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
         // { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
@@ -260,10 +262,11 @@ export default {
     },
     async fetchData() {
       if (this.$route.params.id) {
-        this.editing = true
+        // this.editing = true
         const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
         if (code === 200) {
           this.activity = data
+          this.activityObj = _.cloneDeep(this.activity)
           if (!this.activity.vote.problems) {
             this.activity.vote.problems = []
           }
@@ -338,6 +341,7 @@ export default {
         }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
+        this.editing = false
       } else {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
