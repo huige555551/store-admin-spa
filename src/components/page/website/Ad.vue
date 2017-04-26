@@ -47,7 +47,7 @@
       </el-form-item>
     </el-form>
 
-    <!-- 添加轮播表单 -->
+    <!-- 添加广告 -->
     <el-dialog title="添加广告" v-model="formDialog">
       <el-form :model="newAd" label-width="100px">
         <el-form-item label="广告主">
@@ -84,7 +84,7 @@
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
-          <div slot="tip" class="el-upload__tip">建议尺寸{{size}}，可上传jpg/png/gif文件，且不超过1MB</div>
+          <!-- <div slot="tip" class="el-upload__tip">建议尺寸{{size}}，可上传jpg/png/gif文件，且不超过1MB</div> -->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

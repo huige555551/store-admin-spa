@@ -98,7 +98,7 @@
       </el-tab-pane>
 
         <!-- 添加问题 -->
-        <el-dialog title="添加问题" v-model="questionDialog">
+        <el-dialog @close="editingQuestion = false" title="添加问题" v-model="questionDialog">
           <el-form label-width="100px" class="demo-dynamic">
             <el-form-item label="问题">
               <el-input v-model="newQuestion.problem"></el-input>
@@ -338,6 +338,7 @@ export default {
         options: []
       }
       this.questionDialog = false
+      this.editingQuestion = false
     },
     addAQuestion() {
       this.questionDialog = true
@@ -362,16 +363,12 @@ export default {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
         }
-        // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.push(_.cloneDeep(this.newQuestion))
       }
       this.questionDialog = false
       this.newQuestion = { ifSingle: null, options: [], problem: null }
     },
     addOption() {
-      // if (this.newQuestion.options.length === 4) {
-      //   return this.$notify.error({ title: '错误', message: '选项数目已达到四个' })
-      // }
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
