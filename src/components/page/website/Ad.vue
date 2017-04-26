@@ -34,7 +34,7 @@
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button @click.native.prevent="" type="default" size="small" @click="editRow(scope.$index)">编辑</el-button>
+          <el-button @click.native.prevent="" type="default" size="small" @click="editRow(scope.$index,scope.row.size)">编辑</el-button>
           <el-button type="default" size="small" @click="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -84,7 +84,7 @@
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
-          <div slot="tip" class="el-upload__tip">建议尺寸TODO，只能上传jpg/png文件，且不超过1MB</div>
+          <div slot="tip" class="el-upload__tip">建议尺寸{{size}}，可上传jpg/png/gif文件，且不超过1MB</div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,6 +108,7 @@ export default {
       editing: false,
       editingIndex: null,
       formDialog: false,
+      size: null,
       newAd: {
         advertismentTypeId: null,
         ifUse: null,
@@ -136,7 +137,7 @@ export default {
         this.tableData = data
       }
     },
-    editRow(index) {
+    editRow(index, size) {
       this.editing = true
       this.editingIndex = index
       this.newAd.advertismentTypeId = this.tableData[index].advertismentTypeId
@@ -148,6 +149,7 @@ export default {
       this.newAd.ifUse = this.tableData[index].ifUse
       this.newAd.imgUrl = this.tableData[index].imgUrl
       this.newAd.imgKey = this.tableData[index].imgKey
+      this.size = size
       this.formDialog = true
     },
     addRow() {
