@@ -91,7 +91,7 @@
               </el-form-item>
             </div>
             <el-form-item>
-              <el-button type="default" @click.native.prevent="questionDialog = true">添加问题</el-button>
+              <el-button type="default" @click.native.prevent="addAQuestion">添加问题</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -119,7 +119,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="addQuestion">确 定</el-button>
-            <el-button @click="questionDialog = false">取 消</el-button>
+            <el-button @click="closeQuestionDialog">取 消</el-button>
           </div>
         </el-dialog>
       </el-tab-pane>
@@ -204,6 +204,7 @@ export default {
         ifSingle: null,
         options: []
       },
+      editingQuestion: null,
       editingIndex: null,
       editingPartner: false,
       questionDialog: false,
@@ -262,14 +263,14 @@ export default {
     },
     async fetchData() {
       if (this.$route.params.id) {
-        // this.editing = true
+        this.editing = true
         const { code, data } = await api.get('/api/system/activity/getActivity', { id: this.$route.params.id })
         if (code === 200) {
           this.activity = data
-          this.activityObj = _.cloneDeep(this.activity)
           if (!this.activity.vote.problems) {
             this.activity.vote.problems = []
           }
+          this.activityObj = _.cloneDeep(this.activity)
         }
       } else {
         this.editing = false
@@ -296,27 +297,28 @@ export default {
       this.$set(this.activity, 'imgKey', response.key)
     },
     async save() {
-      if (typeof this.activity.vote === 'object') {
-        this.activity.vote = JSON.stringify(this.activity.vote)
+      this.activityObj = _.cloneDeep(this.activity)
+      if (typeof this.activityObj.vote === 'object') {
+        this.activityObj.vote = JSON.stringify(this.activityObj.vote)
       }
       if (this.endmilliSeconds < this.startmilliSeconds) {
         this.$notify.error({ title: '错误', message: '活动结束时间应大于开始时间' })
-        this.activity.vote = JSON.parse(this.activity.vote)
+        this.activityObj.vote = JSON.parse(this.activityObj.vote)
         return false
       }
-      if (!this.activity.imgUrl || !this.activity.navigationId || !this.activity.introduction) {
+      if (!this.activityObj.imgUrl || !this.activityObj.navigationId || !this.activityObj.introduction) {
         this.$notify.error({ title: '错误', message: '表单信息不完整' })
-        this.activity.vote = JSON.parse(this.activity.vote)
+        this.activityObj.vote = JSON.parse(this.activityObj.vote)
         return false
       }
       if (this.editing) {
-        const { code } = await api.post('/api/system/activity/updateActivity', this.activity)
+        const { code } = await api.post('/api/system/activity/updateActivity', this.activityObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/activity/list')
         }
       } else {
-        const { code } = await api.post('/api/system/activity/addActivity', this.activity)
+        const { code } = await api.post('/api/system/activity/addActivity', this.activityObj)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.$router.push('/activity/list')
@@ -325,23 +327,37 @@ export default {
     },
     // 编辑问题
     editQuestion(index) {
-      this.editing = true
+      this.editingQuestion = true
       this.editingIndex = index
       this.questionDialog = true
       this.newQuestion = _.clone(this.activity.vote.problems[index])
+    },
+    closeQuestionDialog() {
+      this.newQuestion = {
+        ifSingle: null,
+        options: []
+      }
+      this.questionDialog = false
+    },
+    addAQuestion() {
+      this.questionDialog = true
+      this.newQuestion = {
+        ifSingle: null,
+        options: []
+      }
     },
     // 添加问题
     addQuestion() {
       if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
-      if (this.editing === true) {
+      if (this.editingQuestion === true) {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
         }
         // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
-        this.editing = false
+        this.editingQuestion = false
       } else {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
