@@ -124,13 +124,13 @@
         <el-tab-pane label="投票选项" name="second">
           <el-form label-width="100px">
             <el-form-item  v-for="(item,index) in rowObj.problems" :label="'问题' + (index+1)" :key="index">
-              <p>{{item.problem}}  <el-tag v-if="item.type==1" type="success">单选</el-tag>
-                <el-tag v-if="item.type==2"type="success">多选</el-tag></p>
-              <el-radio-group  v-if="item.type==1">
-                <el-radio v-for="(optionitem, index2) in item.option" :label="'选项' + (index+1)" :key="index2"></el-radio>
+              <p>{{item.problem}}  <el-tag v-if="item.ifSingle" type="primary">单选</el-tag>
+                <el-tag v-if="!item.ifSingle"type="success">多选</el-tag></p>
+              <el-radio-group  v-if="item.ifSingle">
+                <el-radio v-for="(optionitem, index2) in item.options" :label="optionitem.option" :key="index2"></el-radio>
               </el-radio-group>
-              <el-checkbox-group  v-if="item.type==2">
-                <el-checkbox v-for="(optionitem, index2) in item.option" :label="'选项' + (index+1)" :key="index2"></el-checkbox>
+              <el-checkbox-group  v-if="!item.ifSingle">
+                <el-checkbox v-for="(optionitem, index2) in item.options" :label="optionitem.option" :key="index2"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
           </el-form>
@@ -268,3 +268,10 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.el-radio-group, .el-checkbox-group{
+  label{
+    margin-left: 15px;
+  }
+}
+</style>
