@@ -191,7 +191,7 @@ export default {
         title: this.searchKey.title,
         period: this.searchKey.period,
         author: this.searchKey.author,
-        navigationName: this.searchKey.column
+        navigationId: this.searchKey.column
       })
       if (code === 200) {
         this.tableData = data.array

@@ -137,11 +137,20 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/comment/deleteArticleComment', { id: this.tableData[index].id })
-        if (code === 200) {
-          this.tableData.splice(index, 1)
-          this.$notify.success({ title: '成功', message: '删除成功' })
-          this.fetchData()
+        if (this.title === '文章') {
+          const { code } = await api.post('/api/system/comment/deleteArticleComment', { id: this.tableData[index].id })
+          if (code === 200) {
+            this.tableData.splice(index, 1)
+            this.$notify.success({ title: '成功', message: '删除成功' })
+            this.fetchData()
+          }
+        } else {
+          const { code } = await api.post('/api/system/comment/deleteVideoComment', { id: this.tableData[index].id })
+          if (code === 200) {
+            this.tableData.splice(index, 1)
+            this.$notify.success({ title: '成功', message: '删除成功' })
+            this.fetchData()
+          }
         }
       }).catch(() => {})
     },
