@@ -6,7 +6,7 @@
         <span>评论管理</span>
       </el-form-item>
       <el-form-item :label="title">
-        <span>待完善</span>
+        <span></span>
       </el-form-item>
     </el-form>
 

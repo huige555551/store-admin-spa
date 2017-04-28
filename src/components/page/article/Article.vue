@@ -169,6 +169,7 @@ export default {
       this.searchKey.title = this.searchInput.title
       this.searchKey.period = this.searchInput.period
       this.searchKey.author = this.searchInput.author
+      this.searchKey.column = this.searchInput.column
       this.currentPage = 1
       this.fetchData()
     },
@@ -189,7 +190,8 @@ export default {
         perPage: this.perPage,
         title: this.searchKey.title,
         period: this.searchKey.period,
-        author: this.searchKey.author
+        author: this.searchKey.author,
+        navigationName: this.searchKey.column
       })
       if (code === 200) {
         this.tableData = data.array
