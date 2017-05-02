@@ -163,9 +163,7 @@ export default {
       }
     },
     handlearticleSuccess(response) {
-      // TODO response.key是什么
       this.$notify.success({ title: '成功', message: '上传成功' })
-      // this.$set(this.audio, 'imgUrl', `${bucketPort}/${response.key}`)
       this.$set(this.article, 'imgKey', response.key)
     },
     handlearticleError(err, file, fileList) {
