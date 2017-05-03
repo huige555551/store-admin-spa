@@ -61,7 +61,6 @@ function checkCode(res) {
     return router.replace('login')
   } else if (res.code !== 200) {
     if (window.location.href.indexOf('login') !== -1) {
-      // console.log(window.location.href.indexOf('login') !== -1)
       return false
     }
     Notification.error({ title: '警告', message: `${res.code} ${res.message}. ` })

@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column label="图片" width="200">
         <template scope="scope">
-          <img :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img class="adImg" :src="scope.row.imgUrl" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100">
@@ -94,6 +94,14 @@
     </el-dialog>
   </div>
 </template>
+
+<style type="text/css">
+  .adImg {
+    display: inline-block;
+    max-height: 200px;
+    max-width: 200px;
+  }
+</style>
 
 <script>
 import api from '@/api'
