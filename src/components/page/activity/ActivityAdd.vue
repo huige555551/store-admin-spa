@@ -394,11 +394,11 @@ export default {
     },
     // 添加合作伙伴
     addPartner() {
-      // this.editing = false
-      // this.newPartner.id = null
-      // this.newPartner.name = null
-      // this.newPartner.logo = null
-      // this.newPartner.url = null
+      this.editingPartner = false
+      this.newPartner.id = null
+      this.newPartner.name = null
+      this.newPartner.logo = null
+      this.newPartner.url = null
       this.partnerDialog = true
     },
     // 编辑合作伙伴
