@@ -34,7 +34,7 @@
         <el-input v-model="book.author"></el-input>
       </el-form-item>
       <el-form-item label="价格">
-        <el-input v-model="book.price"></el-input>
+        <el-input v-model="book.price" type="number"></el-input>
       </el-form-item>
       <el-form-item label="出版社">
         <el-input v-model="book.publisher"></el-input>
