@@ -124,6 +124,7 @@ export default {
       this.rowObj.logo = this.tableData[index].logo
       this.rowObj.url = this.tableData[index].url
       this.rowObj.name = this.tableData[index].name
+      this.rowObj.imgKey = this.tableData[index].imgKey
       this.formDialog = true
     },
     // 删除行
@@ -153,6 +154,7 @@ export default {
     },
     // 保存修改
     async saveRow() {
+      // this.rowObj.imgKey = this.rowObj.url.slice(this.rowObj.url.lastIndexOf('/'))
       if (!this.rowObj.url || !this.rowObj.name || !this.rowObj.logo) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
