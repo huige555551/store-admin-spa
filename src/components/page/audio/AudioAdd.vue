@@ -59,6 +59,7 @@
             :multiple="false"
             :on-progress="handleAudioUploading"
             :on-success="handleAudioSuccess"
+            :on-error="handleAudioError"
             :before-upload="beforeAudioUpload"
             :data="uploadParams">
             <el-button size="small" type="primary">点击上传</el-button>
@@ -163,6 +164,11 @@ export default {
       this.audioName = file.name
       this.$notify.success({ title: '成功', message: '上传成功' })
       this.$set(this.audio, 'fileKey', response.key)
+    },
+    handleAudioError(err) {
+      console.log(err)
+      this.uploading = false
+      this.uploadEnable = true
     },
     // 更换音频
     changeAudio() {
