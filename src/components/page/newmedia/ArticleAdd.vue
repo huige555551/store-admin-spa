@@ -70,7 +70,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="$router.push('/newmedia/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
