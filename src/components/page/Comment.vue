@@ -123,7 +123,7 @@ export default {
         }
       } else {
         this.title = '活动'
-        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { videoId: this.$route.params.id, currentPage: this.currentPage, content: this.searchKey.content, date: this.searchKey.date })
+        const { code, data } = await api.get('/api/system/comment/listArticleComment?', { articleId: this.$route.params.id, currentPage: this.currentPage, content: this.searchKey.content, date: this.searchKey.date })
         if (code === 200) {
           this.tableData = data.array
           this.total = data.total
