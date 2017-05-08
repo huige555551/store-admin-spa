@@ -13,10 +13,6 @@
       </el-form-item>
 
       <el-form-item label="漫画上传" style="width:1000px">
-        <!--<el-upload list-type="picture-card" class="avatar-uploader" action="//up-z2.qiniu.com" accept="image/*" list-type="picture-card" :show-file-list="false" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload">
-          <img v-if="comics.comicsUrl" :src="comics.comicsUrl" class="avatar">
-          <i class="el-icon-plus"></i>
-        </el-upload>-->
         <el-upload
           action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="comics.comicsList" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
           :on-remove="handleComicsRemove">

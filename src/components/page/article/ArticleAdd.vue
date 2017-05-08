@@ -41,7 +41,7 @@
             :remote-method="searchAuthor">
             <el-option
               v-for="item in authorResults"
-              :key="item.id"
+              :key="item.name"
               :label="item.name"
               :value="item.id">
             </el-option>
@@ -134,7 +134,7 @@ export default {
   methods: {
     // 获取数据
     async fetchData() {
-      const getAuthor = await api.get('/api/system/author/listAuthor')
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
       if (getAuthor.code === 200) {
         this.authorResults = getAuthor.data.array
       }
@@ -185,7 +185,6 @@ export default {
     ValidateNumber(val) {
       if (val !== '') {
         if (/^[1-9]\d*$/.test(val) === false) {
-          console.log('不是数字')
           this.isNum = false
         } else {
           this.isNum = true
@@ -228,11 +227,6 @@ export default {
         }
       }
     }
-  },
-  beforeRouteLeave(to, from, next) {
-    // TODO 突然离开未保存，提示管理员
-    console.log('leave')
-    next()
   }
 }
 </script>
@@ -266,5 +260,9 @@ export default {
 
   .simditor-body h3 {
     font-size: 18px
+  }
+
+  .el-select-dropdown__wrap {
+    max-height: 180px;
   }
 </style>

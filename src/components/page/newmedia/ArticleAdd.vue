@@ -114,14 +114,6 @@ export default {
       this.fetchData()
     }
   },
-  async mounted() {
-    // const tokenData = await api.get('/api/system/upload/getToken')
-    // console.log(tokenData)
-    //   if (tokenData.code === 200) {
-    //     this.options2.upload.params.token = tokenData.data.token
-    //     console.log(this.tokenData)
-    //   }
-  },
   /* eslint-enable */
   methods: {
     change(html) {
@@ -133,7 +125,7 @@ export default {
         this.optionColumn = getNavigation.data
       }
       this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor')
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
       }
@@ -233,4 +225,9 @@ export default {
   .simditor-body h3 {
     font-size: 18px
   }
+
+   .el-select-dropdown__wrap {
+    max-height: 180px;
+  }
+
 </style>
