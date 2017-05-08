@@ -228,14 +228,7 @@ export default {
         }
       },
       activityObj: {},
-      tableData: [
-        // { name: '合作伙伴1', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        // { name: '合作伙伴2', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        // { name: '合作伙伴3', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        // { name: '合作伙伴4', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        // { name: '合作伙伴5', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' },
-        // { name: '合作伙伴6', cover: 'http://om4r3bojb.bkt.clouddn.com/index-banner.jpg', url: 'http://baidu.com' }
-      ],
+      tableData: [],
       columnResults: []
     }
   },
@@ -330,7 +323,7 @@ export default {
       this.editingQuestion = true
       this.editingIndex = index
       this.questionDialog = true
-      this.newQuestion = _.clone(this.activity.vote.problems[index])
+      this.newQuestion = _.cloneDeep(this.activity.vote.problems[index])
     },
     closeQuestionDialog() {
       this.newQuestion = {
@@ -352,11 +345,17 @@ export default {
       if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
+      if (this.newQuestion.options.length !== 0) {
+        for (let i = 0; i < this.newQuestion.options.length; i += 1) {
+          if (!this.newQuestion.options[i].option) {
+            return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
+          }
+        }
+      }
       if (this.editingQuestion === true) {
         if (typeof this.activity.vote === 'string') {
           this.activity.vote = JSON.parse(this.activity.vote)
         }
-        // this.activity.vote = JSON.parse(this.activity.vote)
         this.activity.vote.problems.splice(this.editingIndex, 1, _.cloneDeep(this.newQuestion))
         this.editingQuestion = false
       } else {
@@ -372,9 +371,6 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
-      // if(typeof this.newQuestion.options === 'string'){
-      //   this.newQuestion.options = JSON.parse(this.newQuestion.options)
-      // }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式

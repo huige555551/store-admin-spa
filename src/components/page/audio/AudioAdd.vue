@@ -22,7 +22,7 @@
           <UploadSingle
             :imgUrl="audio.imgUrl"
             :imgKey="audio.imgKey"
-            :size=1 dimension="240x240"
+            :size=1 dimension="268x150"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
           </UploadSingle>
@@ -62,7 +62,7 @@
             :before-upload="beforeAudioUpload"
             :data="uploadParams">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传mp3文件</div>
+            <!-- <div slot="tip" class="el-upload__tip">只能上传mp3文件</div> -->
           </el-upload>
         </el-form-item>
         <el-form-item label="音频摘要">
@@ -141,11 +141,11 @@ export default {
     //   }
     // },
     // 音频上传
-    beforeAudioUpload(file) {
-      if (file.type.indexOf('mp3') === -1) {
-        this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
-        return false
-      }
+    beforeAudioUpload() {
+      // if (file.type.indexOf('mp3') === -1) {
+      //   this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
+      //   return false
+      // }
       return api.get('/api/system/upload/getToken').then(response => {
         this.bucketPort = response.data.bucketPort
         this.uploadParams = {
