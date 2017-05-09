@@ -189,13 +189,13 @@ export default {
         const { code } = await api.post('/api/system/author/updateAuthor', this.rowObj)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
-          this.rowObj = {}
+          this.rowObj = { headImgUrl: '', headImgKey: '' }
           this.formDialog = false
         }
       } else {
         const { code } = await api.post('/api/system/author/addAuthor', this.rowObj)
         if (code === 200) {
-          this.rowObj = {}
+          this.rowObj = { headImgUrl: '', headImgKey: '' }
           this.formDialog = false
           this.fetchData()
         }

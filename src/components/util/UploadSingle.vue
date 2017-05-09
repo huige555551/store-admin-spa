@@ -6,6 +6,7 @@
       v-show="!imgUrl"
       accept="image/*"
       action="//up-z2.qiniu.com"
+      :name="file"
       :show-file-list="false"
       :multiple="false"
       :on-success="handleSuccess"
@@ -47,8 +48,23 @@ export default {
   data() {
     return {
       bucketPort: null,
-      uploadParams: {}
+      uploadParams: {
+        unique_names: true,
+        save_key: false,
+        token: null
+      },
+      file: 'file'
     }
+  },
+  created() {
+    return api.get('/api/system/upload/getToken').then(response => {
+      this.bucketPort = response.data.bucketPort
+      this.uploadParams = {
+        unique_names: true,
+        save_key: false,
+        token: response.data.token
+      }
+    })
   },
   methods: {
     // 删除按钮
@@ -60,14 +76,6 @@ export default {
       if (file.size / 1024 / 1024 > this.size) {
         return this.$notify.error({ title: '错误', message: `建议尺寸${this.dimension}，只能上传jpg/png文件，且不超过${this.size}MB` })
       }
-      return api.get('/api/system/upload/getToken').then(response => {
-        this.bucketPort = response.data.bucketPort
-        this.uploadParams = {
-          unique_names: true,
-          save_key: false,
-          token: response.data.token
-        }
-      })
     },
     // 上传成功
     handleSuccess(response) {

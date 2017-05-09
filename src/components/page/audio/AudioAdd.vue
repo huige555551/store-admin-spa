@@ -90,7 +90,7 @@ export default {
       columnResults: [],
       editing: false,
       audio: { navigationId: '', audioName: null },
-      uploadParams: {},
+      uploadParams: { token: null },
       audioName: '',
       value: ''
     }
@@ -100,6 +100,12 @@ export default {
   },
   async created() {
     this.fetchData()
+    return api.get('/api/system/upload/getToken').then(response => {
+      this.bucketPort = response.data.bucketPort
+      this.uploadParams = {
+        token: response.data.token
+      }
+    })
   },
   mounted() {
     document.querySelectorAll('.el-upload__input')[1].setAttribute('name', 'file')
@@ -147,12 +153,13 @@ export default {
       //   this.$notify.error({ title: '错误', message: '只能上传mp3格式文件' })
       //   return false
       // }
-      return api.get('/api/system/upload/getToken').then(response => {
-        this.bucketPort = response.data.bucketPort
-        this.uploadParams = {
-          token: response.data.token
-        }
-      })
+      // return api.get('/api/system/upload/getToken').then(response => {
+      //   this.bucketPort = response.data.bucketPort
+      //   this.uploadParams = {
+      //     token: response.data.token
+      //   }
+      // })
+      console.log('we in')
     },
     handleAudioUploading() {
       this.audioName = null
