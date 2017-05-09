@@ -83,6 +83,14 @@ export default {
   },
   async created() {
     this.fetchData()
+    return api.get('/api/system/upload/getToken').then(response => {
+      this.bucketPort = response.data.bucketPort
+      this.uploadParams = {
+        unique_names: true,
+        save_key: false,
+        token: response.data.token
+      }
+    })
   },
   beforeRouteLeave(to, from, next) {
     // TODO 突然离开未保存，提示管理员
@@ -135,14 +143,7 @@ export default {
     },
     // 漫画上传
     beforeAvatarUpload() {
-      return api.get('/api/system/upload/getToken').then(response => {
-        this.bucketPort = response.data.bucketPort
-        this.uploadParams = {
-          unique_names: true,
-          save_key: false,
-          token: response.data.token
-        }
-      })
+      console.log('enter')
     },
     // 漫画成功
     /* eslint-disable */
