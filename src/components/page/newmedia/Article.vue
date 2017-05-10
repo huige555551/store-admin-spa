@@ -189,7 +189,7 @@ export default {
         currentPage: this.currentPage,
         perPage: this.perPage,
         title: this.searchKey.title,
-        column: this.searchKey.column,
+        navigationId: this.searchKey.column,
         author: this.searchKey.author
       })
       if (code === 200) {
