@@ -69,7 +69,7 @@
         <div slot="tip" class="el-upload__tip">建议尺寸560x440，只能上传jpg/png文件，且不超过1MB</div>
       </el-form-item>
       <el-form-item label="图书目录">
-        <el-tree :data="directory" :props="defaultProps"></el-tree>
+        <el-tree :data="book.directory" :props="defaultProps"></el-tree>
         <el-button style="margin-top: 10px;" @click="editCatergory">编辑</el-button>
       </el-form-item>
       <el-form-item label="目录图片">
@@ -149,7 +149,7 @@ export default {
     return {
       catergoryDialog: false,
       editing: false,
-      book: { publicationDate: '' },
+      book: { publicationDate: '', directory: [] },
       uploadParams: {},
       value: '',
       directoryString: '',
@@ -180,8 +180,11 @@ export default {
     this.fetchData()
   },
   // 组件复用，路由数据刷新
-  async beforeRouteUpdate() {
-    this.fetchData()
+  watch: {
+    /* eslint-disable */
+    '$route'() {
+      this.fetchData()
+    }
   },
   methods: {
     // 获取数据
