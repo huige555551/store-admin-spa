@@ -137,6 +137,9 @@ export default {
     this.fetchData()
   },
   methods: {
+    openImg(url) {
+      window.open(url)
+    },
     // 获取分类数据
     async fetchData() {
       this.tableData = []

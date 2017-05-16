@@ -64,7 +64,7 @@ function checkCode(res) {
       return false
     }
     Notification.error({ title: '警告', message: `${res.code} ${res.message}. ` })
-    window.open = '/login'
+    window.location.href = '/login'
   }
   return res
 }
