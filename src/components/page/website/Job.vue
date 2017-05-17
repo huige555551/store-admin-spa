@@ -28,7 +28,7 @@
       </el-form-item>
     </el-form>
     <!-- 添加栏目表单 -->
-    <el-dialog title="添加轮播" v-model="formDialog">
+    <el-dialog title="添加岗位" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="名字">
           <el-input v-model="rowObj.job"></el-input>
@@ -38,7 +38,6 @@
         </el-form-item>
         <el-form-item label="岗位描述">
           <simditor :content="rowObj.description"  v-model="rowObj.description"></simditor>
-          <!-- <el-input type="textarea" :rows="6" v-model="rowObj.description"></el-input> -->
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,10 +107,12 @@ export default {
       this.editing = false
       this.rowObj.id = null
       this.rowObj.job = null
+      this.rowObj.order = null
       this.rowObj.description = '请填写要求'
       this.formDialog = true
+      $('.simditor-body').html(this.rowObj.description)
     },
-    // 删除栏目
+    // 删除岗位
     async deleteRow(index) {
       this.$confirm('此操作将该删除该岗位，是否继续?', '提示', {
         confirmButtonText: '确定',
