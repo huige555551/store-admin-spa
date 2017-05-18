@@ -142,7 +142,7 @@ export default {
   methods: {
     // 获取数据
     async fetchData() {
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000000 })
       if (getAuthor.code === 200) {
         this.authorResults = getAuthor.data.array
       }
@@ -231,6 +231,9 @@ export default {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
       if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
+        if (typeof this.article.labelList === 'string') {
+          this.article.labelList = JSON.parse(this.article.labelList)
+        }
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {

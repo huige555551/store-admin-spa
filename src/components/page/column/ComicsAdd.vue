@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     async fetchData() {
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 999 })
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000000 })
       if (getAuthor.code === 200) {
         this.optionsAuthor = getAuthor.data.array
       }

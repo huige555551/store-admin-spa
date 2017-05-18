@@ -131,7 +131,7 @@ export default {
         this.optionColumn = getNavigation.data
       }
       this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000000 })
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
       }
@@ -194,6 +194,9 @@ export default {
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       } else if (!this.article.navigationId || !this.article.title || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+        if (typeof this.article.labelList === 'string') {
+          this.article.labelList = JSON.parse(this.article.labelList)
+        }
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // 对上post的key
