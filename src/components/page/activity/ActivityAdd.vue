@@ -297,9 +297,9 @@ export default {
     },
     async save() {
       this.activityObj = _.cloneDeep(this.activity)
-      if (this.activityObj.vote.hasVote === false) {
-        this.activityObj.vote.problems = null
-      }
+      // if (this.activityObj.vote.hasVote === false) {
+      //   this.activityObj.vote.problems = null
+      // }
       if (this.activityObj.vote.problems !== null && typeof this.activityObj.vote === 'object') {
         this.activityObj.vote = JSON.stringify(this.activityObj.vote)
       }
