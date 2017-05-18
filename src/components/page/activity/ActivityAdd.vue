@@ -228,9 +228,13 @@ export default {
           startTime: null,
           endTime: null,
           problems: [],
-          hasVote: []
+          hasVote: null,
+          deleteProblems: [],
+          deleteOptions: []
         }
       },
+      deleteProblemsObj: [],
+      deleteOptionsObj: [],
       activityObj: {},
       tableData: [],
       columnResults: []
@@ -296,6 +300,7 @@ export default {
       this.$set(this.activity, 'imgKey', response.key)
     },
     async save() {
+      this.activity.vote.deleteProblems = _.cloneDeep(this.deleteProblemsObj)
       this.activityObj = _.cloneDeep(this.activity)
       // if (this.activityObj.vote.hasVote === false) {
       //   this.activityObj.vote.problems = null
@@ -336,6 +341,9 @@ export default {
     },
     // 删除问题
     deleteQuestion(index) {
+      if (this.activity.vote.problems[index].id) {
+        this.deleteProblemsObj.push(this.activity.vote.problems[index].id)
+      }
       this.activity.vote.problems.splice(index, 1)
     },
     closeQuestionDialog() {
@@ -355,6 +363,7 @@ export default {
     },
     // 添加问题
     addQuestion() {
+      this.activity.vote.deleteOptions = _.cloneDeep(this.deleteOptionsObj)
       if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
@@ -384,6 +393,11 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
+      if (this.newQuestion.options[index].id) {
+        console.log('hey')
+        this.deleteOptionsObj.push(this.newQuestion.options[index].id)
+        console.log(this.deleteOptionsObj)
+      }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
