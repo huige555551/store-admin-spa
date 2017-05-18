@@ -54,7 +54,13 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="文章标签">
-          <el-select v-model="article.labels" multiple filterable allow-create placeholder="请选择/输入文章标签">
+          <el-select v-model="article.labelList"  :remote-method="searchLabels" multiple filterable remote allow-create placeholder="请选择/输入文章标签">
+            <el-option
+              v-for="item in labelsResults"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="期数">
@@ -106,15 +112,17 @@ export default {
       isNum: true,
       columnResults: [],
       authorResults: [],
+      labelsResults: [],
       article: {
-        labels: [],
+        labelList: [],
         publicationDate: null,
         navigationId: null,
         authorId: '',
         content: null,
         period: null
       },
-      options2: {}
+      options2: {},
+      content: '请输入内容'
     }
   },
   components: {
@@ -145,16 +153,21 @@ export default {
           this.article = data
           this.content = this.article.content
           $('.simditor-body').html(this.content)
+          if (!this.article.authorId) {
+            this.$set(this.article, 'authorId', null)
+          }
         }
       } else {
         this.editing = false
         this.article = {
-          labels: [],
+          labelList: [],
           publicationDate: '',
           navigationId: '',
           authorId: '',
           content: '请输入内容'
         }
+        this.content = this.article.content
+        $('.simditor-body').html(this.content)
       }
       // 拿回所有栏目
       const { code, data } = await api.get('/api/system/article/listNavigation')
@@ -205,12 +218,19 @@ export default {
         }
       }
     },
+    async searchLabels(val) {
+      const { code, data } = await api.get('/api/system/article/listLabels', { title: val })
+      if (code === 200) {
+        this.labelsResults = data
+      }
+    },
     async save() {
+      this.article.labelList = JSON.stringify(this.article.labelList)
       this.$set(this.article, 'content', $('.simditor-body').html())
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
-      if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.authorId || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
+      if (!this.article.title || !this.article.navigationId || !this.article.period || !this.article.publicationDate || !this.article.coverKey || !this.article.content || !this.article.introduction) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       if (this.editing) {
