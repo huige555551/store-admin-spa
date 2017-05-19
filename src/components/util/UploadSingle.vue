@@ -57,6 +57,7 @@ export default {
     }
   },
   created() {
+    console.log('uploadsingle created')
     return api.get('/api/system/upload/getToken').then(response => {
       this.bucketPort = response.data.bucketPort
       this.uploadParams = {
@@ -66,6 +67,12 @@ export default {
       }
     })
   },
+  mounted() {
+    console.log('uploadsingle mounted')
+    document.querySelectorAll('input[type=file]').forEach((item) => {
+      item.setAttribute('name', 'file')
+    })
+  },
   methods: {
     // 删除按钮
     handleRemove() {
@@ -73,6 +80,7 @@ export default {
     },
     // 文件上传
     beforeUpload(file) {
+      console.log('before upload')
       if (file.size / 1024 / 1024 > this.size) {
         return this.$notify.error({ title: '错误', message: `建议尺寸${this.dimension}，只能上传jpg/png文件，且不超过${this.size}MB` })
       }
