@@ -15,7 +15,6 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="title" label="标题" min-width="120"></el-table-column>
       <el-table-column prop="author" label="作者" min-width="60"></el-table-column>
-      <el-table-column prop="period" label="期数" width="80"></el-table-column>
       <el-table-column prop="navigationName" label="栏目" width="100"></el-table-column>
       <el-table-column prop="order" label="顺序" width="70"></el-table-column>
       <el-table-column label="操作" width="160">
