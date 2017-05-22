@@ -13,21 +13,13 @@
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="title" label="标题" min-width="160"></el-table-column>
-      <el-table-column prop="content" label="描述" min-width="160"></el-table-column>
-      <el-table-column prop="author" label="作者" min-width="100"></el-table-column>
       <el-table-column prop="order" label="顺序" width="70"></el-table-column>
-      <el-table-column label="跳转链接" min-width="160">
-        <template scope="scope">
-          <a :href="scope.row.url" target="_blank">{{ scope.row.url }}</a>
-        </template>
-      </el-table-column>
       <el-table-column label="图片" width="200">
         <template scope="scope">
-          <img :src="scope.row.imgUrl + '?imageView2/2/w/200/h/200'" width="200" max-height="200" @click="openImg(scope.row.imgUrl)" style="cursor: pointer">
+          <img :src="scope.row.productImg" width="200" max-height="200" @click="openImg(scope.row.productImg)" style="cursor: pointer">
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="160">
+      <el-table-column label="操作" min-width="160">
         <template scope="scope">
           <el-button type="small" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
           <el-button type="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
@@ -45,18 +37,6 @@
     <!-- 添加表单 -->
     <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
-        <el-form-item label="标题">
-          <el-input v-model="rowObj.title"></el-input>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input type="textarea" :rows="6" v-model="rowObj.content"></el-input>
-        </el-form-item>
-        <el-form-item label="跳转链接">
-          <el-input v-model="rowObj.url"></el-input>
-        </el-form-item>
-        <el-form-item label="作者">
-          <el-input v-model="rowObj.author"></el-input>
-        </el-form-item>
         <el-form-item label="顺序">
           <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
@@ -97,14 +77,17 @@ export default {
         imgKey: null // data内声明，允许子组件跟踪值变化
       },
       // 表格
-      tableData: []
+      tableData: [{
+        order: '100',
+        productImg: 'https://img.yzcdn.cn/upload_files/2015/05/14/Fh1ZR74CpUm0s85svgQuU-MQ3oQd.png?imageView2/2/w/120/h/0/q/75/format/webp'
+      }]
     }
   },
   components: {
     UploadSingle
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图

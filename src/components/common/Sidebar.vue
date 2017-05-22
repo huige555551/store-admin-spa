@@ -4,94 +4,61 @@
       <!-- 用户管理 -->
       <el-menu-item index="/user/list"><i class="el-icon-date"></i>用户管理</el-menu-item>
 
-      <!-- 首页管理 -->
+       <!-- 首页管理 -->
       <el-submenu index="index">
         <template slot="title"><i class="el-icon-date"></i>首页管理</template>
-        <el-menu-item index="/index/banner">轮播管理</el-menu-item>
-        <el-menu-item index="/feature/article">精选文章</el-menu-item>
-        <el-menu-item index="/feature/newmedia">精选新媒体</el-menu-item>
-        <el-menu-item index="/feature/video">精选视频</el-menu-item>
-        <el-menu-item index="/feature/audio">精选音频</el-menu-item>
+        <el-menu-item index="/index/banner">首页轮播</el-menu-item>
+        <el-menu-item index="/feature/product">精选商品</el-menu-item>
       </el-submenu>
 
-      <!-- 固定栏目 -->
-      <el-submenu index="column">
-        <template slot="title"><i class="el-icon-date"></i>固定栏目</template>
+      <!-- 商品 -->
+      <el-submenu index="product">
+        <template slot="title"><i class="el-icon-date"></i>商品</template>
+        <!-- 商品管理 -->
         <el-menu-item-group>
-          <template slot="title">封面管理</template>
-          <el-menu-item index="/cover/list">封面列表</el-menu-item>
-          <el-menu-item index="/cover/add">添加封面</el-menu-item>
+          <template slot="title">商品管理</template>
+          <el-menu-item index="/product/list">商品列表</el-menu-item>
+          <el-menu-item index="/product/add">添加商品</el-menu-item>
         </el-menu-item-group>
+        <!-- 商品分类 -->
         <el-menu-item-group>
-          <template slot="title">漫画管理</template>
-          <el-menu-item index="/comics/list">漫画列表</el-menu-item>
-          <el-menu-item index="/comics/add">添加漫画</el-menu-item>
+          <template slot="title">商品分类</template>
+          <el-menu-item index="/product/classify/list">分类列表</el-menu-item>
+          <el-menu-item index="/product/classify/add">添加分类</el-menu-item>
         </el-menu-item-group>
+        <!-- 规格管理 -->
         <el-menu-item-group>
-          <template slot="title">插画管理</template>
-          <el-menu-item index="/illustration/list">插画列表</el-menu-item>
-          <el-menu-item index="/illustration/add">添加插画</el-menu-item>
+          <template slot="title">规格分类</template>
+          <el-menu-item index="/product/specification/list">规格列表</el-menu-item>
+          <el-menu-item index="/product/specification/add">添加规格</el-menu-item>
+        </el-menu-item-group>
+        <!-- 品牌管理 -->
+        <el-menu-item-group>
+          <template slot="title">品牌分类</template>
+          <el-menu-item index="/product/brand/classify_list">品牌分类</el-menu-item>
+          <el-menu-item index="/product/brand/list">品牌列表</el-menu-item>
+          <el-menu-item index="/product/brand/add">添加品牌</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
 
-      <!-- 栏目文章 -->
-      <el-submenu index="article">
-        <template slot="title"><i class="el-icon-date"></i>栏目文章</template>
-        <el-menu-item index="/column/list">栏目列表</el-menu-item>
-        <el-menu-item index="/author/list">作者列表</el-menu-item>
-        <el-menu-item index="/article/list">文章列表</el-menu-item>
-        <el-menu-item index="/article/add">添加文章</el-menu-item>
+      <!-- 订单管理 -->
+      <el-submenu index="order">
+        <template slot="title"><i class="el-icon-date"></i>订单</template>
+        <el-menu-item index="/order/list">所有订单</el-menu-item>
+        <el-menu-item index="/order/right">维权订单</el-menu-item>
       </el-submenu>
 
-      <!-- 视频管理 -->
-      <el-submenu index="video">
-        <template slot="title"><i class="el-icon-date"></i>视频管理</template>
-        <el-menu-item index="/video/category">分类管理</el-menu-item>
-        <el-menu-item index="/video/list">视频列表</el-menu-item>
-        <el-menu-item index="/video/add">添加视频</el-menu-item>
-        <el-menu-item index="/video/banner">轮播管理</el-menu-item>
-      </el-submenu>
-
-      <!-- 音频管理 -->
-      <el-submenu index="audio">
-        <template slot="title"><i class="el-icon-date"></i>音频管理</template>
-        <el-menu-item index="/audio/category">分类管理</el-menu-item>
-        <el-menu-item index="/audio/list">音频列表</el-menu-item>
-        <el-menu-item index="/audio/add">添加音频</el-menu-item>
-      </el-submenu>
-
-      <!-- 新媒体管理 -->
-      <el-submenu index="newmedia">
-        <template slot="title"><i class="el-icon-date"></i>新媒体管理</template>
-        <el-menu-item index="/newmedia/category">分类管理</el-menu-item>
-        <el-menu-item index="/newmedia/list">文章列表</el-menu-item>
-        <el-menu-item index="/newmedia/add">添加文章</el-menu-item>
-        <el-menu-item index="/newmedia/banner">轮播管理</el-menu-item>
-      </el-submenu>
-
-      <!-- 图书管理 -->
-      <el-submenu index="book">
-        <template slot="title"><i class="el-icon-date"></i>图书管理</template>
-        <el-menu-item index="/book/list">图书列表</el-menu-item>
-        <el-menu-item index="/book/add">添加图书</el-menu-item>
-      </el-submenu>
-
-      <!-- 活动管理 -->
-      <el-submenu index="activity">
-        <template slot="title"><i class="el-icon-date"></i>活动管理</template>
-        <el-menu-item index="/activity/category">活动分类</el-menu-item>
-        <el-menu-item index="/activity/list">活动列表</el-menu-item>
-        <el-menu-item index="/activity/add">添加活动</el-menu-item>
-        <el-menu-item index="/activity/banner">轮播管理</el-menu-item>
+       <!-- 地址管理 -->
+      <el-submenu index="address">
+        <template slot="title"><i class="el-icon-date"></i>地址管理</template>
+        <el-menu-item index="/address/list">发货地址管理</el-menu-item>
+        <el-menu-item index="/address/add">添加发货地址</el-menu-item>
       </el-submenu>
 
       <!-- 网站设置 -->
       <el-submenu index="setting">
         <template slot="title"><i class="el-icon-setting"></i>网站设置</template>
-        <el-menu-item index="/website/ad">广告设置</el-menu-item>
-        <el-menu-item index="/website/job">岗位列表</el-menu-item>
-        <el-menu-item index="/website/partner">合作伙伴</el-menu-item>
-        <el-menu-item index="/website/subscription">网上订阅</el-menu-item>
+        <el-menu-item index="/website/admin">权限设置</el-menu-item>
         <el-menu-item index="/website/reset">修改密码</el-menu-item>
       </el-submenu>
     </el-menu>

@@ -21,10 +21,40 @@ export default new Router({
         { path: '/welcome', component: resolve => require(['@/components/page/Welcome'], resolve) },
         // 用户管理
         { path: '/user/list', component: resolve => require(['@/components/page/User.vue'], resolve) },
+         // 首页管理
+        { path: '/index/banner', component: resolve => require(['@/components/page/index/Banner.vue'], resolve) },
+        { path: '/feature/product', component: resolve => require(['@/components/page/index/FeaturedProduct.vue'], resolve) },
+        // 商品管理
+        { path: '/product/list', component: resolve => require(['@/components/page/product/Product.vue'], resolve) },
+        { path: '/product/add', component: resolve => require(['@/components/page/product/ProductAdd.vue'], resolve) },
+        { path: '/product/edit/:id', component: resolve => require(['@/components/page/product/ProductAdd.vue'], resolve) },
+        // 品牌分类
+        { path: '/product/brand/list', component: resolve => require(['@/components/page/product/Brand.vue'], resolve) },
+        { path: '/product/brand/classify_list', component: resolve => require(['@/components/page/product/BrandClassify.vue'], resolve) },
+        { path: '/product/brand/add', component: resolve => require(['@/components/page/product/BrandAdd.vue'], resolve) },
+        { path: '/product/brand/edit/:id', component: resolve => require(['@/components/page/product/BrandAdd.vue'], resolve) },
+        // 规格管理
+        { path: '/product/specification/list', component: resolve => require(['@/components/page/product/Specification.vue'], resolve) },
+        { path: '/product/specification/add', component: resolve => require(['@/components/page/product/SpecificationAdd.vue'], resolve) },
+        { path: '/product/specification/edit/:id', component: resolve => require(['@/components/page/product/SpecificationAdd.vue'], resolve) },
+        // 商品分类
+        { path: '/product/classify/list', component: resolve => require(['@/components/page/product/Classify.vue'], resolve) },
+        { path: '/product/classify/add', component: resolve => require(['@/components/page/product/ClassifyAdd.vue'], resolve) },
+        { path: '/product/classify/edit/:id', component: resolve => require(['@/components/page/product/ClassifyAdd.vue'], resolve) },
+        
+
+         // 订单管理
+        { path: '/order/list', component: resolve => require(['@/components/page/order/Order.vue'], resolve) },
+        { path: '/order/right', component: resolve => require(['@/components/page/order/RightOrder.vue'], resolve) },
+        { path: '/order/:id', component: resolve => require(['@/components/page/order/OrderDetail.vue'], resolve) },
+        // 地址管理
+        { path: '/address/list', component: resolve => require(['@/components/page/address/Address.vue'], resolve) },
+        { path: '/address/add', component: resolve => require(['@/components/page/address/AddressAdd.vue'], resolve) },
+        { path: '/address/edit/:id', component: resolve => require(['@/components/page/address/AddressAdd.vue'], resolve) },
         // 评论管理
         { path: '/comment/:type/:id', component: resolve => require(['@/components/page/Comment.vue'], resolve) },
         // 首页管理
-        { path: '/index/banner', component: resolve => require(['@/components/page/index/Banner.vue'], resolve) },
+        // { path: '/index/banner', component: resolve => require(['@/components/page/index/Banner.vue'], resolve) },
         { path: '/feature/article', component: resolve => require(['@/components/page/index/FeaturedArticle.vue'], resolve) },
         { path: '/feature/newmedia', component: resolve => require(['@/components/page/index/FeaturedNewmedia.vue'], resolve) },
         { path: '/feature/video', component: resolve => require(['@/components/page/index/FeaturedVideo.vue'], resolve) },
@@ -74,6 +104,7 @@ export default new Router({
         { path: '/activity/edit/:id', component: resolve => require(['@/components/page/activity/ActivityAdd.vue'], resolve) },
         // 网站设置
         { path: '/website/ad', component: resolve => require(['@/components/page/website/Ad.vue'], resolve) },
+        { path: '/website/admin', component: resolve => require(['@/components/page/website/Admin.vue'], resolve) },
         { path: '/website/job', component: resolve => require(['@/components/page/website/Job.vue'], resolve) },
         { path: '/website/partner', component: resolve => require(['@/components/page/website/Partner.vue'], resolve) },
         { path: '/website/reset', component: resolve => require(['@/components/page/website/Reset.vue'], resolve) },

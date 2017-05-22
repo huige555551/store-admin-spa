@@ -99,6 +99,7 @@ export default {
     UploadSingle
   },
   async created() {
+    console.log('audioadd created')
     this.fetchData()
     return api.get('/api/system/upload/getToken').then(response => {
       this.bucketPort = response.data.bucketPort
@@ -108,6 +109,7 @@ export default {
     })
   },
   mounted() {
+    console.log('audioadd mounted')
     document.querySelectorAll('.el-upload__input')[1].setAttribute('name', 'file')
   },
   // 组件复用，路由数据刷新

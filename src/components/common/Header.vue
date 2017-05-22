@@ -1,8 +1,8 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img class="user-logo" src="../../assets/logo.png" style="height: 30px; vertical-align: middle; margin-right: 10px;">
-      网站管理后台
+      <img class="user-logo" src="" style="height: 30px; vertical-align: middle; margin-right: 10px;">
+      小程序管理后台
     </div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
