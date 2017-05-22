@@ -21,7 +21,7 @@
               <el-input v-model="activity.title"></el-input>
             </el-form-item>
             <el-form-item label="投票标题">
-              <el-input v-model="activity.name"></el-input>
+              <el-input v-model="activity.vote.name"></el-input>
             </el-form-item>
             <el-form-item label="开始时间">
               <el-date-picker
@@ -61,10 +61,6 @@
             <el-form-item label="活动简介">
               <el-input type="textarea" :rows="4" v-model="activity.introduction"></el-input>
             </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="save">提交</el-button>
-              <el-button @click="$router.push('/activity/list')">取消</el-button>
-            </el-form-item>
           </el-form>
         </div>
 
@@ -73,14 +69,15 @@
         <div class="form-box">
           <el-form ref="form" :model="activity" label-width="100px">
             <el-form-item label="启用投票">
-              <el-switch v-model="activity.hasVote" @change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
+              <el-switch v-model="activity.vote.hasVote" @change="changeSwitch" on-color="#13ce66" off-color="#ff4949"></el-switch>
             </el-form-item>
-            <div v-for="(item,index) in activity.vote.problems">
+            <div  v-if="activity.vote.hasVote" v-for="(item,index) in activity.vote.problems">
               <el-form-item label="问题">
                 <p>{{ item.problem }}
                 <el-tag type="success" v-if="item.ifSingle">单选</el-tag>
                 <el-tag type="success" v-if="!item.ifSingle">多选</el-tag>
-                <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button></p>
+                <el-button type="default" style="margin-left: 10px" @click="editQuestion(index)">编辑</el-button>
+                <el-button type="default" style="margin-left: 10px" @click="deleteQuestion(index)">删除</el-button></p>
                 <el-radio-group v-model="item.ifSingle">
                   <el-radio :disabled="true" :label="true">单选</el-radio>
                   <el-radio :disabled="true" :label="false">多选</el-radio>
@@ -90,11 +87,17 @@
                 </el-radio-group>
               </el-form-item>
             </div>
-            <el-form-item>
+            <el-form-item v-if="activity.vote.hasVote">
               <el-button type="default" @click.native.prevent="addAQuestion">添加问题</el-button>
             </el-form-item>
           </el-form>
         </div>
+          <el-form style="margin-left: 60px;">
+            <el-form-item>
+              <el-button type="primary" @click="save">提交</el-button>
+              <el-button @click="$router.push('/activity/list')">取消</el-button>
+            </el-form-item>
+          </el-form>
       </el-tab-pane>
 
         <!-- 添加问题 -->
@@ -224,9 +227,14 @@ export default {
         vote: {
           startTime: null,
           endTime: null,
-          problems: []
+          problems: [],
+          hasVote: null,
+          deleteProblems: [],
+          deleteOptions: []
         }
       },
+      deleteProblemsObj: [],
+      deleteOptionsObj: [],
       activityObj: {},
       tableData: [],
       columnResults: []
@@ -263,7 +271,9 @@ export default {
           if (!this.activity.vote.problems) {
             this.activity.vote.problems = []
           }
-          this.activityObj = _.cloneDeep(this.activity)
+          if (this.activity.vote.hasVote === null) {
+            this.activityObj = _.cloneDeep(this.activity)
+          }
         }
       } else {
         this.editing = false
@@ -290,8 +300,12 @@ export default {
       this.$set(this.activity, 'imgKey', response.key)
     },
     async save() {
+      this.activity.vote.deleteProblems = _.cloneDeep(this.deleteProblemsObj)
       this.activityObj = _.cloneDeep(this.activity)
-      if (typeof this.activityObj.vote === 'object') {
+      // if (this.activityObj.vote.hasVote === false) {
+      //   this.activityObj.vote.problems = null
+      // }
+      if (this.activityObj.vote.problems !== null && typeof this.activityObj.vote === 'object') {
         this.activityObj.vote = JSON.stringify(this.activityObj.vote)
       }
       if (this.endmilliSeconds < this.startmilliSeconds) {
@@ -325,6 +339,13 @@ export default {
       this.questionDialog = true
       this.newQuestion = _.cloneDeep(this.activity.vote.problems[index])
     },
+    // 删除问题
+    deleteQuestion(index) {
+      if (this.activity.vote.problems[index].id) {
+        this.deleteProblemsObj.push(this.activity.vote.problems[index].id)
+      }
+      this.activity.vote.problems.splice(index, 1)
+    },
     closeQuestionDialog() {
       this.newQuestion = {
         ifSingle: null,
@@ -342,6 +363,7 @@ export default {
     },
     // 添加问题
     addQuestion() {
+      this.activity.vote.deleteOptions = _.cloneDeep(this.deleteOptionsObj)
       if (this.newQuestion.ifSingle === null || !this.newQuestion.problem || this.newQuestion.options.length === 0) {
         return this.$notify.error({ title: '添加失败', message: '表单信息不完整' })
       }
@@ -371,6 +393,11 @@ export default {
       this.newQuestion.options.push({ id: null, value: null, label: null })
     },
     deleteOption(index) {
+      if (this.newQuestion.options[index].id) {
+        console.log('hey')
+        this.deleteOptionsObj.push(this.newQuestion.options[index].id)
+        console.log(this.deleteOptionsObj)
+      }
       this.newQuestion.options.splice(index, 1)
     },
     // 时间格式
@@ -386,7 +413,7 @@ export default {
     },
     // 投票开关
     changeSwitch(val) {
-      this.activity.hasVote = val
+      this.activity.vote.hasVote = val
     },
     // 添加合作伙伴
     addPartner() {

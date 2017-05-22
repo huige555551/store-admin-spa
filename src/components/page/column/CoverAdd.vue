@@ -175,13 +175,13 @@ export default {
     /* eslint-ensable */
 
   },
-  watch: {
-    /* eslint-disable */
-    '$route'() {
-      this.fetchData()
-    /* eslint-enable */
-    }
-  },
+  // watch: {
+  //   /* eslint-disable */
+  //   '$route'() {
+  //     this.fetchData()
+  //   /* eslint-enable */
+  //   }
+  // },
   methods: {
     async fetchData() {
       if (this.$route.params.id) {

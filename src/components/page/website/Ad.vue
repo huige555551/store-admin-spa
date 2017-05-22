@@ -62,9 +62,9 @@
             :remote-method="searchPosition" @change="selectItem">
             <el-option
               v-for="item in positionResults"
-              :key="item.advertismentTypeId"
+              :key="item.id"
               :label="item.location"
-              :value="item.advertismentTypeId"
+              :value="item.id"
               :disabled="item.ifUse">
             </el-option>
           </el-select>
@@ -137,6 +137,9 @@ export default {
     this.fetchData()
   },
   methods: {
+    openImg(url) {
+      window.open(url)
+    },
     // 获取分类数据
     async fetchData() {
       this.tableData = []
@@ -165,7 +168,9 @@ export default {
       this.newAd = {
         location: null,
         advertismentTypeId: null,
-        ifUse: null
+        ifUse: null,
+        imgUrl: null,
+        imgKey: null
       }
       this.formDialog = true
     },
@@ -198,7 +203,7 @@ export default {
     },
     // 保存修改
     async saveRow() {
-      if (!this.newAd.advertismentTypeId || !this.newAd.advertisers || !this.newAd.imgUrl) {
+      if (!this.newAd.advertismentTypeId || !this.newAd.advertisers || !this.newAd.imgUrl || this.newAd.ifUse === null) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {
@@ -207,7 +212,6 @@ export default {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.newAd))
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.formDialog = false
-          // this.fetchData()
         }
       } else {
         const { code } = await api.post('/api/system/advertisment/addAdvertisment', this.newAd)

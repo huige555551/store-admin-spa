@@ -50,9 +50,14 @@
           <el-input v-model="article.title"></el-input>
         </el-form-item>
         <el-form-item label="文章标签">
-          <el-select v-model="article.labels" multiple filterable allow-create placeholder="请选择/输入文章标签">
-          </el-select>
-        </el-form-item>
+          <el-select v-model="article.labelList"  :remote-method="searchLabels" multiple filterable remote allow-create placeholder="请选择/输入文章标签">
+            <el-option
+              v-for="item in labelsResults"
+              :key="item.name"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>        </el-form-item>
         <el-form-item label="日期" >
           <el-date-picker
             v-model="article.publicationDate"
@@ -83,7 +88,7 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-const _ = require('lodash')
+// const _ = require('lodash')
 
 export default {
   data() {
@@ -97,7 +102,8 @@ export default {
       options2: {},
       optionColumn: [],
       optionAuthor: [],
-      optionTag: []
+      optionTag: [],
+      labelsResults: []
     }
   },
   components: {
@@ -125,7 +131,7 @@ export default {
         this.optionColumn = getNavigation.data
       }
       this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
+      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000000 })
       if (getAuthor.code === 200) {
         this.optionAuthor = getAuthor.data.array
       }
@@ -136,11 +142,22 @@ export default {
         if (code === 200) {
           this.article = data
           $('.simditor-body').html(this.article.content)
+          if (!this.article.authorId) {
+            this.$set(this.article, 'authorId', null)
+          }
         }
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
+        this.article = {
+          labelList: [],
+          publicationDate: '',
+          navigationId: '',
+          authorId: '',
+          content: '请输入内容'
+        }
+        this.content = this.article.content
+        $('.simditor-body').html(this.content)
       }
     },
     async searchAuthorName(inputAuthorName) {
@@ -165,15 +182,24 @@ export default {
         this.$set(this.article, 'coverKey', response.key)
       }
     },
+    async searchLabels(val) {
+      const { code, data } = await api.get('/api/system/article/listLabels', { title: val })
+      if (code === 200) {
+        this.labelsResults = data
+      }
+    },
     async save() {
+      this.article.labelList = JSON.stringify(this.article.labelList)
       this.$set(this.article, 'content', $('.simditor-body').html())
       if (!this.article.coverUrl) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+      } else if (!this.article.navigationId || !this.article.title || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+        if (typeof this.article.labelList === 'string') {
+          this.article.labelList = JSON.parse(this.article.labelList)
+        }
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // 对上post的key
-      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
       if (this.editing) {
         const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
         if (code === 200) {
