@@ -59,7 +59,7 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-const _ = require('lodash')
+// const _ = require('lodash')
 
 let id = 1000
 export default {
@@ -259,30 +259,34 @@ export default {
       }
     },
     async save() {
-      this.$set(this.article, 'content', $('.simditor-body').html())
-      if (!this.article.coverUrl) {
-        return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
-        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
-      }
-      // 对上post的key
-      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
-      if (this.editing) {
-        const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
-        if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
-        } else {
-          return this.$notify.error({ title: '失败', message: code + '保存失败' })
-        }
-      } else {
-        this.article.authorId = this.article.authorId
-        const { code } = await api.post('/api/system/wechat/addArticle', this.article)
-        if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
-        }
-      }
+      const { code, data } = await api.post('/api/category/add', {
+        name: '商品', is_index_display: true, hierarchy: '1', rank: 1
+      })
+      console.log(code, data)
+    //   this.$set(this.article, 'content', $('.simditor-body').html())
+    //   if (!this.article.coverUrl) {
+    //     return this.$notify.error({ title: '错误', message: '图片不能为空' })
+    //   } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+    //     return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+    //   }
+    //   // 对上post的key
+    //   this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
+    //   if (this.editing) {
+    //     const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
+    //     if (code === 200) {
+    //       this.$notify.success({ title: '成功', message: '保存成功' })
+    //       this.$router.push('/newmedia/list')
+    //     } else {
+    //       return this.$notify.error({ title: '失败', message: code + '保存失败' })
+    //     }
+    //   } else {
+    //     this.article.authorId = this.article.authorId
+    //     const { code } = await api.post('/api/system/wechat/addArticle', this.article)
+    //     if (code === 200) {
+    //       this.$notify.success({ title: '成功', message: '保存成功' })
+    //       this.$router.push('/newmedia/list')
+    //     }
+    //   }
     }
   }
 }

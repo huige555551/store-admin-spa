@@ -64,7 +64,7 @@ function checkCode(res) {
       return false
     }
     Notification.error({ title: '警告', message: `${res.code} ${res.message}. ` })
-    router.push('/login')
+    // router.push('/login')
     // window.location.href = '/login'
   }
   return res
