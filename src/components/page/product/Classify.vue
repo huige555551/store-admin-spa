@@ -13,7 +13,7 @@
     <!-- 创建文章 -->
     <div class="form-box">
       <el-tree
-        :data="data2"
+        :data="classifyList"
         :props="defaultProps"
         node-key="id"
         default-expand-all
@@ -24,7 +24,6 @@
 
     <el-dialog title="选择商品分类" label-position="left">
       <el-form>
-
       </el-form>
     </el-dialog>
   </div>
@@ -38,48 +37,13 @@ import UploadSingle from '../../util/UploadSingle'
 
 const _ = require('lodash')
 
-let id = 1000
 export default {
   data() {
     return {
-      data2: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      classifyList: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'sonCategories',
+        label: 'name'
       }
     }
   },
@@ -88,23 +52,17 @@ export default {
     UploadSingle
   },
   async created() {
-    // this.fetchData()
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
   watch: {
     '$route'() {
-      // this.fetchData()
+      this.fetchData()
     }
   },
   /* eslint-enable */
   methods: {
-    append(store, data) {
-      store.append({ id: id += 1, label: 'testtest', children: [] }, data)
-    },
-    remove(store, data) {
-      store.remove(data)
-    },
     renderContent(h, { node, data, store }) {
       return (
         <span>
@@ -112,77 +70,28 @@ export default {
             <span>{ node.label }</span>
           </span>
           <span style="float: right; margin-right: 20px">
-            <el-button size="mini" on-click={ () => console.log(this.$router.push('/product/classify/edit/1', store, data)) }>编辑</el-button>
+            <el-button size="mini" on-click={ () => this.deleteClassify(data.id) }>删除</el-button>
+            <el-button size="mini" on-click={ () => console.log(this.$router.push(`/product/classify/edit/${data.id}`, store)) }>编辑</el-button>
           </span>
         </span>)
     },
-    add(index) {
-      this.standards[index].subItem.push({})
-    },
-    addSpecificationItems() {
-      this.standards.push({
-        item: [
-          {
-            value: '1',
-            label: '尺码'
-          },
-          {
-            value: '2',
-            label: '颜色'
-          },
-          {
-            value: '3',
-            label: '规格'
-          }]
-      })
-    },
-    change(html) {
-      this.article.content = html
+    async deleteClassify(index) {
+      this.$confirm('此操作将该分类，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(async () => {
+        const { code } = await api.post('/api/category/delete', { categoryId: index })
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '删除成功' })
+          this.fetchData()
+        }
+      }).catch(() => {})
     },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      if (getNavigation.code === 200) {
-        this.optionColumn = getNavigation.data
-      }
-      this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      if (getAuthor.code === 200) {
-        this.optionAuthor = getAuthor.data.array
-      }
-      // editing
-      if (this.$route.params.id) {
-        this.editing = true
-        const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
-        if (code === 200) {
-          this.article = data
-          $('.simditor-body').html(this.article.content)
-        }
-      } else {
-      // new
-        this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
-      }
-    },
-    async searchAuthorName(inputAuthorName) {
-      const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: inputAuthorName })
+      const { code, data } = await api.get('/api/category/listCategories')
       if (code === 200) {
-        this.optionAuthor = data.array
-      }
-    },
-    // 日期更改
-    handleDatePick(val) {
-      this.article.publicationDate = val
-    },
-    handleRemove(name) {
-      if (name === 'article') {
-        this.article.coverUrl = null
-        this.article.coverKey = null
-      }
-    },
-    handleSuccess(response, bucketPort, name) {
-      if (name === 'article') {
-        this.$set(this.article, 'coverUrl', `${bucketPort}/${response.key}`)
-        this.$set(this.article, 'coverKey', response.key)
+        this.classifyList = data
       }
     },
     async save() {

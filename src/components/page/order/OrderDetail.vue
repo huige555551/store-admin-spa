@@ -53,6 +53,7 @@
           <i class="el-icon-warning"></i>交易成功后，有赞将把货款结算至你的店铺账户余额，你可申请提现；
         <i class="el-icon-warning"></i>请及时关注你发出的包裹状态，确保能配送至买家手中；
           如果买家表示未收到货或者货物有问题，请及时联系买家积极处理，友好协商；
+          <span @click.prevent="$router.push('/order/right')">查看退款维权</span>
          </el-form-item>
         </el-form>
       </el-tab-pane>

@@ -7,48 +7,17 @@
         <span>订单管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>所有订单</span>
+        <span>维权信息</span>
       </el-form-item>
     </el-form>
 
-    <!-- 搜索 -->
-    <el-form :inline="true">
-      <el-form-item label="类型">
-        <el-input v-model="searchInput.name" placeholder="类型"></el-input>
-      </el-form-item>
-     <el-form-item label="支付状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择支付状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发货状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择发货状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="订单状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择订单状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="订单号">
-        <el-input placeholder="请输入订单号"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
-        <el-button @click.native.prevent="emptySearch">清空</el-button>
-      </el-form-item>
-    </el-form>
+    
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="orderNum" label="订单号" min-width="100"></el-table-column>
       <el-table-column prop="receivePerson" label="收货人" min-width="100"></el-table-column>
-      <el-table-column label="支付状态" width="150">
+      <el-table-column class="payStatus" label="支付状态" width="150">
         <template scope="scope">
           <el-tag type="gray">{{ scope.row.payStatus }}</el-tag>
           <el-button @click="deliverDialog = true">发货</el-button>
@@ -61,7 +30,7 @@
       <el-table-column prop="orderTime" label="下单时间" min-width="200"></el-table-column>
       <el-table-column label="操作" width="250">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="orderDialog = true">查看详情</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/order/' + scope.row.id)">查看详情</el-button>
           <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -339,3 +308,19 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.demo-box {
+  margin-bottom: 24px;
+}
+.demo-block {
+  border: 1px solid #eaeefb;
+  border-radius: 4px;
+  transition: .2s;
+}
+.demo-block .source {
+  padding: 24px;
+}
+.payStatus el-button {
+  margin-top: 10px;
+}
+</style>

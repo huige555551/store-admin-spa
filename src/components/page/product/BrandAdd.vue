@@ -9,7 +9,7 @@
         <span>添加品牌</span>
       </el-form-item>
     </el-form>
-    <!-- 创建文章 -->
+    <!-- 创建品牌 -->
     <div class="form-box">
       <el-form ref="form" :model="article" label-width="100px" label-position="left">
         <el-form-item label="品牌名称" style="width: 400px;">

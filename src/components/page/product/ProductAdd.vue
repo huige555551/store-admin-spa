@@ -10,62 +10,60 @@
       </el-form-item>
     </el-form>
 
-    <!-- 创建文章 -->
+    <!-- 创建商品 -->
     <div class="form-box">
-      <el-form ref="form" :model="article" label-width="100px" label-position="left">
+      <el-form ref="form" label-width="100px" label-position="left">
         <el-form-item label="商品名称" style="width: 400px;">
-          <el-input></el-input>
-        </el-form-item>
-        <el-form-item label="关键字" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="product.name"></el-input>
         </el-form-item>
         <el-form-item label="所属分类">
-          <el-tree
-            :data="data2"
-            :props="defaultProps"
-            node-key="id"
-            default-expand-all
-            :expand-on-click-node="false"
-            :render-content="renderContent">
+         <el-tree
+          :data="classifyList"
+          show-checkbox
+          default-expand-all
+          node-key="id"
+          ref="tree"
+          highlight-current
+          :props="defaultProps">
           </el-tree>
+    
         </el-form-item>
          <el-form-item label="是否上架">
-          <el-radio class="radio" v-model="onBatch" label="true">是</el-radio>
-          <el-radio class="radio" v-model="onBatch" label="false">否</el-radio>
+          <el-radio class="radio" v-model="product.onSale" :label="true">是</el-radio>
+          <el-radio class="radio" v-model="product.onSale" :label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="是否免运费">
-            <el-radio class="radio" v-model="freeExpress" label="true">是</el-radio>
-            <el-radio class="radio" v-model="freeExpress" label="false">否</el-radio>
-            <el-form>
+        <el-form-item label="是否免运费" >
+            <el-radio class="radio" v-model="product.freeDelivery" :label="true">是</el-radio>
+            <el-radio class="radio" v-model="product.freeDelivery" :label="false">否</el-radio>
+            <el-form v-if="!product.freeDelivery">
               <el-form-item>
-                <el-radio>
+                <el-radio v-model="product.deliveryFeeStrategy" label="fixed">
                   <span>每单固定收取运费：</span>
-                  <el-input style="width: 100px;"></el-input>元
+                  <el-input style="width: 100px;" v-model="fixedFeePerOrder"></el-input>元
                 </el-radio>
               </el-form-item>
               <el-form-item>
-                <el-radio>
-                  <span>订单每消费满</span><el-input style="width: 100px;"></el-input><span>元免运费，未达到条件每订单收取</span><el-input style="width: 100px;"></el-input><span>元运费</span>
+                <el-radio v-model="product.deliveryFeeStrategy" label="freeOnPrice">
+                  <span>订单每消费满</span><el-input style="width: 100px;" v-model="freeOnPriceThreshold"></el-input><span>元免运费，未达到条件每订单收取</span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder"></el-input><span>元运费</span>
                 </el-radio>
               </el-form-item>
               <el-form-item>
-                <el-radio>
-                  <span>每订单购满<el-input style="width: 100px;"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;"></el-input>元运费：</span>元
+                <el-radio v-model="product.deliveryFeeStrategy" label="freeOnCount">
+                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder"></el-input>元运费：</span>元
                 </el-radio>
               </el-form-item>
             </el-form>
         </el-form-item>
          <el-form-item label="商品推荐类型">
-            <el-checkbox class="radio" v-model="freeExpress" label="true">最新商品</el-checkbox>
-            <el-checkbox class="radio" v-model="freeExpress" label="false">特价商品</el-checkbox>
-            <el-checkbox class="radio" v-model="freeExpress" label="true">热卖商品</el-checkbox>
-            <el-checkbox class="radio" v-model="freeExpress" label="true">推荐商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" label="1">最新商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" label="2">特价商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" label="3">热卖商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" label="4">推荐商品</el-checkbox>
         </el-form-item>
         <el-form-item label="商品库存">
-         <el-table :data="tableData">
+         <el-table :data="stockList">
             <el-table-column type="index"></el-table-column>
             <el-table-column prop="name" label="款式" min-width="100">
-
             </el-table-column>
             <el-table-column prop="name" label="尺码" min-width="100"></el-table-column>
             <el-table-column label="价格" min-width="100">
@@ -78,7 +76,7 @@
                 <el-input></el-input>
               </template>
             </el-table-column>
-            <el-table-column label="商家编码" min-width="100">
+            <el-table-column label="商品货号" min-width="100">
                <template scope="scope">
                 <el-input></el-input>
               </template>
@@ -91,18 +89,13 @@
             </el-table-column>
           </el-table>
         </el-form-item>
+        <!--商品规格-->
         <el-form-item label="商品规格">
           <el-form>
-              <!--<el-form-item v-for="(option, index) in newQuestion.options" :label="'选项' + (index+1)" :key="option.key">
-              <el-input v-model="option.option"></el-input>
-              <el-button style="margin-left: 20px" @click="deleteOption(index)">删除</el-button>
-            </el-form-item>-->
-            <!--<el-form-item>
-              <el-button @click="addOption">新增选项</el-button>
-            </el-form-item>-->
+            <el-button @click.prevent="addSpecificationItems" class="addSpecificationBtn">添加规格项目</el-button>
             <template v-for="(standard, index) in standards">
               <el-form-item label="" class="category-item">
-                <el-select v-model="standard.addItemValue" multiple placeholder="添加规格项目">
+                <el-select v-model="standard.addItemValue" placeholder="添加规格项目">
                   <el-option
                     v-for="item in standard.item"
                     :key="item.value"
@@ -110,7 +103,7 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <i class="el-icon-delete"></i>
+                <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
               </el-form-item>
               <el-form-item label="" class="category-item" v-if="standard.addItemValue">
                 <el-select v-model="value5" multiple placeholder="添加">
@@ -121,37 +114,29 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-upload class="avatar-uploader">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-                <span @click="add(index)">添加</span>
+                <!--<span @click="add(index)">添加</span>-->
               </el-form-item>
             </template>
-            <el-button @click="addSpecificationItems">添加规格项目</el-button>
           </el-form>
         </el-form-item>
         <el-form-item label="商品类型" class="productType">
-          <el-radio class="radio" v-model="radio" label="1">实物商品(物流发货)</el-radio>
-          <el-radio class="radio" v-model="radio" label="2">虚拟商品(无需物流)</el-radio>
-          <el-radio class="radio" v-model="radio" label="3">电子卡券(无需物流)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" label="1">实物商品(物流发货)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" label="2">虚拟商品(无需物流)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" label="3">电子卡券(无需物流)</el-radio>
         </el-form-item>
         <el-form-item label="预售商品">
-          <el-switch
-            v-model="preSales"
-            on-text=""
-            off-text="">
-          </el-switch>
+          <el-radio v-model="product.preSale" :label="true">是</el-radio>
+          <el-radio v-model="product.preSale" :label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="产品相册" style="width:400px">
+        <el-form-item label="产品相册" style="width:800px">
           <el-upload
-          action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
-          :on-remove="handleComicsRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+            action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.images" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
+            :on-remove="handleComicsRemove">
+            <i class="el-icon-plus"></i>
+          </el-upload>
         </el-form-item>
          <el-form-item label="描述" style="width: 800px">
-          <simditor :content="article.content" :options="options2" @change="change"></simditor>
+          <simditor :content="product.details" :options="options2" @change="change"></simditor>
         </el-form-item>
          <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -179,46 +164,22 @@ let id = 1000
 export default {
   data() {
     return {
-      radio: false,
-      data2: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      classifyList: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
+        children: 'sonCategories',
+        label: 'name'
       },
+      uploadParams: {},
+      product: {
+        name: '',
+        onSale: false,
+        freeDelivery: false,
+        preSale: false,
+        deliveryFeeStrategy: 'fixed',
+        itemType: '1',
+        itemRecommendType: []
+      },
+      radio: false,
       standards: [
         {
           addItemValue: null,
@@ -234,10 +195,21 @@ export default {
             value: '3',
             label: '规格'
           }],
-          subItem: []
+          subItem: [{
+            value: '1',
+            label: '大'
+          },
+          {
+            value: '2',
+            label: '中'
+          },
+          {
+            value: '3',
+            label: '小'
+          }]
         }
       ],
-      tableData: [{
+      stockList: [{
         name: '衣服',
         size: 'S',
         quantity: '100'
@@ -275,7 +247,19 @@ export default {
     UploadSingle
   },
   async created() {
+    const { code, data } = await api.get('/api/category/listCategories')
+    if (code === 200) {
+      this.classifyList = data
+    }
     // this.fetchData()
+    // api.get('/api/system/upload/getToken').then(response => {
+    //   this.bucketPort = response.data.bucketPort
+    //   this.uploadParams = {
+    //     unique_names: true,
+    //     save_key: false,
+    //     token: response.data.token
+    //   }
+    // })
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
@@ -285,7 +269,21 @@ export default {
     }
   },
   /* eslint-enable */
+  /* eslint-disable */
   methods: {
+    deleteSpecification(index) {
+      this.specification.subItem
+      console.log(index)
+    },
+    handleAvatarScucess(response, file, fileList) {
+      this.$set(this.product, 'comicsUrl', `${this.bucketPort}/${response.key}`)
+      this.$set(this.product, 'comicsKey', response.key)
+      this.product.images = fileList
+      /* eslint-enable */
+    },
+    beforeAvatarUpload() {
+      console.log('beforeAvatarUploadt')
+    },
     append(store, data) {
       store.append({ id: id += 1, label: 'testtest', children: [] }, data)
     },
@@ -477,5 +475,8 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .addSpecificationBtn {
+    margin-bottom: 20px;
   }
 </style>

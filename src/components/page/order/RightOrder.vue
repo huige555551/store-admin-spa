@@ -7,7 +7,7 @@
         <span>订单管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>维权订单</span>
+        <span>维权订单s</span>
       </el-form-item>
     </el-form>
 
@@ -339,3 +339,16 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.demo-box {
+    margin-bottom: 24px;
+}
+.demo-block {
+    border: 1px solid #eaeefb;
+    border-radius: 4px;
+    transition: .2s;
+}
+.demo-block .source {
+    padding: 24px;
+}
+</style>

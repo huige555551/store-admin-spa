@@ -45,7 +45,7 @@ export default new Router({
 
          // 订单管理
         { path: '/order/list', component: resolve => require(['@/components/page/order/Order.vue'], resolve) },
-        { path: '/order/right', component: resolve => require(['@/components/page/order/RightOrder.vue'], resolve) },
+        { path: '/order/right', component: resolve => require(['@/components/page/order/Right.vue'], resolve) },
         { path: '/order/:id', component: resolve => require(['@/components/page/order/OrderDetail.vue'], resolve) },
         // 地址管理
         { path: '/address/list', component: resolve => require(['@/components/page/address/Address.vue'], resolve) },

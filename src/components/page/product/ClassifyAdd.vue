@@ -10,44 +10,45 @@
       </el-form-item>
     </el-form>
 
-    <!-- 创建文章 -->
+    <!-- 创建分类 -->
     <div class="form-box">
-      <el-form ref="form" :model="article" label-width="100px" label-position="left">
+      <el-form ref="form" label-width="100px" label-position="left">
         <el-form-item label="分类名称" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="classify.name"></el-input>
         </el-form-item>
-        <el-form-item label="上级分类" style="width: 400px;">
-          <el-select>
-            <el-option>衣服</el-option>
-            <el-option>食物</el-option>
-          </el-select>
+        <el-form-item label="上级分类" style="width: 500px;">
+          <template>
+            <el-select v-model="classify.parentId" placeholder="默认为顶级分类">
+              <el-option-group
+                v-for="group in classifyParent"
+                :key="group.label"
+                :label="group.label">
+                <el-option
+                  v-for="item in group.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-option-group>
+            </el-select>
+          </template>
         </el-form-item>
         <el-form-item label="首页是否显示">
-          <el-radio class="radio" v-model="onBatch" label="true">是</el-radio>
-          <el-radio class="radio" v-model="onBatch" label="false">否</el-radio>
+          <el-radio class="radio" v-model="classify.indexDisplay" :label="true">是</el-radio>
+          <el-radio class="radio" v-model="classify.indexDisplay" :label="false">否</el-radio>
         </el-form-item>
         <el-form-item label="排序" style="width: 400px;">
-          <el-input></el-input>
-        </el-form-item>
-        <el-form-item label="seo标题" style="width: 400px;">
-          <el-input></el-input>
-        </el-form-item>
-        <el-form-item label="seo关键词" style="width: 400px;">
-          <el-input></el-input>
-        </el-form-item>
-        <el-form-item label="seo描述" style="width: 400px;">
-          <el-input type="textarea"></el-input>
+          <el-input v-model="classify.rank" type="number" placeholder="数字越大排名越前"></el-input>
         </el-form-item>
          <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
-          <el-button @click="$router.push('/product/list')">取消</el-button>
+          <el-button @click="$router.push('/product/classify/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <el-dialog title="选择商品分类" label-position="left">
       <el-form>
-
       </el-form>
     </el-dialog>
   </div>
@@ -65,42 +66,12 @@ let id = 1000
 export default {
   data() {
     return {
-      radio: false,
-      data2: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      classify: {
+        name: '',
+        rank: '',
+        parentId: '',
+        indexDisplay: false
+      },
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -127,6 +98,19 @@ export default {
         name: '衣服',
         size: 'S',
         quantity: '100'
+      }],
+      classifyParent: [{
+        label: '一级分类',
+        options: [{
+          value: '',
+          label: ''
+        }]
+      }, {
+        label: '二级分类',
+        options: [{
+          value: '',
+          label: ''
+        }]
       }],
       freeExpress: 'true',
       onBatch: 'true',
@@ -161,7 +145,7 @@ export default {
     UploadSingle
   },
   async created() {
-    // this.fetchData()
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
@@ -213,27 +197,40 @@ export default {
       this.article.content = html
     },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      if (getNavigation.code === 200) {
-        this.optionColumn = getNavigation.data
+      const getClassify = await api.get('/api/category/listParent')
+      if (getClassify.code === 200) {
+        this.classifyParent[0].options = []
+        this.classifyParent[1].options = []
+        const that = this
+        if (getClassify.data.firstCategories) {
+          getClassify.data.firstCategories.forEach((item, index) => {
+            console.log(index)
+            that.classifyParent[0].options.push({ value: item.id, label: item.name })
+          })
+        }
+        if (getClassify.data.secondCategories) {
+          getClassify.data.secondCategories.forEach((item, index) => {
+            console.log(index)
+            that.classifyParent[1].options.push({ value: item.id, label: item.name })
+          })
+        }
       }
-      this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      if (getAuthor.code === 200) {
-        this.optionAuthor = getAuthor.data.array
-      }
-      // editing
+      // this.optionTag = []
+      // const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
+      // if (getAuthor.code === 200) {
+      //   this.optionAuthor = getAuthor.data.array
+      // }
+      // // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
+        const { code, data } = await api.get('/api/', { articleId: this.$route.params.id })
         if (code === 200) {
           this.article = data
           $('.simditor-body').html(this.article.content)
         }
       } else {
-      // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
+        this.classify = { name: '', parentId: '', rank: '', indexDisplay: false }
       }
     },
     async searchAuthorName(inputAuthorName) {
@@ -259,10 +256,15 @@ export default {
       }
     },
     async save() {
-      const { code, data } = await api.post('/api/category/add', {
-        name: '商品', is_index_display: true, hierarchy: '1', rank: 1
-      })
-      console.log(code, data)
+      if (!this.classify.name || !this.classify.rank) {
+        this.$notify.error({ title: '错误', message: '表单信息不完整' })
+        return
+      }
+      const { code } = await api.post('/api/category/add', this.classify)
+      if (code === 200) {
+        this.$notify.success({ title: '添加分类成功' })
+        this.$router.push('/product/classify/list')
+      }
     //   this.$set(this.article, 'content', $('.simditor-body').html())
     //   if (!this.article.coverUrl) {
     //     return this.$notify.error({ title: '错误', message: '图片不能为空' })
@@ -367,5 +369,8 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .hint {
+    color: #48576a;
   }
 </style>

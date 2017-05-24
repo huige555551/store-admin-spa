@@ -13,19 +13,13 @@
 
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="规格名称" min-width="100"></el-table-column>
-      <el-table-column prop="displayType" label="显示方式" width="200">
-      </el-table-column>
      <el-table-column prop="specification" label="规格数据" width="100"></el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/product/edit/'+scope.row.id)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

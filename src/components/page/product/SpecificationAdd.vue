@@ -12,49 +12,57 @@
 
     <!-- 创建文章 -->
     <div class="form-box">
-      <el-form ref="form" :model="article" label-width="100px" label-position="left">
+      <el-form ref="form" label-width="100px" label-position="left">
         <el-form-item label="规格名称" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="specification.name"></el-input>
         </el-form-item>
         <el-form-item label="显示类型">
-          <el-radio class="radio" v-model="onBatch" label="true">文字</el-radio>
-          <el-radio class="radio" v-model="onBatch" label="false">图片</el-radio>
+          <el-radio class="radio" v-model="specification.display_type" :label="1">文字</el-radio>
+          <el-radio class="radio" v-model="specification.display_type" :label="2">图片</el-radio>
         </el-form-item>
         <el-form-item label="说明" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="specification.remark"></el-input>
         </el-form-item>
-        <el-button @click="addSpecification">添加规则</el-button>
-        <el-table :data="tableData">
-            <el-table-column label="规格值" min-width="100">
-              <template scope="scope">
-                <el-input style="width: 100px;"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="规格值(图片)" min-width="100">
-              <template scope="scope">
-                <el-upload
-                  class="avatar-uploader"
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload">
-                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </template>
-            </el-table-column>
-            <el-table-column label="提示信息(不重复)" min-width="100">
-              <template scope="scope">
-                <el-input style="width: 100px;"></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="160">
-              <template scope="scope">
-                <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
-              </template>
-            </el-table-column>
-        </el-table>
-        
+        <el-form-item>
+          <el-button @click="addSpecification">添加规则</el-button>
+        </el-form-item>
+        <el-form-item label="规格列表">
+          <el-table :data="specification.skuArray">
+              <el-table-column label="规格值" min-width="100">
+                <template scope="scope">
+                  <el-input style="width: 100px;" v-model="scope.row.value" v-if="specification.display_type === 1"></el-input>
+                  <div v-if="specification.display_type === 2">
+                    <UploadSingle
+                      :imgUrl="article.coverUrl"
+                      :imgKey="article.coverKey"
+                      :size=1 dimension="800x400"
+                      @handleRemove="handleRemove"
+                      @handleSuccess="handleSuccess">
+                    </UploadSingle>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column label="提示信息(不重复)" min-width="300">
+                <template scope="scope">
+                  <el-input style="width: 300px;" v-model="scope.row.valueHint"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="序号">
+                <template scope="scope">
+                  <el-input style="width: 100px;" v-model="scope.row.rank"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="160">
+                <template scope="scope">
+                  <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+          </el-table>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="save">提交</el-button>
+          <el-button @click="$router.push('/product/specification')">取消</el-button>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -77,6 +85,12 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      specification: {
+        type: '',
+        remark: '',
+        display_type: 1,
+        skuArray: [{ value: '', valueHint: '', rank: '' }]
+      },
       standards: [
         {
           addItemValue: null,
@@ -144,8 +158,12 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    deleteRow(index) {
+      console.log(index)
+      this.specification.skuArray.splice(index, 1)
+    },
     addSpecification() {
-      this.tableData.push({})
+      this.specification.skuArray.push({ value: '', valueHint: '' })
     },
     add(index) {
       this.standards[index].subItem.push({})

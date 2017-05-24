@@ -15,7 +15,7 @@
     <el-table :data="tableData" @selection-change="handleSelectionChange">
      <el-table-column prop="order" label="排序" width="100"></el-table-column>
      <el-table-column prop="name" label="品牌名称" width="100"></el-table-column>
-     <el-table-column prop="website" label="网址" width="100"></el-table-column>
+     <el-table-column prop="website" label="网址" width="300"></el-table-column>
      <el-table-column prop="classify" label="品牌分类" width="100"></el-table-column>
      
       <el-table-column label="操作" min-width="160">
