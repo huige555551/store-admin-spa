@@ -10,44 +10,90 @@
         <span>维权信息</span>
       </el-form-item>
     </el-form>
-
     
-    <!-- 表格 -->
-    <el-table :data="tableData" @selection-change="handleSelectionChange">
-      <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="orderNum" label="订单号" min-width="100"></el-table-column>
-      <el-table-column prop="receivePerson" label="收货人" min-width="100"></el-table-column>
-      <el-table-column class="payStatus" label="支付状态" width="150">
-        <template scope="scope">
-          <el-tag type="gray">{{ scope.row.payStatus }}</el-tag>
-          <el-button @click="deliverDialog = true">发货</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column prop="deliverStatus" label="发货状态" width="100"></el-table-column>
-      <el-table-column prop="distribution" label="配送方式" width="100"></el-table-column>
-      <el-table-column prop="payType" label="支付方式" width="200"></el-table-column>
-      <el-table-column prop="username" label="用户名" width="100"></el-table-column>
-      <el-table-column prop="orderTime" label="下单时间" min-width="200"></el-table-column>
-      <el-table-column label="操作" width="250">
-        <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/order/' + scope.row.id)">查看详情</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <!-- 分页 -->
-    <div class="pagination">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 50]"
-        :page-size="perPage"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+    <div class="app-inner clearfix">
+      <div class="demo-block demo-box timelines">
+        <div class="source">
+          <el-steps :space="200" :active="3">
+            <el-step title="买家下单" description="2017-05-20 14:03:36"></el-step>
+            <el-step title="买家付款" description="2017-05-20 14:03:49"></el-step>
+            <el-step title="商家发货" description="2017-05-20 15:26:31"></el-step>
+            <el-step title="交易完成"></el-step>
+          </el-steps>
+        </div>
+      </div>
+      <div class="demo-block demo-box clearfix content-region">
+        <div class="source info-region">
+          <h4>售后维权</h4>
+          <el-form ref="form" label-width="100px" style="width: 400px" label-position="left">
+            <el-form-item label="期望结果">仅退款</el-form-item>
+            <el-form-item label="退款金额">	0.02 元 (含运费0.00元）</el-form-item>
+            <el-form-item label="维权原因">假货</el-form-item>
+            <el-form-item label="维权编号">W1705241742463260</el-form-item>
+            <el-form-item label="订单编号">E20170524174122085227790</el-form-item>
+            <div class="dash-line"></div>
+            <el-form-item label="付款时间">2017-05-24 17:41:31</el-form-item>
+            <el-form-item label="物流信息">物流信息  查看</el-form-item>
+            <el-form-item label="买 家">18988836325</el-form-item>
+            <el-form-item label="合计优惠">0.00 元</el-form-item>
+            <el-form-item label="实收总计">0.02 元</el-form-item>
+          </el-form>
+        </div>
+        <div class="source state-region">
+          <div style="padding: 0px 0px 30px 40px;">
+            <h3 class="state-title">
+              <span class="icon info">!</span>
+            等待商家处理退款申请
+            </h3>
+            <div class="state-desc">
+              <div>
+                <div><!-- react-text: 94 -->收到买家仅退款申请，请尽快处理。<!-- /react-text -->
+                  <p><!-- react-text: 96 -->请在<!-- /react-text -->
+                  <span class="color-orange">
+                    <em>6天2小时49分钟48秒</em>
+                  </span><!-- react-text: 99 -->处理本次退款，如逾期未处理，将自动同意退款。<!-- /react-text -->
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="state-action">
+              <el-button class="zent-btn zent-btn-primary">同意买家退款</el-button>
+              <el-button class="zent-btn">拒绝退款申请</el-button>
+            </div>
+            <div class="state-remind-region">
+              <div class="dashed-line"></div>
+              <div class="state-remind">
+                <h4>提醒：</h4>
+                <ul>
+                  <li>如果你同意，将直接退款给买家。</li>
+                  <li>如果你拒绝，买家可以要求有赞介入处理。</li>
+                  <li>如果你逾期未处理，视作同意买家申请，系统将自动退款给买家。</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="safeguard-log">
+        <div class="demo-block demo-box clearfix content-region">
+          <div class="source">
+            <h2>协商记录</h2>
+            <span>买家 </span><span>2017-05-24 17:42:46</span>
+            <el-form ref="form" label-width="100px" style="width: 400px" label-position="left">
+              <div class="dash-line"></div>
+              <div>发起了退款申请,等待商家处理</div>
+              <el-form-item label="退款原因">假货</el-form-item>
+              <el-form-item label="处理方式">仅退款</el-form-item>
+              <el-form-item label="货物状态">已收到货</el-form-item>
+              <el-form-item label="退款金额">0.02</el-form-item>
+              <el-form-item label="退款说明">454</el-form-item>
+              <el-form-item label="联系电话">15989066480</el-form-item>
+            </el-form>
+          </div>
+        </div>
+      </div>
     </div>
+
     <!--发货-->
     <el-dialog title="发货" v-model="deliverDialog">
       <el-table :data="deliverData" @selection-change="handleSelectionChange">
@@ -322,5 +368,38 @@ export default {
 }
 .payStatus el-button {
   margin-top: 10px;
+}
+.timelines {
+  text-align: center;
+}
+.clearfix:after {
+  content: "";
+  clear: both;
+  display: block;
+  height: 0;
+}
+.info-region, .state-region {
+  float: left;
+}
+.info-region {
+  border-right: 1px solid #eaeefb;
+  width: 400px;
+}
+.content-region {
+  color: #48576a;
+}
+.state-region {
+  width: 400px;
+}
+.app-inner {
+  margin: 10px;
+  padding: 15px;
+  min-width: 750px;
+  min-height: 500px;
+  -webkit-box-shadow: 0 0 1px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 0 1px 0 rgba(0,0,0,0.2);
+}
+.dash-line {
+  border-top: 1px dashed #e5e5e5;
 }
 </style>

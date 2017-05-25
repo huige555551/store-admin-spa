@@ -238,17 +238,12 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const getNavigation = await api.get('/api/system/article/listNavigation')
-      if (getNavigation.code === 200) {
-        this.column = getNavigation.data
-      }
-      const { code, data } = await api.get('/api/system/article/listArticle', {
+      const { code, data } = await api.get('/api/item/list', {
         currentPage: this.currentPage,
         perPage: this.perPage,
-        title: this.searchKey.title,
-        period: this.searchKey.period,
-        author: this.searchKey.author,
-        navigationId: this.searchKey.column
+        itemName: this.searchKey.itemName,
+        onSale: this.searchKey.onSale,
+        stock: this.searchKey.stock
       })
       if (code === 200) {
         this.tableData = data.array

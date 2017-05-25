@@ -12,7 +12,7 @@
 
     <!-- 创建文章 -->
     <div class="form-box">
-      <el-form ref="form" :model="article" label-width="100px" label-position="left">
+      <el-form ref="form" :model="article" label-width="100px" label-position="right">
         <el-form-item label="发货点名称" style="width: 400px;">
           <el-input></el-input>
         </el-form-item>
@@ -23,10 +23,10 @@
           <el-radio>先生</el-radio>
           <el-radio>女士</el-radio>
         </el-form-item>
-        <el-form-item label="地区：" style="width: 400px;">
-          <el-select placeholder="请选择省份"></el-select>
-          <el-select placeholder="请选择市"></el-select>
-          <el-select placeholder="请选择区"></el-select>
+        <el-form-item label="地区" style="width: 800px;">
+          <el-select class="province" placeholder="请选择省份"></el-select>
+          <el-select class="city" placeholder="请选择市"></el-select>
+          <el-select class="area" placeholder="请选择区"></el-select>
         </el-form-item>
         <el-form-item label="地址" style="width: 400px;">
           <el-input></el-input>
@@ -304,5 +304,8 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .province, .city, .area {
+    display: inline-block;
   }
 </style>

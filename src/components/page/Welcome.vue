@@ -4,7 +4,7 @@
       <h3><i class="el-icon-setting"></i> 欢迎进入</h3>
       <article>
         <h1>管理后台</h1>
-        <p>新周刊网站管理后台</p>
+        <p>小程序管理后台</p>
         <p>时间：{{time}}</p>
       </article>
     </div>

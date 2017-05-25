@@ -26,9 +26,8 @@
           highlight-current
           :props="defaultProps">
           </el-tree>
-    
         </el-form-item>
-         <el-form-item label="是否上架">
+        <el-form-item label="是否上架">
           <el-radio class="radio" v-model="product.onSale" :label="true">是</el-radio>
           <el-radio class="radio" v-model="product.onSale" :label="false">否</el-radio>
         </el-form-item>
@@ -37,51 +36,50 @@
             <el-radio class="radio" v-model="product.freeDelivery" :label="false">否</el-radio>
             <el-form v-if="!product.freeDelivery">
               <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" label="fixed">
+                <el-radio v-model="product.deliveryFeeStrategy" :label="1">
                   <span>每单固定收取运费：</span>
-                  <el-input style="width: 100px;" v-model="fixedFeePerOrder"></el-input>元
+                  <el-input style="width: 100px;" v-model="fixedFeePerOrder" type="number"></el-input>元
                 </el-radio>
               </el-form-item>
               <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" label="freeOnPrice">
-                  <span>订单每消费满</span><el-input style="width: 100px;" v-model="freeOnPriceThreshold"></el-input><span>元免运费，未达到条件每订单收取</span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder"></el-input><span>元运费</span>
+                <el-radio v-model="product.deliveryFeeStrategy" :label="2">
+                  <span>订单每消费满</span><el-input style="width: 100px;" v-model="freeOnPriceThreshold" type="number"></el-input><span>元免运费，未达到条件每订单收取</span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder" type="number"></el-input><span>元运费</span>
                 </el-radio>
               </el-form-item>
               <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" label="freeOnCount">
-                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder"></el-input>元运费：</span>元
+                <el-radio v-model="product.deliveryFeeStrategy" :label="3">
+                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input>元运费：</span>元
                 </el-radio>
               </el-form-item>
             </el-form>
         </el-form-item>
          <el-form-item label="商品推荐类型">
-            <el-checkbox class="radio" v-model="product.itemRecommendType" label="1">最新商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" label="2">特价商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" label="3">热卖商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" label="4">推荐商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="1">最新商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="2">特价商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="3">热卖商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="4">推荐商品</el-checkbox>
         </el-form-item>
         <el-form-item label="商品库存">
-         <el-table :data="stockList">
+         <el-table :data="itemSkus">
             <el-table-column type="index"></el-table-column>
             <el-table-column prop="name" label="款式" min-width="100">
             </el-table-column>
             <el-table-column prop="name" label="尺码" min-width="100"></el-table-column>
             <el-table-column label="价格" min-width="100">
               <template scope="scope">
-                <el-input></el-input>
+                <el-input v-model="scope.row.price"></el-input>
               </template>
             </el-table-column>
             <el-table-column  label="库存" min-width="100">
               <template scope="scope">
-                <el-input></el-input>
+                <el-input v-model="scope.row.stock"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="商品货号" min-width="100">
                <template scope="scope">
-                <el-input></el-input>
+                <el-input v-model="scope.row.itemNo"></el-input>
               </template>
             </el-table-column>
-            <el-table-column prop="quantity" label="销量" min-width="100"></el-table-column>
             <el-table-column label="操作" width="160">
               <template scope="scope">
                 <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
@@ -97,32 +95,27 @@
               <el-form-item label="" class="category-item">
                 <el-select v-model="standard.addItemValue" placeholder="添加规格项目">
                   <el-option
-                    v-for="item in standard.item"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="specification in specificationColumn"
+                    :key="specification.id"
+                    :label="specification.name + specification.remark"
+                    :value="specification.id">
                   </el-option>
                 </el-select>
                 <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
-              </el-form-item>
-              <el-form-item label="" class="category-item" v-if="standard.addItemValue">
-                <el-select v-model="value5" multiple placeholder="添加">
-                  <el-option
-                    v-for="item in standard.subItem"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                  </el-option>
-                </el-select>
-                <!--<span @click="add(index)">添加</span>-->
+                <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList">
+                  <!--<el-checkbox v-for="item in specification.valueArray" label="item."></el-checkbox>-->
+                  <el-checkbox label="L"></el-checkbox>
+                  <el-checkbox label="M"></el-checkbox>
+                  <el-checkbox label="S"></el-checkbox>
+                </el-checkbox-group>
               </el-form-item>
             </template>
           </el-form>
         </el-form-item>
         <el-form-item label="商品类型" class="productType">
-          <el-radio class="radio" v-model="product.itemType" label="1">实物商品(物流发货)</el-radio>
-          <el-radio class="radio" v-model="product.itemType" label="2">虚拟商品(无需物流)</el-radio>
-          <el-radio class="radio" v-model="product.itemType" label="3">电子卡券(无需物流)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" :label="1">实物商品(物流发货)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" :label="2">虚拟商品(无需物流)</el-radio>
+          <el-radio class="radio" v-model="product.itemType" :label="3">电子卡券(无需物流)</el-radio>
         </el-form-item>
         <el-form-item label="预售商品">
           <el-radio v-model="product.preSale" :label="true">是</el-radio>
@@ -130,7 +123,7 @@
         </el-form-item>
         <el-form-item label="产品相册" style="width:800px">
           <el-upload
-            action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.images" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
+            action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.imagesArray" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
             :on-remove="handleComicsRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
@@ -144,11 +137,6 @@
         </el-form-item>
       </el-form>
     </div>
-
-    <el-dialog title="选择商品分类" label-position="left">
-      <el-form>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -158,30 +146,26 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-// const _ = require('lodash')
+const _ = require('lodash')
 
 let id = 1000
 export default {
   data() {
     return {
+      specificationColumn: {},
+      uploadParams: {},
       classifyList: [],
       defaultProps: {
         children: 'sonCategories',
         label: 'name'
       },
-      uploadParams: {},
       product: {
-        name: '',
-        onSale: false,
-        freeDelivery: false,
-        preSale: false,
-        deliveryFeeStrategy: 'fixed',
-        itemType: '1',
-        itemRecommendType: []
+        imagesArray: []
       },
       radio: false,
       standards: [
         {
+          checkboxList: [],
           addItemValue: null,
           item: [{
             value: '1',
@@ -247,38 +231,47 @@ export default {
     UploadSingle
   },
   async created() {
+    // 获取所属分类
     const { code, data } = await api.get('/api/category/listCategories')
     if (code === 200) {
       this.classifyList = data
     }
-    // this.fetchData()
-    // api.get('/api/system/upload/getToken').then(response => {
-    //   this.bucketPort = response.data.bucketPort
-    //   this.uploadParams = {
-    //     unique_names: true,
-    //     save_key: false,
-    //     token: response.data.token
-    //   }
-    // })
+    // 获取规格
+    const specification = await api.get('/api/sku/listSkuNames')
+    if (specification.code === 200) {
+      this.specificationColumn = specification.data
+    }
+    // 获取token
+    api.get('/api/pic/getUploadToken').then(response => {
+      console.log(response)
+      this.uploadParams = {
+        unique_names: true,
+        save_key: false,
+        token: response.data.uploadToken
+      }
+    })
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
   watch: {
     '$route'() {
-      // this.fetchData()
+      this.fetchData()
     }
   },
   /* eslint-enable */
   /* eslint-disable */
   methods: {
     deleteSpecification(index) {
-      this.specification.subItem
-      console.log(index)
+      this.standards.splice(index, 1)
     },
-    handleAvatarScucess(response, file, fileList) {
-      this.$set(this.product, 'comicsUrl', `${this.bucketPort}/${response.key}`)
-      this.$set(this.product, 'comicsKey', response.key)
-      this.product.images = fileList
+    async handleAvatarScucess(response, file, fileList) {
+      const { code, data } = await api.get('/api/pic/getPrivateDownloadUrl', { key: response.key })
+      if (code === 200) {
+      }
+      this.$set(this.product, 'productUrl', `${this.bucketPort}/${response.key}`)
+      this.$set(this.product, 'productKey', response.key)
+      this.product.imagesArray = fileList
       /* eslint-enable */
     },
     beforeAvatarUpload() {
@@ -325,38 +318,28 @@ export default {
       this.article.content = html
     },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      if (getNavigation.code === 200) {
-        this.optionColumn = getNavigation.data
-      }
-      this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      if (getAuthor.code === 200) {
-        this.optionAuthor = getAuthor.data.array
-      }
+      // const getNavigation = await api.get('/api/system/wechat/listNavigation')
+      // if (getNavigation.code === 200) {
+      //   this.optionColumn = getNavigation.data
+      // }
+      // this.optionTag = []
+      // const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
+      // if (getAuthor.code === 200) {
+      //   this.optionAuthor = getAuthor.data.array
+      // }
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
+        const { code, data } = await api.get('/api/item/getItemDtails', { itemId: this.$route.params.id })
         if (code === 200) {
-          this.article = data
-          $('.simditor-body').html(this.article.content)
+          this.product = data
+          $('.simditor-body').html(this.product.details)
         }
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
+        this.product = { name: '', onSale: true, freeDelivery: true, preSale: false, deliveryFeeStrategy: null, threshold: null, feePerOrder: null, itemType: 1, itemRecommendType: [], categories: [], images: [], itemSkuMappings: [] }
       }
-    },
-    async searchAuthorName(inputAuthorName) {
-      const { code, data } = await api.get('/api/system/author/listAuthor', { authorName: inputAuthorName })
-      if (code === 200) {
-        this.optionAuthor = data.array
-      }
-    },
-    // 日期更改
-    handleDatePick(val) {
-      this.article.publicationDate = val
     },
     handleRemove(name) {
       if (name === 'article') {
@@ -379,22 +362,25 @@ export default {
       // }
       // // 对上post的key
       // this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
-      // if (this.editing) {
-      //   const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
-      //   if (code === 200) {
-      //     this.$notify.success({ title: '成功', message: '保存成功' })
-      //     this.$router.push('/newmedia/list')
-      //   } else {
-      //     return this.$notify.error({ title: '失败', message: code + '保存失败' })
-      //   }
-      // } else {
-      //   this.article.authorId = this.article.authorId
-      //   const { code } = await api.post('/api/system/wechat/addArticle', this.article)
-      //   if (code === 200) {
-      //     this.$notify.success({ title: '成功', message: '保存成功' })
-      //     this.$router.push('/newmedia/list')
-      //   }
-      // }
+      if (this.editing) {
+        this.product.images = JSON.stringify((_.clone(this.product.images)))
+        this.product.itemSkuMappings = JSON.stringify((_.clone(this.product.itemSkuMappings)))
+        const { code } = await api.post('/api/item/update', this.product)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/product/list')
+        } else {
+          return this.$notify.error({ title: '失败', message: code + '保存失败' })
+        }
+      } else {
+        this.product.images = JSON.stringify((_.clone(this.product.images)))
+        this.product.itemSkuMappings = JSON.stringify((_.clone(this.product.itemSkuMappings)))
+        const { code } = await api.post('/api/item/add', this.product)
+        if (code === 200) {
+          this.$notify.success({ title: '成功', message: '保存成功' })
+          this.$router.push('/product/list')
+        }
+      }
     }
   }
 }
@@ -478,5 +464,9 @@ export default {
   }
   .addSpecificationBtn {
     margin-bottom: 20px;
+  }
+  .specification-checkbox-group{
+    display: inline-block;
+    margin-left: 50px;
   }
 </style>

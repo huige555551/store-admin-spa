@@ -14,8 +14,25 @@
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="name" label="规格名称" min-width="100"></el-table-column>
-     <el-table-column prop="specification" label="规格数据" width="100"></el-table-column>
+      <el-table-column label="规格名称" min-width="100">
+        <template scope="scope">
+          <span>{{scope.row.name + '【' + scope.row.remark + '】'}}</span>
+        </template>
+      </el-table-column>
+     <el-table-column prop="specification" label="显示方式" width="100">
+       <template scope="scope">
+        <span v-if="scope.row.displayType === 1">文字</span>
+        <span v-if="scope.row.displayType === 2">图片</span>
+       </template>
+     </el-table-column>
+     <el-table-column label="规格数据" width="100">
+       <template scope="scope">
+        <span v-for="item in scope.row.pagingData">
+          item.remark
+        </span>
+        
+       </template>
+     </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row.id)">编辑</el-button>
@@ -37,32 +54,6 @@
       </el-pagination>
     </div>
 
-    <!-- 预览 -->
-    <el-dialog title="文章信息" v-model="previewDialog">
-      <el-form label-width="100px">
-        <el-form-item label="封面">
-          <img :src="previewObj.coverUrl" style="max-width: 200px; max-height: 200px">
-        </el-form-item>
-        <el-form-item label="标题">
-          <span>{{previewObj.title}}</span>
-        </el-form-item>
-        <el-form-item label="栏目">
-          <span>{{previewObj.navigationName}}</span>
-        </el-form-item>
-        <el-form-item label="期数">
-          <span>{{previewObj.period}}</span>
-        </el-form-item>
-        <el-form-item label="作者">
-          <span>{{previewObj.author}}</span>
-        </el-form-item>
-        <el-form-item label="第二作者">
-          <span>{{previewObj.secondAuthor}}</span>
-        </el-form-item>
-        <el-form-item label="发布时间">
-          <span>{{previewObj.publicationDate}}</span>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -147,7 +138,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -182,23 +173,32 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const getNavigation = await api.get('/api/system/article/listNavigation')
-      if (getNavigation.code === 200) {
-        this.column = getNavigation.data
-      }
-      const { code, data } = await api.get('/api/system/article/listArticle', {
-        currentPage: this.currentPage,
-        perPage: this.perPage,
-        title: this.searchKey.title,
-        period: this.searchKey.period,
-        author: this.searchKey.author,
-        navigationId: this.searchKey.column
+      const { code, data } = await api.get('/api/sku/flatListByPaging', {
+        page: this.currentPage,
+        pageRows: this.perPage
       })
       if (code === 200) {
-        this.tableData = data.array
-        this.total = data.total
-        this.currentPage = data.currentPage
+        this.tableData = data.pagingData
+        this.total = data.totalRecords
+        this.currentPage = data.page
       }
+      // const getNavigation = await api.get('/api/system/article/listNavigation')
+      // if (getNavigation.code === 200) {
+      //   this.column = getNavigation.data
+      // }
+      // const { code, data } = await api.get('/api/system/article/listArticle', {
+      //   currentPage: this.currentPage,
+      //   perPage: this.perPage,
+      //   title: this.searchKey.title,
+      //   period: this.searchKey.period,
+      //   author: this.searchKey.author,
+      //   navigationId: this.searchKey.column
+      // })
+      // if (code === 200) {
+      //   this.tableData = data.array
+      //   this.total = data.total
+      //   this.currentPage = data.currentPage
+      // }
     },
     // 删除行
     deleteRow(index) {

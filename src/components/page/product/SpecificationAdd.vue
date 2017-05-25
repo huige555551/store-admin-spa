@@ -10,15 +10,15 @@
       </el-form-item>
     </el-form>
 
-    <!-- 创建文章 -->
+    <!-- 创建规格 -->
     <div class="form-box">
       <el-form ref="form" label-width="100px" label-position="left">
         <el-form-item label="规格名称" style="width: 400px;">
           <el-input v-model="specification.name"></el-input>
         </el-form-item>
         <el-form-item label="显示类型">
-          <el-radio class="radio" v-model="specification.display_type" :label="1">文字</el-radio>
-          <el-radio class="radio" v-model="specification.display_type" :label="2">图片</el-radio>
+          <el-radio class="radio" v-model="specification.displayType" :label="1">文字</el-radio>
+          <el-radio class="radio" v-model="specification.displayType" :label="2">图片</el-radio>
         </el-form-item>
         <el-form-item label="说明" style="width: 400px;">
           <el-input v-model="specification.remark"></el-input>
@@ -27,11 +27,11 @@
           <el-button @click="addSpecification">添加规则</el-button>
         </el-form-item>
         <el-form-item label="规格列表">
-          <el-table :data="specification.skuArray">
-              <el-table-column label="规格值" min-width="100">
+          <el-table :data="specification.valueArray">
+              <el-table-column label="规格值" width="140">
                 <template scope="scope">
-                  <el-input style="width: 100px;" v-model="scope.row.value" v-if="specification.display_type === 1"></el-input>
-                  <div v-if="specification.display_type === 2">
+                  <el-input style="width: 100px;" v-model="scope.row.value" v-if="specification.displayType === 1"></el-input>
+                  <div v-if="specification.displayType === 2">
                     <UploadSingle
                       :imgUrl="article.coverUrl"
                       :imgKey="article.coverKey"
@@ -42,17 +42,17 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="提示信息(不重复)" min-width="300">
+              <el-table-column label="提示信息(不重复)" width="240">
                 <template scope="scope">
-                  <el-input style="width: 300px;" v-model="scope.row.valueHint"></el-input>
+                  <el-input style="width: 200px;" v-model="scope.row.valueHint"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="序号">
+              <el-table-column label="序号" width="140">
                 <template scope="scope">
-                  <el-input style="width: 100px;" v-model="scope.row.rank"></el-input>
+                  <el-input style="width: 100px;" v-model="scope.row.rank" type="number"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" width="160">
+              <el-table-column label="操作" min-width="160">
                 <template scope="scope">
                   <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
                 </template>
@@ -65,12 +65,6 @@
         </el-form-item>
       </el-form>
     </div>
-
-    <el-dialog title="选择商品分类" label-position="left">
-      <el-form>
-
-      </el-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -80,16 +74,16 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-const _ = require('lodash')
+// const _ = require('lodash')
 
 export default {
   data() {
     return {
       specification: {
-        type: '',
+        name: '',
         remark: '',
-        display_type: 1,
-        skuArray: [{ value: '', valueHint: '', rank: '' }]
+        displayType: 1,
+        valueArray: []
       },
       standards: [
         {
@@ -158,12 +152,13 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    // 删除规格
     deleteRow(index) {
       console.log(index)
-      this.specification.skuArray.splice(index, 1)
+      this.specification.valueArray.splice(index, 1)
     },
     addSpecification() {
-      this.specification.skuArray.push({ value: '', valueHint: '' })
+      this.specification.valueArray.push({ value: '', valueHint: '', rank: '' })
     },
     add(index) {
       this.standards[index].subItem.push({})
@@ -235,30 +230,50 @@ export default {
       }
     },
     async save() {
-      this.$set(this.article, 'content', $('.simditor-body').html())
-      if (!this.article.coverUrl) {
-        return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
-        return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+      if (!this.specification.valueArray.length) {
+        this.$notify.error({ title: '错误', message: '规格列表不能为空' })
+        return
       }
-      // 对上post的key
-      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
-      if (this.editing) {
-        const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
-        if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
-        } else {
-          return this.$notify.error({ title: '失败', message: code + '保存失败' })
+      let isFormComplete = true
+      this.specification.valueArray.forEach((item) => {
+        if (!item.value || !item.valueHint || !item.rank) {
+          isFormComplete = false
         }
-      } else {
-        this.article.authorId = this.article.authorId
-        const { code } = await api.post('/api/system/wechat/addArticle', this.article)
-        if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
-        }
+      })
+      if (!this.specification.name || !this.specification.displayType || !this.specification.remark || !isFormComplete) {
+        this.$notify.error({ title: '错误', message: '表单信息不完整' })
+        return
       }
+      const { code } = await api.post('/api/sku/batchAdd', { name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
+      console.log(code)
+      if (code === 200) {
+        this.$notify.success({ title: '添加分类成功' })
+        this.$router.push('/product/specification/list')
+      }
+      // this.$set(this.article, 'content', $('.simditor-body').html())
+      // if (!this.article.coverUrl) {
+      //   return this.$notify.error({ title: '错误', message: '图片不能为空' })
+      // } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+      //   return this.$notify.error({ title: '错误', message: '表单信息不完整' })
+      // }
+      // // 对上post的key
+      // this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
+      // if (this.editing) {
+      //   const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
+      //   if (code === 200) {
+      //     this.$notify.success({ title: '成功', message: '保存成功' })
+      //     this.$router.push('/newmedia/list')
+      //   } else {
+      //     return this.$notify.error({ title: '失败', message: code + '保存失败' })
+      //   }
+      // } else {
+      //   this.article.authorId = this.article.authorId
+      //   const { code } = await api.post('/api/system/wechat/addArticle', this.article)
+      //   if (code === 200) {
+      //     this.$notify.success({ title: '成功', message: '保存成功' })
+      //     this.$router.push('/newmedia/list')
+      //   }
+      // }
     }
   }
 }

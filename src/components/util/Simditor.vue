@@ -33,9 +33,9 @@ export default {
     }
   },
   async mounted() {
-    const { code, data } = await api.get('/api/system/upload/getToken')
+    const { code, data } = await api.get('/api/pic/getBucketNameAndToken')
     if (code === 200) {
-      this.token = data.token
+      this.token = data.uploadToken
       this.bucketPort = data.bucketPort
     }
     const getToken = this.token

@@ -339,16 +339,4 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.demo-box {
-    margin-bottom: 24px;
-}
-.demo-block {
-    border: 1px solid #eaeefb;
-    border-radius: 4px;
-    transition: .2s;
-}
-.demo-block .source {
-    padding: 24px;
-}
-</style>
+
