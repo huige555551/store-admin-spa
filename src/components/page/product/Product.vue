@@ -14,20 +14,20 @@
     <!-- 搜索 -->
     <el-form :inline="true">
       <el-form-item label="名称">
-        <el-input v-model="searchInput.name" placeholder="名称"></el-input>
+        <el-input v-model="searchInput.name" placeholder="请输入名称"></el-input>
       </el-form-item>
      <el-form-item label="上/下架">
-        <el-select  v-model="searchInput.batch" filterable placeholder="请输入上下架进行搜索">
+        <el-select  v-model="searchInput.batch" filterable placeholder="请选择上下架">
           <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="库存">
-        <el-select  v-model="searchInput.stock" filterable placeholder="选择库存">
+        <el-select  v-model="searchInput.stock" filterable placeholder="清选择库存">
           <el-option v-for="(item, index) in optionStock" :label="item.name" :value="item.id" :key="index"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="状态">
-        <el-select  v-model="searchInput.status" filterable placeholder="请输入状态进行搜索">
+      <el-form-item label="标签">
+        <el-select  v-model="searchInput.status" filterable placeholder="请选择商品标签">
           <el-option v-for="(item, index) in optionStatus" :label="item.name" :value="item.id" :key="index"></el-option>
         </el-select>
       </el-form-item>
@@ -147,16 +147,20 @@ export default {
         id: 3
       }],
       optionStatus: [{
-        name: '已售罄',
+        name: '最新商品',
         id: 0
       },
       {
-        name: '在仓库',
+        name: '特价商品',
         id: 1
       },
       {
-        name: '出售中',
+        name: '热卖商品',
         id: 2
+      },
+      {
+        name: '推荐商品',
+        id: 3
       }],
       optionBatch: [{
         name: '上架',
