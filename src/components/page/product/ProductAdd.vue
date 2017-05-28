@@ -13,9 +13,11 @@
     <!-- 创建商品 -->
     <div class="form-box">
       <el-form ref="form" label-width="100px" label-position="left">
+        <!--商品名称-->
         <el-form-item label="商品名称" style="width: 400px;">
           <el-input v-model="product.name"></el-input>
         </el-form-item>
+        <!--所属分类-->
         <el-form-item label="所属分类">
          <el-tree
           :data="classifyList"
@@ -27,37 +29,36 @@
           :props="defaultProps">
           </el-tree>
         </el-form-item>
+        <!--是否上架-->
         <el-form-item label="是否上架">
           <el-radio class="radio" v-model="product.onSale" :label="true">是</el-radio>
           <el-radio class="radio" v-model="product.onSale" :label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="运费" >
-            <!--<el-radio class="radio" v-model="product.freeDelivery" :label="true">是</el-radio>
-            <el-radio class="radio" v-model="product.freeDelivery" :label="false">否</el-radio>-->
-            <!--<el-form v-if="!product.freeDelivery">-->
-            <el-form>
-              <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" :label="1">
-                  <span>包邮</span>
-                </el-radio>
-              </el-form-item>
-              <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" :label="1">
-                  <span>每单固定收取运费：</span>
-                  <el-input style="width: 100px;" v-model="fixedFeePerOrder" type="number"></el-input>元
-                </el-radio>
-              </el-form-item>
-              <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" :label="2">
-                  <span>订单每消费满</span><el-input style="width: 100px;" v-model="freeOnPriceThreshold" type="number"></el-input><span>元免运费，未达到条件每订单收取</span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder" type="number"></el-input><span>元运费</span>
-                </el-radio>
-              </el-form-item>
-              <el-form-item>
-                <el-radio v-model="product.deliveryFeeStrategy" :label="3">
-                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input>元运费：</span>
-                </el-radio>
-              </el-form-item>
-            </el-form>
+        <!--运费-->
+        <el-form-item label="运费">
+          <el-form>
+            <el-form-item>
+              <el-radio v-model="product.deliveryFeeStrategy" :label="1">
+                <span>包邮</span>
+              </el-radio>
+            </el-form-item>
+            <el-form-item>
+              <el-radio v-model="product.deliveryFeeStrategy" :label="2">
+                <span>每单固定收取运费：</span>
+                <el-input style="width: 100px;" v-model="fixedFeePerOrder" type="number"></el-input> 元
+              </el-radio>
+            </el-form-item>
+            <el-form-item>
+              <el-radio v-model="product.deliveryFeeStrategy" :label="3">
+                <span>订单每消费满 </span><el-input style="width: 100px;" v-model="freeOnPriceThreshold" type="number"></el-input><span> 元免运费，未达到条件每订单收取 </span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder" type="number"></el-input><span> 元运费</span>
+              </el-radio>
+            </el-form-item>
+            <el-form-item>
+              <el-radio v-model="product.deliveryFeeStrategy" :label="4">
+                <span>每订单购满 <el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input> 件商品免运费，未达到条件每订单收取 <el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input> 元运费</span>
+              </el-radio>
+            </el-form-item>
+          </el-form>
         </el-form-item>
          <el-form-item label="商品推荐类型">
             <el-checkbox class="radio" v-model="product.itemRecommendType" :label="1">最新商品</el-checkbox>
@@ -65,12 +66,34 @@
             <el-checkbox class="radio" v-model="product.itemRecommendType" :label="3">热卖商品</el-checkbox>
             <el-checkbox class="radio" v-model="product.itemRecommendType" :label="4">推荐商品</el-checkbox>
         </el-form-item>
+         <!--商品规格-->
+        <el-form-item label="商品规格">
+          <el-form>
+            <el-button @click.prevent="addSpecificationItems" class="addSpecificationBtn">添加规格项目</el-button>
+            <template v-for="(standard, index) in standards">
+              <el-form-item label="" class="category-item">
+                <el-select v-model="standard.selectValue" placeholder="添加规格项目">
+                  <el-option
+                    v-for="(specification, index) in specificationColumn"
+                    :key="specification.id"
+                    :label="`${specification.name}【${specification.remark}】`"
+                    :value="index">
+                  </el-option>
+                </el-select>
+                <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
+                <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList" v-if="standard.selectValue !== null">
+                  <el-checkbox v-for="valueArray in specificationColumn[standard.selectValue].valueArray" :label="valueArray.id" @change="specificationChange">{{ valueArray.value }}</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </template>
+          </el-form>
+        </el-form-item>
+        <!--商品库存-->
         <el-form-item label="商品库存">
          <el-table :data="itemSkus">
             <el-table-column type="index"></el-table-column>
-            <el-table-column prop="name" label="款式" min-width="100">
+            <el-table-column v-for="(item, index) in itemSkusType" :label="item.name" :prop="item.key" min-width="100">
             </el-table-column>
-            <el-table-column prop="name" label="尺码" min-width="100"></el-table-column>
             <el-table-column label="价格" min-width="100">
               <template scope="scope">
                 <el-input v-model="scope.row.price"></el-input>
@@ -93,37 +116,18 @@
             </el-table-column>
           </el-table>
         </el-form-item>
-        <!--商品规格-->
-        <el-form-item label="商品规格">
-          <el-form>
-            <el-button @click.prevent="addSpecificationItems" class="addSpecificationBtn">添加规格项目</el-button>
-            <template v-for="(standard, index) in standards">
-              <el-form-item label="" class="category-item">
-                <el-select v-model="standard.addItemValue" placeholder="添加规格项目">
-                  <el-option
-                    v-for="specification in specificationColumn"
-                    :key="specification.id"
-                    :label="`${specification.name}【${specification.remark}】`"
-                    :value="specification.id">
-                  </el-option>
-                </el-select>
-                <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
-                <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList">
-                  <el-checkbox v-for="item in standard.addItemValue" label="item.value"></el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </template>
-          </el-form>
-        </el-form-item>
+       <!--商品类型-->
         <el-form-item label="商品类型" class="productType">
           <el-radio class="radio" v-model="product.itemType" :label="1">实物商品(物流发货)</el-radio>
           <el-radio class="radio" v-model="product.itemType" :label="2">虚拟商品(无需物流)</el-radio>
           <el-radio class="radio" v-model="product.itemType" :label="3">电子卡券(无需物流)</el-radio>
         </el-form-item>
+        <!--预售商品-->
         <el-form-item label="预售商品">
           <el-radio v-model="product.preSale" :label="true">是</el-radio>
           <el-radio v-model="product.preSale" :label="false">否</el-radio>
         </el-form-item>
+        <!--产品相册-->
         <el-form-item label="产品相册" style="width:800px">
           <el-upload
             action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.imagesArray" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
@@ -131,6 +135,7 @@
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
+        <!--描述-->
          <el-form-item label="描述" style="width: 800px">
           <simditor :content="product.details" :options="options2" @change="change"></simditor>
         </el-form-item>
@@ -155,6 +160,24 @@ let id = 1000
 export default {
   data() {
     return {
+      itemSkusType: [{
+        id: '1',
+        name: '颜色',
+        key: 'color'
+      },
+      {
+        id: '2',
+        name: '大小',
+        key: 'size'
+      }],
+      itemSkus: [{
+        color: '红色',
+        size: 'XL'
+      },
+      {
+        color: '绿色',
+        size: 'XL'
+      }],
       specificationColumn: {},
       uploadParams: {},
       classifyList: [],
@@ -169,54 +192,14 @@ export default {
       standards: [
         {
           checkboxList: [],
-          addItemValue: null,
-          item: [{
-            value: '1',
-            label: '尺码'
-          },
-          {
-            value: '2',
-            label: '颜色'
-          },
-          {
-            value: '3',
-            label: '规格'
-          }],
-          subItem: [{
-            value: '1',
-            label: '大'
-          },
-          {
-            value: '2',
-            label: '中'
-          },
-          {
-            value: '3',
-            label: '小'
-          }]
+          selectValue: null
         }
       ],
-      stockList: [{
-        name: '衣服',
-        size: 'S',
-        quantity: '100'
-      }],
+      stockList: [],
       freeExpress: 'true',
       onBatch: 'true',
       share: 'true',
       preSales: false,
-      typeColumn: [{
-        name: '数码',
-        id: 0
-      },
-      {
-        name: '食品',
-        id: 1
-      },
-      {
-        name: '美妆',
-        id: 2
-      }],
       editing: false,
       article: {
         publicationDate: ''
@@ -265,6 +248,25 @@ export default {
   /* eslint-enable */
   /* eslint-disable */
   methods: {
+    findCheckBoxName(checkboxId) {
+    },
+    findSelectName(selectIndex) {
+      return this.specificationColumn[selectIndex]
+    },
+    specificationChange(e) {
+      const that = this
+      // for (let i = 0; i < this.standards.length; i += 1) {
+      //   if (this.standards[i].checkboxList.length) {
+      //     this.itemSkus.push(findSelectName(this.standards[i].selectValue))
+      //   }
+      // }
+      // this.standards.forEach((checkboxList, standardsIndex) => {
+      //   checkboxList.forEach((item, index) => {
+      //     that.itemSkusType.push(findSelectName(item))
+      //   })
+      // })
+      console.log(this.standards)
+    },
     deleteSpecification(index) {
       this.standards.splice(index, 1)
     },
@@ -301,8 +303,13 @@ export default {
       this.standards[index].subItem.push()
     },
     addSpecificationItems() {
+      // 不能超过3个规格
+      if (this.standards.length >= 3) {
+        return
+      }
       this.standards.push({
-        addItemValue: null,
+        checkboxList: [],
+        selectValue: null,
         item: [
           {
             value: '1',
@@ -342,7 +349,7 @@ export default {
       } else {
       // new
         this.editing = false
-        this.product = { name: '', onSale: true, freeDelivery: true, preSale: false, deliveryFeeStrategy: null, threshold: null, feePerOrder: null, itemType: 1, itemRecommendType: [], categories: [], images: [], itemSkuMappings: [] }
+        this.product = { name: '', onSale: true, freeDelivery: true, preSale: false, deliveryFeeStrategy: 1, threshold: null, feePerOrder: null, itemType: 1, itemRecommendType: [], categories: [], images: [], itemSkuMappings: [] }
       }
     },
     handleRemove(name) {
