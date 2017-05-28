@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
@@ -141,21 +141,23 @@ export default {
     UploadSingle
   },
   async created() {
-    // this.fetchData()
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
   watch: {
     '$route'() {
-      // this.fetchData()
+      this.fetchData()
     }
   },
   /* eslint-enable */
   methods: {
     // 删除规格
     deleteRow(index) {
-      console.log(index)
-      this.specification.valueArray.splice(index, 1)
+      const { code } = api.post('/api/sku/deleteSku', { skuId: this.specification.id })
+      if (code === 200) {
+        this.specification.valueArray.splice(index, 1)
+      }
     },
     addSpecification() {
       this.specification.valueArray.push({ value: '', valueHint: '', rank: '' })
@@ -184,27 +186,17 @@ export default {
       this.article.content = html
     },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      if (getNavigation.code === 200) {
-        this.optionColumn = getNavigation.data
-      }
-      this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      if (getAuthor.code === 200) {
-        this.optionAuthor = getAuthor.data.array
-      }
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
+        const { code, data } = await api.get('/api/sku/getSkuDetails', { skuId: this.$route.params.id })
         if (code === 200) {
-          this.article = data
-          $('.simditor-body').html(this.article.content)
+          this.specification = data
         }
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
+        // this.specification = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
       }
     },
     async searchAuthorName(inputAuthorName) {
@@ -244,11 +236,18 @@ export default {
         this.$notify.error({ title: '错误', message: '表单信息不完整' })
         return
       }
-      const { code } = await api.post('/api/sku/batchAdd', { name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
-      console.log(code)
-      if (code === 200) {
-        this.$notify.success({ title: '添加分类成功' })
-        this.$router.push('/product/specification/list')
+      if (!this.editing) {
+        const { code } = await api.post('/api/sku/batchAdd', { name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
+        if (code === 200) {
+          this.$notify.success({ title: '添加分类成功' })
+          this.$router.push('/product/specification/list')
+        }
+      } else {
+        const { code } = await api.post('/api/sku/updateSku', { id: this.specification.id, name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
+        if (code === 200) {
+          this.$notify.success({ title: '修改分类成功' })
+          this.$router.push('/product/specification/list')
+        }
       }
       // this.$set(this.article, 'content', $('.simditor-body').html())
       // if (!this.article.coverUrl) {

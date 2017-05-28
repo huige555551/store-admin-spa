@@ -89,9 +89,13 @@ export default {
       }).catch(() => {})
     },
     async fetchData() {
-      const { code, data } = await api.get('/api/category/listCategories')
+      const { code, data } = await api.get('/api/category/layeredListAll')
       if (code === 200) {
-        this.classifyList = data
+        if (data) {
+          this.classifyList = data
+        } else {
+          this.classifyList = []
+        }
       }
     },
     async save() {

@@ -14,34 +14,41 @@
     <div class="form-box">
       <el-form ref="form" :model="article" label-width="100px" label-position="right">
         <el-form-item label="发货点名称" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="address.name"></el-input>
         </el-form-item>
         <el-form-item label="发货人姓名" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="address.consignor"></el-input>
         </el-form-item>
         <el-form-item label="性别" style="width: 400px;">
-          <el-radio>先生</el-radio>
-          <el-radio>女士</el-radio>
+          <el-radio v-model="address.consignorGender" :label="1">先生</el-radio>
+          <el-radio v-model="address.consignorGender" :label="2">女士</el-radio>
         </el-form-item>
         <el-form-item label="地区" style="width: 800px;">
-          <el-select class="province" placeholder="请选择省份"></el-select>
-          <el-select class="city" placeholder="请选择市"></el-select>
-          <el-select class="area" placeholder="请选择区"></el-select>
+          <el-select class="province" placeholder="请选择省份" v-model="address.province">
+            <el-option value="广东省">广东省</el-option>
+          </el-select>
+          <el-select class="city" placeholder="请选择市" v-model="address.city">
+            <el-option value="广州市">广州市</el-option>
+          </el-select>
+          <el-select class="area" placeholder="请选择区" v-model="address.area">
+            <el-option value="白云区">白云区</el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="地址" style="width: 400px;">
-          <el-input></el-input>
+          <el-input v-model="address.address"></el-input>
         </el-form-item>
          <el-form-item label="邮编" style="width: 400px;">
-          <el-input></el-input>
+          <el-input type="number" v-model="address.postcode"></el-input>
         </el-form-item>
          <el-form-item label="手机" style="width: 400px;">
-          <el-input></el-input>
+          <el-input type="number" v-model="address.mobilePhone"></el-input>
         </el-form-item>
          <el-form-item label="电话" style="width: 400px;">
-          <el-input></el-input>
+          <el-input type="number" v-model="address.phone"></el-input>
         </el-form-item>
         <el-form-item label="设置为默认地址" style="width: 400px;">
-          <el-checkbox></el-checkbox>
+          <el-radio v-model="address.defaultUse" :label="true">是</el-radio>
+          <el-radio v-model="address.defaultUse" :label="false">否</el-radio>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
@@ -53,58 +60,28 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-const _ = require('lodash')
+// const _ = require('lodash')
 
 export default {
   data() {
     return {
-      standards: [
-        {
-          addItemValue: null,
-          item: [{
-            value: '1',
-            label: '尺码'
-          },
-          {
-            value: '2',
-            label: '颜色'
-          },
-          {
-            value: '3',
-            label: '规格'
-          }],
-          subItem: []
-        }
-      ],
-      tableData: [{
-        name: '衣服',
-        size: 'S',
-        quantity: '100'
-      }],
-      freeExpress: 'true',
-      onBatch: 'true',
-      share: 'true',
-      preSales: false,
-      typeColumn: [{
-        name: '数码',
-        id: 0
-      },
-      {
-        name: '食品',
-        id: 1
-      },
-      {
-        name: '美妆',
-        id: 2
-      }],
-      editing: false,
-      article: {
-        publicationDate: ''
+      address: {
+        name: '',
+        consignor: '',
+        consignorGender: 1,
+        province: '',
+        city: '',
+        area: '',
+        address: '',
+        postcode: '',
+        phone: '',
+        mobilePhone: '',
+        defaultUse: false
       },
       // 图片上传七牛参考: https://my.oschina.net/u/1760791/blog/643768
       // http://blog.csdn.net/jiangtianhao13269230/article/details/50699737
@@ -119,13 +96,13 @@ export default {
     UploadSingle
   },
   async created() {
-    // this.fetchData()
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
   watch: {
     '$route'() {
-      // this.fetchData()
+      this.fetchData()
     }
   },
   /* eslint-enable */
@@ -154,27 +131,16 @@ export default {
       this.article.content = html
     },
     async fetchData() {
-      const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      if (getNavigation.code === 200) {
-        this.optionColumn = getNavigation.data
-      }
-      this.optionTag = []
-      const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      if (getAuthor.code === 200) {
-        this.optionAuthor = getAuthor.data.array
-      }
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/system/wechat/getArticle', { articleId: this.$route.params.id })
+        const { code, data } = await api.get('/api/address/getAddressDetails', { addressId: this.$route.params.id })
         if (code === 200) {
-          this.article = data
-          $('.simditor-body').html(this.article.content)
+          this.address = data
         }
       } else {
       // new
         this.editing = false
-        this.article = { navigationId: null, authorId: null, publicationDate: null, labels: [], content: '' }
       }
     },
     async searchAuthorName(inputAuthorName) {
@@ -200,28 +166,23 @@ export default {
       }
     },
     async save() {
-      this.$set(this.article, 'content', $('.simditor-body').html())
-      if (!this.article.coverUrl) {
-        return this.$notify.error({ title: '错误', message: '图片不能为空' })
-      } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
+      if (!this.address.name || !this.address.consignor || !this.address.consignorGender || !this.address.province || !this.address.city || !this.address.area || !this.address.address || !this.address.postcode || !this.address.phone || !this.address.mobilePhone) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
-      // 对上post的key
-      this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
+      // this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
       if (this.editing) {
-        const { code } = await api.post('/api/system/wechat/updateArticle', this.article)
+        const { code } = await api.post('/api/address/update', this.address)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
+          this.$router.push('/address/list')
         } else {
           return this.$notify.error({ title: '失败', message: code + '保存失败' })
         }
       } else {
-        this.article.authorId = this.article.authorId
-        const { code } = await api.post('/api/system/wechat/addArticle', this.article)
+        const { code } = await api.post('/api/address/add', this.address)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
-          this.$router.push('/newmedia/list')
+          this.$router.push('/address/list')
         }
       }
     }

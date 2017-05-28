@@ -4,19 +4,20 @@
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>商品管理</span>
+        <span>网站设置</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>品牌列表</span>
+        <span>权限设置</span>
       </el-form-item>
     </el-form>
 
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
+      <el-table-column type="index" label="#" width="60"></el-table-column>
      <el-table-column prop="name" label="用户名" width="100"></el-table-column>
      <el-table-column prop="role" label="角色" width="100"></el-table-column>
-     <el-table-column prop="email" label="email" width="100"></el-table-column>
-     <el-table-column prop="lastLoginTime" label="上次登陆事件" width="200"></el-table-column>
+     <el-table-column prop="email" label="email" width="300"></el-table-column>
+     <el-table-column prop="last_login_time" label="上次登陆事件" width="200"></el-table-column>
      
       <el-table-column label="操作" min-width="160">
         <template scope="scope">
@@ -145,7 +146,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -180,18 +181,7 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const getNavigation = await api.get('/api/system/article/listNavigation')
-      if (getNavigation.code === 200) {
-        this.column = getNavigation.data
-      }
-      const { code, data } = await api.get('/api/system/article/listArticle', {
-        currentPage: this.currentPage,
-        perPage: this.perPage,
-        title: this.searchKey.title,
-        period: this.searchKey.period,
-        author: this.searchKey.author,
-        navigationId: this.searchKey.column
-      })
+      const { code, data } = await api.get('/api/admin/listAdminS')
       if (code === 200) {
         this.tableData = data.array
         this.total = data.total

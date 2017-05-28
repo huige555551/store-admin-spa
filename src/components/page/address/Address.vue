@@ -38,18 +38,19 @@
     </el-form>
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="发货点名称" min-width="100"></el-table-column>
       <el-table-column prop="address" label="地址" width="200">
       </el-table-column>
-     <el-table-column prop="zipCode" label="邮编" width="100"></el-table-column>
+     <el-table-column prop="postcode" label="邮编" width="100"></el-table-column>
       <el-table-column prop="phone" label="电话" width="200"></el-table-column>
-      <el-table-column prop="sendPerson" label="发货人" min-width="90"></el-table-column>
-      <el-table-column prop="default" label="默认" min-width="150"></el-table-column>
+      <el-table-column prop="consignor" label="发货人" min-width="90"></el-table-column>
+      <el-table-column prop="defaultUse" label="默认" min-width="150">
+        <template scope="scope">
+          <span v-if="scope.row.defaultUse">是</span>
+          <span v-if="!scope.row.defaultUse">否</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button size="small" @click.native.prevent="$router.push('/address/edit/'+scope.row.id)">编辑</el-button>
@@ -185,7 +186,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -220,22 +221,11 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const getNavigation = await api.get('/api/system/article/listNavigation')
-      if (getNavigation.code === 200) {
-        this.column = getNavigation.data
-      }
-      const { code, data } = await api.get('/api/system/article/listArticle', {
-        currentPage: this.currentPage,
-        perPage: this.perPage,
-        title: this.searchKey.title,
-        period: this.searchKey.period,
-        author: this.searchKey.author,
-        navigationId: this.searchKey.column
-      })
+      const { code, data } = await api.get('/api/address/listByPaging')
       if (code === 200) {
-        this.tableData = data.array
-        this.total = data.total
-        this.currentPage = data.currentPage
+        this.tableData = data
+        // this.total = data.total
+        // this.currentPage = data.currentPage
       }
     },
     // 删除行
@@ -245,9 +235,8 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+        const { code } = await api.post('/api/address/delete', { addressId: this.tableData[index].id })
         if (code === 200) {
-          this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
         }

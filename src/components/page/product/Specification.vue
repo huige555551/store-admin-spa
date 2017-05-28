@@ -25,10 +25,10 @@
         <span v-if="scope.row.displayType === 2">图片</span>
        </template>
      </el-table-column>
-     <el-table-column label="规格数据" width="100">
+     <el-table-column label="规格数据" width="400">
        <template scope="scope">
-        <span v-for="item in scope.row.pagingData">
-          item.remark
+        <span v-for="item in scope.row.valueArray">
+          {{'【' + item.value + '】'}}
         </span>
         
        </template>
@@ -36,7 +36,7 @@
       <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row.id)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.row.id)">删除</el-button>
+          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -173,10 +173,7 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/sku/flatListByPaging', {
-        page: this.currentPage,
-        pageRows: this.perPage
-      })
+      const { code, data } = await api.get('/api/sku/layeredListByPaging')
       if (code === 200) {
         this.tableData = data.pagingData
         this.total = data.totalRecords
@@ -202,14 +199,15 @@ export default {
     },
     // 删除行
     deleteRow(index) {
-      this.$confirm('此操作将该删除该文章，是否继续?', '提示', {
+      console.log(this.tableData)
+      this.$confirm('此操作将该删除该规格，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'info'
+        type: 'warning'
       }).then(async () => {
-        const { code } = await api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
+        const { code } = await api.post('/api/sku/deleteSku', { skuId: this.tableData[index].id })
         if (code === 200) {
-          this.tableData.splice(index, 1)
+          // this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
         }

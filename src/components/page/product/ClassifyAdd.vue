@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
@@ -223,10 +223,9 @@ export default {
       // // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/', { articleId: this.$route.params.id })
+        const { code, data } = await api.get('/api/category/getCategoryDetails', { categoryId: this.$route.params.id })
         if (code === 200) {
-          this.article = data
-          $('.simditor-body').html(this.article.content)
+          this.classify = data
         }
       } else {
         this.editing = false

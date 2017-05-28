@@ -31,10 +31,16 @@
           <el-radio class="radio" v-model="product.onSale" :label="true">是</el-radio>
           <el-radio class="radio" v-model="product.onSale" :label="false">否</el-radio>
         </el-form-item>
-        <el-form-item label="是否免运费" >
-            <el-radio class="radio" v-model="product.freeDelivery" :label="true">是</el-radio>
-            <el-radio class="radio" v-model="product.freeDelivery" :label="false">否</el-radio>
-            <el-form v-if="!product.freeDelivery">
+        <el-form-item label="运费" >
+            <!--<el-radio class="radio" v-model="product.freeDelivery" :label="true">是</el-radio>
+            <el-radio class="radio" v-model="product.freeDelivery" :label="false">否</el-radio>-->
+            <!--<el-form v-if="!product.freeDelivery">-->
+            <el-form>
+              <el-form-item>
+                <el-radio v-model="product.deliveryFeeStrategy" :label="1">
+                  <span>包邮</span>
+                </el-radio>
+              </el-form-item>
               <el-form-item>
                 <el-radio v-model="product.deliveryFeeStrategy" :label="1">
                   <span>每单固定收取运费：</span>
@@ -48,7 +54,7 @@
               </el-form-item>
               <el-form-item>
                 <el-radio v-model="product.deliveryFeeStrategy" :label="3">
-                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input>元运费：</span>元
+                  <span>每订单购满<el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input>件商品免运费，未达到条件每订单收取<el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input>元运费：</span>
                 </el-radio>
               </el-form-item>
             </el-form>
@@ -97,16 +103,13 @@
                   <el-option
                     v-for="specification in specificationColumn"
                     :key="specification.id"
-                    :label="specification.name + specification.remark"
+                    :label="`${specification.name}【${specification.remark}】`"
                     :value="specification.id">
                   </el-option>
                 </el-select>
                 <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
                 <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList">
-                  <!--<el-checkbox v-for="item in specification.valueArray" label="item."></el-checkbox>-->
-                  <el-checkbox label="L"></el-checkbox>
-                  <el-checkbox label="M"></el-checkbox>
-                  <el-checkbox label="S"></el-checkbox>
+                  <el-checkbox v-for="item in standard.addItemValue" label="item.value"></el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </template>
@@ -232,12 +235,12 @@ export default {
   },
   async created() {
     // 获取所属分类
-    const { code, data } = await api.get('/api/category/listCategories')
+    const { code, data } = await api.get('/api/category/layeredListAll')
     if (code === 200) {
       this.classifyList = data
     }
     // 获取规格
-    const specification = await api.get('/api/sku/listSkuNames')
+    const specification = await api.get('/api/sku/layeredListAll')
     if (specification.code === 200) {
       this.specificationColumn = specification.data
     }
@@ -295,10 +298,11 @@ export default {
         </span>)
     },
     add(index) {
-      this.standards[index].subItem.push({})
+      this.standards[index].subItem.push()
     },
     addSpecificationItems() {
       this.standards.push({
+        addItemValue: null,
         item: [
           {
             value: '1',

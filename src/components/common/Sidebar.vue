@@ -14,24 +14,28 @@
       <!-- 商品 -->
       <el-submenu index="product">
         <template slot="title"><i class="el-icon-date"></i>商品</template>
+        
         <!-- 商品管理 -->
         <el-menu-item-group>
           <template slot="title">商品管理</template>
           <el-menu-item index="/product/list">商品列表</el-menu-item>
           <el-menu-item index="/product/add">添加商品</el-menu-item>
         </el-menu-item-group>
+
         <!-- 商品分类 -->
         <el-menu-item-group>
           <template slot="title">商品分类</template>
           <el-menu-item index="/product/classify/list">分类列表</el-menu-item>
           <el-menu-item index="/product/classify/add">添加分类</el-menu-item>
         </el-menu-item-group>
+
         <!-- 规格管理 -->
         <el-menu-item-group>
           <template slot="title">规格分类</template>
           <el-menu-item index="/product/specification/list">规格列表</el-menu-item>
           <el-menu-item index="/product/specification/add">添加规格</el-menu-item>
         </el-menu-item-group>
+
         <!-- 品牌管理 -->
         <el-menu-item-group>
           <template slot="title">品牌分类</template>

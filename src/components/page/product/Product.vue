@@ -38,10 +38,6 @@
     </el-form>
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="名称" min-width="100"></el-table-column>
       <el-table-column label="商品" width="200">
@@ -207,7 +203,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -242,7 +238,7 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/item/list', {
+      const { code, data } = await api.get('/api/item/listByPaging', {
         currentPage: this.currentPage,
         perPage: this.perPage,
         itemName: this.searchKey.itemName,
@@ -250,9 +246,9 @@ export default {
         stock: this.searchKey.stock
       })
       if (code === 200) {
-        this.tableData = data.array
-        this.total = data.total
-        this.currentPage = data.currentPage
+        this.tableData = data.pagingData
+        this.total = data.totalRecords
+        this.currentPage = data.page
       }
     },
     // 删除行

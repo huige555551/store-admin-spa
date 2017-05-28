@@ -19,7 +19,7 @@
         <el-input type="password" v-model="form.newPassword"></el-input>
       </el-form-item>
       <el-form-item label="确认密码">
-        <el-input type="password" v-model="form.rePassword"></el-input>
+        <el-input type="password" v-model="form.confirmPassword"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submit">保存</el-button>
@@ -39,10 +39,10 @@ export default {
   },
   methods: {
     async submit() {
-      if (!this.form.oldPassword || !this.form.newPassword || !this.form.oldPassword || this.form.newPassword !== this.form.rePassword) {
+      if (!this.form.oldPassword || !this.form.newPassword || !this.form.oldPassword || this.form.newPassword !== this.form.confirmPassword) {
         return this.$notify.error({ title: '失败', message: '密码框不能为空且新密码与确认密码应一致' })
       }
-      const { code } = await api.post('/api/system/sysUser/updatePassword', this.form)
+      const { code } = await api.post('/api/admin/updatePassword', this.form)
       if (code === 200) {
         this.$notify.success({ title: '成功', message: '修改成功' })
         this.$router.push('/login')
