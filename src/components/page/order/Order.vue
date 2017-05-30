@@ -13,38 +13,63 @@
 
     <!-- 搜索 -->
     <el-form :inline="true">
-      <el-form-item label="类型">
-        <el-input v-model="searchInput.name" placeholder="类型"></el-input>
-      </el-form-item>
-     <el-form-item label="支付状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择支付状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="发货状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择发货状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="订单状态">
-        <el-select  v-model="searchInput.batch" filterable placeholder="选择订单状态">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="订单号">
+      <el-form>
+       <el-form-item label="订单号">
         <el-input placeholder="请输入订单号"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
-        <el-button @click.native.prevent="emptySearch">清空</el-button>
-      </el-form-item>
+       </el-form-item>
+       <el-form-item label="下单时间">
+          <el-date-picker v-model="value1" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>至
+          <el-date-picker v-model="value1" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>
+       </el-form-item>
+       <el-form-item label="订单类型">
+        <el-select  v-model="searchInput.orderType" filterable clearable placeholder="选择订单类型">
+          <el-option value="1" label="普通订单">普通订单</el-option>
+          <el-option value="2" label="维权订单"></el-option>
+        </el-select>
+       </el-form-item>
+      </el-form>
+      <el-form>
+      <el-form-item label="支付状态">
+          <el-select  v-model="searchInput.batch" filterable placeholder="选择支付状态">
+            <el-option>已支付</el-option>
+            <el-option>未支付</el-option>
+            <el-option>待收货</el-option>
+            <el-option>待评价</el-option>
+            <el-option>交易关闭</el-option>
+            <el-option>交易成功</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="发货状态">
+          <el-select  v-model="searchInput.batch" filterable placeholder="选择发货状态">
+            <el-option>待支付</el-option>
+            <el-option>待发货</el-option>
+            <el-option>已收货</el-option>
+            <el-option>已完成</el-option>
+            <el-option>已关闭</el-option>
+            <el-option>退款中</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="物流方式">
+          <el-select v-model="searchInput.batch" placeholder="选择物流方式">
+              <el-option>快递发货</el-option>
+              <el-option>上门自提</el-option>
+              <el-option>同城配送</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="维权状态">
+          <el-select v-model="searchInput.batch" placeholder="选择维权状态">
+            <el-option>退款处理中</el-option>
+            <el-option>退款结束</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click.native.prevent="search">搜索</el-button>
+          <el-button @click.native.prevent="emptySearch">清空</el-button>
+        </el-form-item>
+      </el-form>
     </el-form>
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
-        <el-table-column
-        type="selection"
-        width="55">
-      </el-table-column>
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="orderNum" label="订单号" min-width="100"></el-table-column>
       <el-table-column prop="receivePerson" label="收货人" min-width="100"></el-table-column>
@@ -62,11 +87,10 @@
       <el-table-column label="操作" width="250">
         <template scope="scope">
           <el-button size="small" @click.native.prevent="orderDialog = true">查看详情</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <!--<el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
-
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
@@ -220,7 +244,8 @@ export default {
         stock: '',
         name: '',
         batch: '',
-        status: ''
+        status: '',
+        orderType: ''
       },
       searchKey: {
         stock: null,
@@ -257,8 +282,16 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
+  // 组件复用，路由数据刷新
+  /* eslint-disable */
+  watch: {
+    '$route'() {
+      this.fetchData()
+    }
+  },
+  /* eslint-enable */
   methods: {
     // 新窗口打开轮播图
     openImg(url) {
@@ -291,24 +324,30 @@ export default {
     },
     // 获取数据
     async fetchData() {
-      this.tableData = []
-      const getNavigation = await api.get('/api/system/article/listNavigation')
-      if (getNavigation.code === 200) {
-        this.column = getNavigation.data
+      console.log('fetchdate')
+      // this.tableData = []
+      if (this.$route.query.type) {
+        this.searchInput.orderType = this.$route.query.type
+      } else {
+        this.searchInput.orderType = ''
       }
-      const { code, data } = await api.get('/api/system/article/listArticle', {
-        currentPage: this.currentPage,
-        perPage: this.perPage,
-        title: this.searchKey.title,
-        period: this.searchKey.period,
-        author: this.searchKey.author,
-        navigationId: this.searchKey.column
-      })
-      if (code === 200) {
-        this.tableData = data.array
-        this.total = data.total
-        this.currentPage = data.currentPage
-      }
+      // const getNavigation = await api.get('/api/system/article/listNavigation')
+      // if (getNavigation.code === 200) {
+      //   this.column = getNavigation.data
+      // }
+      // const { code, data } = await api.get('/api/system/article/listArticle', {
+      //   currentPage: this.currentPage,
+      //   perPage: this.perPage,
+      //   title: this.searchKey.title,
+      //   period: this.searchKey.period,
+      //   author: this.searchKey.author,
+      //   navigationId: this.searchKey.column
+      // })
+      // if (code === 200) {
+      //   this.tableData = data.array
+      //   this.total = data.total
+      //   this.currentPage = data.currentPage
+      // }
     },
     // 删除行
     deleteRow(index) {

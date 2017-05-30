@@ -49,7 +49,7 @@
       <el-submenu index="order">
         <template slot="title"><i class="el-icon-date"></i>订单</template>
         <el-menu-item index="/order/list">所有订单</el-menu-item>
-        <el-menu-item index="/order/right">维权订单</el-menu-item>
+        <el-menu-item index="/order/list?type=2">维权订单</el-menu-item>
       </el-submenu>
 
        <!-- 地址管理 -->

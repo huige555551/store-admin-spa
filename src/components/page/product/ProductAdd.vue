@@ -8,6 +8,9 @@
       <el-form-item label="菜单：" v-if="!editing">
         <span>添加商品</span>
       </el-form-item>
+      <el-form-item label="菜单：" v-if="editing">
+        <span>编辑商品</span>
+      </el-form-item>
     </el-form>
 
     <!-- 创建商品 -->
@@ -161,22 +164,20 @@ export default {
   data() {
     return {
       itemSkusType: [{
-        id: '1',
         name: '颜色',
-        key: 'color'
+        key: '0'
       },
       {
-        id: '2',
         name: '大小',
-        key: 'size'
+        key: '1'
       }],
       itemSkus: [{
-        color: '红色',
-        size: 'XL'
+        0: '红色',
+        1: 'XL'
       },
       {
-        color: '绿色',
-        size: 'XL'
+        0: '绿色',
+        1: 'XL'
       }],
       specificationColumn: {},
       uploadParams: {},
@@ -255,11 +256,13 @@ export default {
     },
     specificationChange(e) {
       const that = this
-      // for (let i = 0; i < this.standards.length; i += 1) {
-      //   if (this.standards[i].checkboxList.length) {
-      //     this.itemSkus.push(findSelectName(this.standards[i].selectValue))
-      //   }
-      // }
+      this.itemSkusType = []
+      for (let i = 0; i < this.standards.length; i += 1) {
+        if (this.standards[i].checkboxList.length) {
+          const specificationName = this.specificationColumn[this.standards[i].selectValue]
+          this.itemSkusType.push({ name: `${specificationName.name}【${specificationName.remark}】`, key: this.itemSkusType.length + 1 })
+        }
+      }
       // this.standards.forEach((checkboxList, standardsIndex) => {
       //   checkboxList.forEach((item, index) => {
       //     that.itemSkusType.push(findSelectName(item))
@@ -269,6 +272,7 @@ export default {
     },
     deleteSpecification(index) {
       this.standards.splice(index, 1)
+      this.specificationChange()
     },
     async handleAvatarScucess(response, file, fileList) {
       const { code, data } = await api.get('/api/pic/getPrivateDownloadUrl', { key: response.key })
@@ -305,6 +309,7 @@ export default {
     addSpecificationItems() {
       // 不能超过3个规格
       if (this.standards.length >= 3) {
+        this.$notify.warning({ title: '提示', message: '规格不能超过3项' })
         return
       }
       this.standards.push({
@@ -384,6 +389,7 @@ export default {
           return this.$notify.error({ title: '失败', message: code + '保存失败' })
         }
       } else {
+        this.product.categories = JSON.stringify((_.clone(this.$refs.tree.getCheckedNodes())))
         this.product.images = JSON.stringify((_.clone(this.product.images)))
         this.product.itemSkuMappings = JSON.stringify((_.clone(this.product.itemSkuMappings)))
         const { code } = await api.post('/api/item/add', this.product)
