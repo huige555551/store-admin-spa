@@ -33,7 +33,7 @@ export default {
     }
   },
   async mounted() {
-    const { code, data } = await api.get('/api/pic/getBucketNameAndToken')
+    const { code, data } = await api.get('/api/pic/getBucketDomainAndToken')
     if (code === 200) {
       this.token = data.uploadToken
       this.bucketPort = data.bucketPort

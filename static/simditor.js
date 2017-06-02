@@ -4438,27 +4438,74 @@ ImageButton = (function(superClass) {
           msg = result.msg || _this._t('uploadFailed');
           alert(msg);
           img_path = _this.defaultImage;
+          _this.loadImage($img, img_path, function() {
+            var $mask;
+            $img.removeData('file');
+            $img.removeClass('uploading').removeClass('loading');
+            $mask = $img.data('mask');
+            if ($mask) {
+              $mask.remove();
+            }
+            $img.removeData('mask');
+            _this.editor.trigger('valuechanged');
+            if (_this.editor.body.find('img.uploading').length < 1) {
+              return _this.editor.uploader.trigger('uploadready', [file, result]);
+            }
+          });
+          if (_this.popover.active) {
+            _this.popover.srcEl.prop('disabled', false);
+            return _this.popover.srcEl.val(result.file_path);
+          }
         } else {
-          img_path = this.opts.bucketPort + '/' + result.key;
+          // 私密空间七牛图片上传,通过接口获取文件并且将URL赋值给img_path
+          $.ajax({
+            type: 'GET',
+            url: '/api/pic/getPrivateDownloadUrl',
+            data: {key: result.key},
+            dataType: "json",
+            success: function(data) {
+              if(data.status.errCode === 200) {
+                img_path = data.data.privateDownloadUrl
+                 _this.loadImage($img, img_path, function() {
+                  var $mask;
+                  $img.removeData('file');
+                  $img.removeClass('uploading').removeClass('loading');
+                  $mask = $img.data('mask');
+                  if ($mask) {
+                    $mask.remove();
+                  }
+                  $img.removeData('mask');
+                  _this.editor.trigger('valuechanged');
+                  if (_this.editor.body.find('img.uploading').length < 1) {
+                    return _this.editor.uploader.trigger('uploadready', [file, result]);
+                  }
+                });
+                if (_this.popover.active) {
+                  _this.popover.srcEl.prop('disabled', false);
+                  return _this.popover.srcEl.val(result.file_path);
+                }
+              }
+            }
+          })
         }
-        _this.loadImage($img, img_path, function() {
-          var $mask;
-          $img.removeData('file');
-          $img.removeClass('uploading').removeClass('loading');
-          $mask = $img.data('mask');
-          if ($mask) {
-            $mask.remove();
-          }
-          $img.removeData('mask');
-          _this.editor.trigger('valuechanged');
-          if (_this.editor.body.find('img.uploading').length < 1) {
-            return _this.editor.uploader.trigger('uploadready', [file, result]);
-          }
-        });
-        if (_this.popover.active) {
-          _this.popover.srcEl.prop('disabled', false);
-          return _this.popover.srcEl.val(result.file_path);
-        }
+        // _this.loadImage($img, img_path, function() {
+        //   var $mask;
+        //   $img.removeData('file');
+        //   $img.removeClass('uploading').removeClass('loading');
+        //   $mask = $img.data('mask');
+        //   if ($mask) {
+        //     $mask.remove();
+        //   }
+        //   $img.removeData('mask');
+        //   _this.editor.trigger('valuechanged');
+        //   if (_this.editor.body.find('img.uploading').length < 1) {
+        //     return _this.editor.uploader.trigger('uploadready', [file, result]);
+        //   }
+        // });
+        // if (_this.popover.active) {
+        //   _this.popover.srcEl.prop('disabled', false);
+        //   return _this.popover.srcEl.val(result.file_path);
+        // }
       };
     })(this));
     return this.editor.uploader.on('uploaderror', (function(_this) {

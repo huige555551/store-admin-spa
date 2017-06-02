@@ -4,40 +4,15 @@
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>商品管理</span>
+        <span>地址管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
-        <span>商品列表</span>
+        <span>发货地址列表</span>
       </el-form-item>
     </el-form>
 
-    <!-- 搜索 -->
-    <el-form :inline="true">
-      <el-form-item label="名称">
-        <el-input v-model="searchInput.name" placeholder="名称"></el-input>
-      </el-form-item>
-     <el-form-item label="上/下架">
-        <el-select  v-model="searchInput.batch" filterable placeholder="请输入上下架进行搜索">
-          <el-option v-for="(item, index) in optionBatch" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="库存">
-        <el-select  v-model="searchInput.stock" filterable placeholder="选择库存">
-          <el-option v-for="(item, index) in optionStock" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select  v-model="searchInput.status" filterable placeholder="请输入状态进行搜索">
-          <el-option v-for="(item, index) in optionStatus" :label="item.name" :value="item.id" :key="index"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click.native.prevent="search">搜索</el-button>
-        <el-button @click.native.prevent="emptySearch">清空</el-button>
-      </el-form-item>
-    </el-form>
     <!-- 表格 -->
-    <el-table :data="tableData" @selection-change="handleSelectionChange">
+    <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="发货点名称" min-width="100"></el-table-column>
       <el-table-column prop="address" label="地址" width="200">
@@ -59,7 +34,7 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分页 -->
+     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
         @size-change="handleSizeChange"
@@ -174,15 +149,7 @@ export default {
       // 预览
       previewDialog: false,
       previewObj: {},
-      tableData: [{
-        id: '1',
-        name: '北京仓库',
-        address: '丹棱街1号',
-        zipCode: '510405',
-        phone: '18677777777',
-        sendPerson: '刘继辉',
-        default: '是'
-      }]
+      tableData: []
     }
   },
   created() {
@@ -223,9 +190,9 @@ export default {
       this.tableData = []
       const { code, data } = await api.get('/api/address/listByPaging')
       if (code === 200) {
-        this.tableData = data
-        // this.total = data.total
-        // this.currentPage = data.currentPage
+        this.tableData = data.pagingData
+        this.total = data.totalRecords
+        this.currentPage = data.page
       }
     },
     // 删除行

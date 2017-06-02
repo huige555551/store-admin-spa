@@ -37,6 +37,10 @@
           <el-radio class="radio" v-model="product.onSale" :label="true">是</el-radio>
           <el-radio class="radio" v-model="product.onSale" :label="false">否</el-radio>
         </el-form-item>
+        <!--排序-->
+        <el-form-item label="序号">
+          <el-input v-model="product.rank" placeholder="序号越大商品越前" style="width: 300px;" type="number"></el-input>
+        </el-form-item>
         <!--运费-->
         <el-form-item label="运费">
           <el-form>
@@ -48,26 +52,26 @@
             <el-form-item>
               <el-radio v-model="product.deliveryFeeStrategy" :label="2">
                 <span>每单固定收取运费：</span>
-                <el-input style="width: 100px;" v-model="fixedFeePerOrder" type="number"></el-input> 元
+                <el-input style="width: 100px;" v-model="feePerOrder2" type="number"></el-input> 元
               </el-radio>
             </el-form-item>
             <el-form-item>
               <el-radio v-model="product.deliveryFeeStrategy" :label="3">
-                <span>订单每消费满 </span><el-input style="width: 100px;" v-model="freeOnPriceThreshold" type="number"></el-input><span> 元免运费，未达到条件每订单收取 </span><el-input style="width: 100px;" v-model="freeOnPriceFeePerOrder" type="number"></el-input><span> 元运费</span>
+                <span>订单每消费满 </span><el-input style="width: 100px;" v-model="threshold3" type="number"></el-input><span> 元免运费，未达到条件每订单收取 </span><el-input style="width: 100px;" v-model="feePerOrder3" type="number"></el-input><span> 元运费</span>
               </el-radio>
             </el-form-item>
             <el-form-item>
               <el-radio v-model="product.deliveryFeeStrategy" :label="4">
-                <span>每订单购满 <el-input style="width: 100px;" v-model="freeOnCountThreshold" type="number"></el-input> 件商品免运费，未达到条件每订单收取 <el-input style="width: 100px;" v-model="freeOnCountFeePerOrder" type="number"></el-input> 元运费</span>
+                <span>每订单购满 <el-input style="width: 100px;" v-model="threshold4" type="number"></el-input> 件商品免运费，未达到条件每订单收取 <el-input style="width: 100px;" v-model="feePerOrder4" type="number"></el-input> 元运费</span>
               </el-radio>
             </el-form-item>
           </el-form>
         </el-form-item>
          <el-form-item label="商品推荐类型">
-            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="1">最新商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="2">特价商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="3">热卖商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendType" :label="4">推荐商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="1">最新商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="2">特价商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="3">热卖商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="4">推荐商品</el-checkbox>
         </el-form-item>
          <!--商品规格-->
         <el-form-item label="商品规格">
@@ -99,12 +103,12 @@
             </el-table-column>
             <el-table-column label="价格" min-width="100">
               <template scope="scope">
-                <el-input v-model="scope.row.price"></el-input>
+                <el-input v-model="scope.row.price" type="number"></el-input>
               </template>
             </el-table-column>
             <el-table-column  label="库存" min-width="100">
               <template scope="scope">
-                <el-input v-model="scope.row.stock"></el-input>
+                <el-input v-model="scope.row.stock" type="number"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="商品货号" min-width="100">
@@ -114,7 +118,7 @@
             </el-table-column>
             <el-table-column label="操作" width="160">
               <template scope="scope">
-                <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+                <el-button size="small" @click.native.prevent="deleteItemSkus(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -133,15 +137,15 @@
         <!--产品相册-->
         <el-form-item label="产品相册" style="width:800px">
           <el-upload
-            action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.imagesArray" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
+            action="//up-z2.qiniu.com" accept="image/*" multiple list-type="picture-card" :file-list="product.images" :data="uploadParams" :on-success="handleAvatarScucess" :before-upload="beforeAvatarUpload"
             :on-remove="handleComicsRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
         </el-form-item>
         <!--描述-->
          <el-form-item label="描述" style="width: 800px">
-          <simditor :content="product.details" :options="options2" @change="change"></simditor>
-        </el-form-item>
+          <simditor :content="product.details" :options="options2" @change="change" v-model="product.details"></simditor>
+         </el-form-item>
          <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
           <el-button @click="$router.push('/product/list')">取消</el-button>
@@ -163,22 +167,36 @@ let id = 1000
 export default {
   data() {
     return {
-      itemSkusType: [{
-        name: '颜色',
-        key: '0'
-      },
-      {
-        name: '大小',
-        key: '1'
-      }],
-      itemSkus: [{
-        0: '红色',
-        1: 'XL'
-      },
-      {
-        0: '绿色',
-        1: 'XL'
-      }],
+      itemSkus: [],
+      itemSkusType: [],
+      // itemSkusType: [{
+      //   name: '颜色',
+      //   key: '0'
+      // },
+      // {
+      //   name: '大小',
+      //   key: '1'
+      // }],
+      // itemSkus: [{
+      //   0: '红色',
+      //   1: 'XL',
+      //   stock: '',
+      //   price: '',
+      //   itemNo: ''
+      // },
+      // {
+      //   0: '绿色',
+      //   1: 'XL',
+      //   stock: '',
+      //   price: '',
+      //   itemNo: ''
+      // }],
+      feePerOrder2: '',
+      feePerOrder3: '',
+      feePerOrder4: '',
+      threshold3: '',
+      threshold4: '',
+      option2: {},
       specificationColumn: {},
       uploadParams: {},
       classifyList: [],
@@ -187,7 +205,11 @@ export default {
         label: 'name'
       },
       product: {
-        imagesArray: []
+        images: [],
+        threshold: '',
+        feePerOrder: '',
+        details: '',
+        name: '衣服'
       },
       radio: false,
       standards: [
@@ -247,40 +269,85 @@ export default {
     }
   },
   /* eslint-enable */
-  /* eslint-disable */
   methods: {
+    deleteItemSkus(index) {
+      this.itemSkus.splice(index, 1)
+    },
+    getCategoriesId(checkedNodes) {
+      for (let i = 0; i < checkedNodes.length; i += 1) {
+        this.product.categories.push(checkedNodes[i].id)
+        this.getCategoriesId(checkedNodes[i])
+      }
+    },
     findCheckBoxName(checkboxId) {
+      for (let i = 0; i < this.specificationColumn.length; i += 1) {
+        for (let j = 0; j < this.specificationColumn[i].valueArray.length; j += 1) {
+          if (this.specificationColumn[i].valueArray[j].id === checkboxId) {
+            return this.specificationColumn[i].valueArray[j].value
+          }
+        }
+      }
     },
     findSelectName(selectIndex) {
       return this.specificationColumn[selectIndex]
     },
-    specificationChange(e) {
-      const that = this
+    specificationChange() {
       this.itemSkusType = []
       for (let i = 0; i < this.standards.length; i += 1) {
         if (this.standards[i].checkboxList.length) {
           const specificationName = this.specificationColumn[this.standards[i].selectValue]
-          this.itemSkusType.push({ name: `${specificationName.name}【${specificationName.remark}】`, key: this.itemSkusType.length + 1 })
+          this.itemSkusType.push({ name: `${specificationName.name}【${specificationName.remark}】`, key: '' + this.itemSkusType.length })
         }
       }
-      // this.standards.forEach((checkboxList, standardsIndex) => {
-      //   checkboxList.forEach((item, index) => {
-      //     that.itemSkusType.push(findSelectName(item))
-      //   })
-      // })
-      console.log(this.standards)
+      this.itemSkus = []
+      const standardsLength = this.standards.length
+      for (let i = 0; i < this.standards[0].checkboxList[i]; i += 1) {
+        if (standardsLength > 1 && this.standards[1].checkboxList.length) {
+          for (let j = 0; j < this.standards[1].checkboxList[j]; j += 1) {
+            if (standardsLength > 2 && this.standards[1].checkboxList.length) {
+              for (let k = 0; k < this.standards[2].checkboxList[k]; k += 1) {
+                this.itemSkus.push({
+                  0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
+                  1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
+                  2: this.findCheckBoxName(this.standards[2].checkboxList[k]),
+                  skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j], this.standards[2].checkboxList[k]],
+                  stock: 0,
+                  price: 0,
+                  itemNo: '' })
+              }
+            } else {
+              this.itemSkus.push({
+                0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
+                1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
+                skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j]],
+                stock: 0,
+                price: 0,
+                itemNo: ''
+              })
+            }
+          }
+        } else {
+          this.itemSkus.push({
+            0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
+            skuValueGroup: [this.standards[0].checkboxList[i]],
+            stock: 0,
+            price: 0,
+            itemNo: ''
+          })
+        }
+      }
     },
     deleteSpecification(index) {
       this.standards.splice(index, 1)
       this.specificationChange()
     },
     async handleAvatarScucess(response, file, fileList) {
-      const { code, data } = await api.get('/api/pic/getPrivateDownloadUrl', { key: response.key })
+      const { code } = await api.get('/api/pic/getPrivateDownloadUrl', { key: response.key })
       if (code === 200) {
+        this.$set(this.product, 'productUrl', `${this.bucketPort}/${response.key}`)
+        this.$set(this.product, 'productKey', response.key)
+        this.product.images = fileList
       }
-      this.$set(this.product, 'productUrl', `${this.bucketPort}/${response.key}`)
-      this.$set(this.product, 'productKey', response.key)
-      this.product.imagesArray = fileList
       /* eslint-enable */
     },
     beforeAvatarUpload() {
@@ -306,6 +373,8 @@ export default {
     add(index) {
       this.standards[index].subItem.push()
     },
+    handleComicsRemove() {
+    },
     addSpecificationItems() {
       // 不能超过3个规格
       if (this.standards.length >= 3) {
@@ -314,47 +383,26 @@ export default {
       }
       this.standards.push({
         checkboxList: [],
-        selectValue: null,
-        item: [
-          {
-            value: '1',
-            label: '尺码'
-          },
-          {
-            value: '2',
-            label: '颜色'
-          },
-          {
-            value: '3',
-            label: '规格'
-          }]
+        selectValue: null
+        // item: []
       })
     },
     change(html) {
       this.article.content = html
     },
     async fetchData() {
-      // const getNavigation = await api.get('/api/system/wechat/listNavigation')
-      // if (getNavigation.code === 200) {
-      //   this.optionColumn = getNavigation.data
-      // }
-      // this.optionTag = []
-      // const getAuthor = await api.get('/api/system/author/listAuthor', { perPage: 1000 })
-      // if (getAuthor.code === 200) {
-      //   this.optionAuthor = getAuthor.data.array
-      // }
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/item/getItemDtails', { itemId: this.$route.params.id })
+        const { code, data } = await api.get('/api/item/getItemDetails', { itemId: this.$route.params.id })
         if (code === 200) {
-          this.product = data
+          this.product = JSON.parse(data)
           $('.simditor-body').html(this.product.details)
         }
       } else {
-      // new
+        // new
         this.editing = false
-        this.product = { name: '', onSale: true, freeDelivery: true, preSale: false, deliveryFeeStrategy: 1, threshold: null, feePerOrder: null, itemType: 1, itemRecommendType: [], categories: [], images: [], itemSkuMappings: [] }
+        this.product = { name: ' ', onSale: true, preSale: false, deliveryFeeStrategy: 1, threshold: null, feePerOrder: null, itemType: 1, itemRecommendTypeArray: [], categories: [], images: [], itemSkuMappings: [] }
       }
     },
     handleRemove(name) {
@@ -376,11 +424,37 @@ export default {
       // } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
       //   return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       // }
-      // // 对上post的key
-      // this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
+      // 图片key放入数组
+      const imgUrl = []
+      this.product.images.forEach((item) => {
+        /* eslint-disable */
+        if(item.response)
+          imgUrl.push( item.response.key )
+        else
+          imgUrl.push( item.name)
+        /* eslint-enable */
+      })
+      this.product.images = imgUrl
+      // 将feePerOrder和threshold取出
+      switch (this.product.deliveryFeeStrategy) {
+      case 2:
+        this.product.feePerOrder = this.feePerOrder2
+        break
+      case 3:
+        this.product.threshold = this.threshold3
+        this.product.feePerOrder = this.feePerOrder3
+        break
+      case 4:
+        this.product.threshold = this.threshold4
+        this.product.feePerOrder = this.feePerOrder4
+        break
+      default:
+        console.log('免邮')
+      }
+      this.$set(this.product, 'details', $('.simditor-body').html())
+      // editing
       if (this.editing) {
         this.product.images = JSON.stringify((_.clone(this.product.images)))
-        this.product.itemSkuMappings = JSON.stringify((_.clone(this.product.itemSkuMappings)))
         const { code } = await api.post('/api/item/update', this.product)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })
@@ -389,9 +463,12 @@ export default {
           return this.$notify.error({ title: '失败', message: code + '保存失败' })
         }
       } else {
-        this.product.categories = JSON.stringify((_.clone(this.$refs.tree.getCheckedNodes())))
+        // new
+        this.getCategoriesId(this.$refs.tree.getCheckedNodes())
+        this.product.categories = JSON.stringify(this.product.categories)
+        this.product.itemRecommendTypeArray = JSON.stringify(this.product.itemRecommendTypeArray)
         this.product.images = JSON.stringify((_.clone(this.product.images)))
-        this.product.itemSkuMappings = JSON.stringify((_.clone(this.product.itemSkuMappings)))
+        this.product.itemSkuMappings = JSON.stringify((_.clone(this.itemSkus)))
         const { code } = await api.post('/api/item/add', this.product)
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '保存成功' })

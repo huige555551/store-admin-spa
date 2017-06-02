@@ -40,6 +40,7 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      editing: false,
       classifyList: [],
       defaultProps: {
         children: 'sonCategories',
@@ -71,7 +72,7 @@ export default {
           </span>
           <span style="float: right; margin-right: 20px">
             <el-button size="mini" on-click={ () => this.deleteClassify(data.id) }>删除</el-button>
-            <el-button size="mini" on-click={ () => console.log(this.$router.push(`/product/classify/edit/${data.id}`, store)) }>编辑</el-button>
+            <el-button size="mini" on-click={ () => this.$router.push(`/product/classify/edit/${data.id}`, store) }>编辑</el-button>
           </span>
         </span>)
     },

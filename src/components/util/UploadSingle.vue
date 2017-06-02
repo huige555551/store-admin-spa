@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img v-show="imgUrl" :src="`${imgUrl}?imageView2/2/w/200`" style="display: block; margin-bottom: 10px;">
+    <img v-show="imgUrl" :src="`${imgUrl}`" style="display: block; margin-bottom: 10px;">
     <el-button v-show="imgUrl" @click="handleRemove">删除</el-button>
     <el-upload
       v-show="!imgUrl"
@@ -32,10 +32,6 @@ export default {
       type: Number,
       default: 1 // 默认1MB
     },
-    imgKey: {
-      type: String,
-      default: null
-    },
     imgUrl: {
       type: String,
       default: null
@@ -58,12 +54,12 @@ export default {
   },
   created() {
     console.log('uploadsingle created')
-    return api.get('/api/system/upload/getToken').then(response => {
-      this.bucketPort = response.data.bucketPort
+    return api.get('/api/pic/getUploadToken').then(response => {
+      // this.bucketPort = response.data.bucketPort
       this.uploadParams = {
         unique_names: true,
         save_key: false,
-        token: response.data.token
+        token: response.data.uploadToken
       }
     })
   },
@@ -87,7 +83,7 @@ export default {
     },
     // 上传成功
     handleSuccess(response) {
-      this.$emit('handleSuccess', response, this.bucketPort, this.name)
+      this.$emit('handleSuccess', response)
     }
   }
 }

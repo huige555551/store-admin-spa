@@ -13,10 +13,10 @@
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="order" label="顺序" width="70"></el-table-column>
+      <el-table-column prop="rank" label="顺序" width="70"></el-table-column>
       <el-table-column label="图片" width="200">
         <template scope="scope">
-          <img :src="scope.row.productImg" width="200" max-height="200" @click="openImg(scope.row.productImg)" style="cursor: pointer">
+          <img :src="scope.row.image" width="200" max-height="200" @click="openImg(scope.row.image)" style="cursor: pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="160">
@@ -38,12 +38,11 @@
     <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="顺序">
-          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
+          <el-input v-model="rowObj.rank" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
         <el-form-item label="上传图片">
           <UploadSingle
-            :imgUrl="rowObj.imgUrl"
-            :imgKey="rowObj.imgKey"
+            :imgUrl="rowObj.image"
             dimension="1440x520"
             @handleRemove="handleRemove"
             @handleSuccess="handleSuccess">
@@ -73,21 +72,18 @@ export default {
       editing: false,
       editingIndex: null,
       rowObj: {
-        imgUrl: null, // data内声明，允许子组件跟踪值变化
-        imgKey: null // data内声明，允许子组件跟踪值变化
+        image: null // data内声明，允许子组件跟踪值变化
       },
+      imageKey: null,
       // 表格
-      tableData: [{
-        order: '100',
-        productImg: 'https://img.yzcdn.cn/upload_files/2015/05/14/Fh1ZR74CpUm0s85svgQuU-MQ3oQd.png?imageView2/2/w/120/h/0/q/75/format/webp'
-      }]
+      tableData: []
     }
   },
   components: {
     UploadSingle
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     // 新窗口打开轮播图
@@ -97,20 +93,25 @@ export default {
     // 获取轮播数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/banner/listBanner', { type: 1 })
+      const { code, data } = await api.get('/api/cms/showIndexSlideshow')
       if (code === 200) {
         this.tableData = data
       }
     },
     // 删除图片
     handleRemove() {
-      this.rowObj.imgKey = null
-      this.rowObj.imgUrl = null
+      this.rowObj.image = null
     },
     // 上传成功
-    handleSuccess(response, bucketPort) {
-      this.$set(this.rowObj, 'imgUrl', `${bucketPort}/${response.key}`)
-      this.$set(this.rowObj, 'imgKey', response.key)
+    async handleSuccess(response) {
+      const { code, data } = await api.get('/api/pic/getPrivateDownloadUrl', {
+        key: response.key
+      })
+      if (code === 200) {
+        console.log('success', data)
+        this.imageKey = response.key
+        this.$set(this.rowObj, 'image', data.privateDownloadUrl)
+      }
     },
     // 添加轮播
     addRow() {
@@ -119,8 +120,6 @@ export default {
       }
       this.editing = false
       this.rowObj = {}
-      this.$set(this.rowObj, 'imgUrl', null)
-      this.$set(this.rowObj, 'imgKey', null)
       this.formDialog = true
     },
     // 编辑轮播
@@ -128,8 +127,7 @@ export default {
       this.editing = true
       this.editingIndex = index
       this.rowObj = _.clone(this.tableData[index])
-      this.$set(this.rowObj, 'imgUrl', this.tableData[index].imgUrl)
-      this.$set(this.rowObj, 'imgKey', this.tableData[index].imgKey)
+      this.$set(this.rowObj, 'image', this.tableData[index].image)
       this.formDialog = true
     },
     // 删除行
@@ -139,7 +137,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/banner/deleteBanner', { bannerId: this.tableData[index].id })
+        const { code } = await api.post('/api/cms/deleteIndexSlideshow', { slideshowId: this.tableData[index].id })
         if (code === 200) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
@@ -148,10 +146,9 @@ export default {
     },
     // 保存行
     async saveRow() {
-      if (!this.rowObj.imgUrl) {
+      if (!this.rowObj.image) {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
-      this.rowObj.type = 1
       if (this.editing) {
         const { code } = await api.post('/api/system/banner/updateBanner', this.rowObj)
         if (code === 200) {
@@ -159,7 +156,8 @@ export default {
           this.formDialog = false
         }
       } else {
-        const { code } = await api.post('/api/system/banner/addBanner', this.rowObj)
+        this.rowObj.image = this.imageKey
+        const { code } = await api.post('/api/cms/addIndexSlideshow', this.rowObj)
         if (code === 200) {
           this.fetchData()
           this.formDialog = false

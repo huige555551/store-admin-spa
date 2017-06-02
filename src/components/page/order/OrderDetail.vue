@@ -62,6 +62,7 @@
       <el-tab-pane label="包裹" name="third">
         <el-table :data="expresses" @selection-change="handleSelectionChange">
           <el-table-column type="index" label="#" width="60"></el-table-column>
+          <el-table-column prop="product" label="包裹" min-width="100"></el-table-column>
           <el-table-column prop="product" label="商品" min-width="100"></el-table-column>
           <el-table-column prop="price" label="价格（元）" min-width="100"></el-table-column>
           <el-table-column prop="number" label="数量" min-width="100"></el-table-column>
@@ -74,7 +75,7 @@
           <el-table-column prop="receivePerson" label="状态" min-width="100"></el-table-column>
           <el-table-column label="快递" min-width="100">
             <template scope="scope">
-              <el-button @click.prevent.native="expressDialog = true;">查看快递</el-button>
+              <span>中通速递运单号：12345</span>
             </template>
           </el-table-column>
         </el-table>

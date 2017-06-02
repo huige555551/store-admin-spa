@@ -6,7 +6,7 @@
         <span>地址管理</span>
       </el-form-item>
       <el-form-item label="菜单：" v-if="!editing">
-        <span>添加地址</span>
+        <span>添加发货地址</span>
       </el-form-item>
     </el-form>
 
@@ -29,6 +29,7 @@
           </el-select>
           <el-select class="city" placeholder="请选择市" v-model="address.city">
             <el-option value="广州市">广州市</el-option>
+            <el-option value="珠海市">珠海市</el-option>
           </el-select>
           <el-select class="area" placeholder="请选择区" v-model="address.area">
             <el-option value="白云区">白云区</el-option>
