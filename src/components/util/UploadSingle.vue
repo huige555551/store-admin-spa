@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img v-show="imgUrl" :src="`${imgUrl}`" style="display: block; margin-bottom: 10px;">
+    <img class="thumb" v-show="imgUrl" :src="`${imgUrl}`" style="display: block; margin-bottom: 10px;">
     <el-button v-show="imgUrl" @click="handleRemove">删除</el-button>
     <el-upload
       v-show="!imgUrl"

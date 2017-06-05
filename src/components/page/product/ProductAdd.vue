@@ -169,28 +169,6 @@ export default {
     return {
       itemSkus: [],
       itemSkusType: [],
-      // itemSkusType: [{
-      //   name: '颜色',
-      //   key: '0'
-      // },
-      // {
-      //   name: '大小',
-      //   key: '1'
-      // }],
-      // itemSkus: [{
-      //   0: '红色',
-      //   1: 'XL',
-      //   stock: '',
-      //   price: '',
-      //   itemNo: ''
-      // },
-      // {
-      //   0: '绿色',
-      //   1: 'XL',
-      //   stock: '',
-      //   price: '',
-      //   itemNo: ''
-      // }],
       feePerOrder2: '',
       feePerOrder3: '',
       feePerOrder4: '',
@@ -311,8 +289,8 @@ export default {
                   1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
                   2: this.findCheckBoxName(this.standards[2].checkboxList[k]),
                   skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j], this.standards[2].checkboxList[k]],
-                  stock: 0,
-                  price: 0,
+                  stock: '0',
+                  price: '0',
                   itemNo: '' })
               }
             } else {
@@ -320,8 +298,8 @@ export default {
                 0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
                 1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
                 skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j]],
-                stock: 0,
-                price: 0,
+                stock: '0',
+                price: '0',
                 itemNo: ''
               })
             }
@@ -330,8 +308,8 @@ export default {
           this.itemSkus.push({
             0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
             skuValueGroup: [this.standards[0].checkboxList[i]],
-            stock: 0,
-            price: 0,
+            stock: '0',
+            price: '0',
             itemNo: ''
           })
         }
@@ -348,10 +326,9 @@ export default {
         this.$set(this.product, 'productKey', response.key)
         this.product.images = fileList
       }
-      /* eslint-enable */
     },
     beforeAvatarUpload() {
-      console.log('beforeAvatarUploadt')
+      console.log('beforeAvatarUpload')
     },
     append(store, data) {
       store.append({ id: id += 1, label: 'testtest', children: [] }, data)
@@ -396,7 +373,19 @@ export default {
         this.editing = true
         const { code, data } = await api.get('/api/item/getItemDetails', { itemId: this.$route.params.id })
         if (code === 200) {
-          this.product = JSON.parse(data)
+          this.product = data
+          this.product.deliveryFeeStrategy = data.deliveryFeeStrategy.deliveryFeeStrategy
+          this.product.itemRecommendTypeArray = data.itemRecommendTypeList
+          this.product.images = []
+          data.imageMapList.forEach((item) => {
+            console.log(item, this)
+            this.product.images.push({ url: item.imageUrl, key: item.imageKey })
+          })
+          this.product.classifyList = data.categoryIdList
+          this.itemSkus = data.itemSkuMappingList
+          data.skuList.forEach((item, index) => {
+            this.itemSkusType.push({ name: `${item.name}【${item.remark}】`, key: '' + index })
+          })
           $('.simditor-body').html(this.product.details)
         }
       } else {
@@ -424,15 +413,14 @@ export default {
       // } else if (!this.article.navigationId || !this.article.authorId || !this.article.title || !this.article.labels || !this.article.publicationDate || !this.article.introduction || !this.article.content) {
       //   return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       // }
-      // 图片key放入数组
+      // 图片key放入数组,key数组存放于数据库中
       const imgUrl = []
       this.product.images.forEach((item) => {
-        /* eslint-disable */
-        if(item.response)
-          imgUrl.push( item.response.key )
-        else
-          imgUrl.push( item.name)
-        /* eslint-enable */
+        if (item.response) {
+          imgUrl.push(item.response.key)
+        } else {
+          imgUrl.push(item.key)
+        }
       })
       this.product.images = imgUrl
       // 将feePerOrder和threshold取出
@@ -451,6 +439,8 @@ export default {
       default:
         console.log('免邮')
       }
+      // 商品推荐类型
+      this.product.itemRecommendTypeArray = JSON.stringify(this.product.itemRecommendTypeArray)
       this.$set(this.product, 'details', $('.simditor-body').html())
       // editing
       if (this.editing) {
@@ -466,7 +456,6 @@ export default {
         // new
         this.getCategoriesId(this.$refs.tree.getCheckedNodes())
         this.product.categories = JSON.stringify(this.product.categories)
-        this.product.itemRecommendTypeArray = JSON.stringify(this.product.itemRecommendTypeArray)
         this.product.images = JSON.stringify((_.clone(this.product.images)))
         this.product.itemSkuMappings = JSON.stringify((_.clone(this.itemSkus)))
         const { code } = await api.post('/api/item/add', this.product)

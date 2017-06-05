@@ -5,28 +5,28 @@
       <el-tab-pane label="订单信息" name="first">
         <el-form label-width="100px" style="width: 400px" label-position="left">
           <el-form-item label="订单编号">
-            <span>E20170520140336085240367</span>
+            <span>{{orderObj.orderNo}}</span>
           </el-form-item>
           <el-form-item label="订单类型">
-            <span>普通订单</span>
+            <span>{{orderObj.orderType}}</span>
           </el-form-item>
           <el-form-item label="付款方式">
-            <span>微信安全支付－代销</span>
+            <span>{{orderObj.paymentWay}}</span>
           </el-form-item>
           <el-form-item label="买家">
             <span>18988836325</span>
           </el-form-item>
           <el-form-item label="配送方式">
-            <span>快递配送</span>
+            <span{{>orderObj.shipmentWay}}</span>
           </el-form-item>
           <el-form-item label="收货信息">
             <span>广东省 广州市 海珠区 阅江东路(保利天悦旁) 保利叁悦广场, 林生, 13430321224</span>
           </el-form-item>
            <el-form-item label="买家留言">
             <span>-</span>
+            <span>{{orderObj.buyerRemark}}</span>
           </el-form-item>
-<!--         
-          <el-form-item label="结算状态">
+       <!--<el-form-item label="结算状态">
             <el-tag v-if="orderObj.accountStatus === 1" type="gray">{{ orderObj.accountStatusDesc }}</el-tag>
             <el-tag v-if="orderObj.accountStatus === 2" type="danger">{{ orderObj.accountStatusDesc }}</el-tag>
           </el-form-item>
@@ -36,7 +36,7 @@
         </el-form>
       </el-tab-pane>
 
-      <!-- 车辆信息 -->
+      <!-- 订单信息 -->
       <el-tab-pane label="订单状态" name="second">
         <el-form label-width="100px" style="width: 700px" label-position="left">
           <el-form-item label="订单状态：">
@@ -104,6 +104,7 @@
 
 <script>
 export default {
+  name: 'OrderDetail',
   data() {
     return {
       expresses: [
@@ -136,6 +137,12 @@ export default {
           { title: '商家同意退款申请', remark: '商家同意退款申请', createdAtDateTime: '2017-02-02 12:30' }
         ]
       }
+    }
+  },
+  props: {
+    orderObj: {
+      type: Object,
+      default: {}
     }
   }
 }

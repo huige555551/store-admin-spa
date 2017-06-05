@@ -15,51 +15,47 @@
     <el-form :inline="true">
       <el-form>
        <el-form-item label="订单号">
-        <el-input placeholder="请输入订单号"></el-input>
+        <el-input placeholder="请输入订单号" v-model="searchInput.orderNo"></el-input>
        </el-form-item>
        <el-form-item label="下单时间">
-          <el-date-picker v-model="value1" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>至
-          <el-date-picker v-model="value1" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>
+          <el-date-picker v-model="searchInput.startTime" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>至
+          <el-date-picker v-model="searchInput.endTime" type="date" placeholder="选择结束日期" :picker-options="pickerOptions0"></el-date-picker>
        </el-form-item>
        <el-form-item label="订单类型">
         <el-select  v-model="searchInput.orderType" filterable clearable placeholder="选择订单类型">
-          <el-option value="1" label="普通订单">普通订单</el-option>
-          <el-option value="2" label="维权订单"></el-option>
+          <el-option :value="1" label="普通订单">普通订单</el-option>
+          <el-option :value="2" label="维权订单">维权订单</el-option>
         </el-select>
        </el-form-item>
       </el-form>
       <el-form>
-      <el-form-item label="支付状态">
-          <el-select  v-model="searchInput.batch" filterable placeholder="选择支付状态">
-            <el-option>已支付</el-option>
-            <el-option>未支付</el-option>
-            <el-option>待收货</el-option>
-            <el-option>待评价</el-option>
-            <el-option>交易关闭</el-option>
-            <el-option>交易成功</el-option>
+        <el-form-item label="支付状态">
+          <el-select  v-model="searchInput.payStatus" filterable placeholder="选择支付状态">
+            <el-option :value="1" label="已支付">已支付</el-option>
+            <el-option :value="2" label="未支付">未支付</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发货状态">
-          <el-select  v-model="searchInput.batch" filterable placeholder="选择发货状态">
-            <el-option>待支付</el-option>
-            <el-option>待发货</el-option>
-            <el-option>已收货</el-option>
-            <el-option>已完成</el-option>
-            <el-option>已关闭</el-option>
-            <el-option>退款中</el-option>
+        <el-form-item label="订单状态">
+          <el-select  v-model="searchInput.orderStatus" filterable placeholder="选择发货状态">
+            <el-option :value="1" label="待支付">待支付</el-option>
+            <el-option :value="2" label="待发货">待发货</el-option>
+            <el-option :value="3" label="已收货">已收货</el-option>
+            <el-option :value="4" label="已完成">已完成</el-option>
+            <el-option :value="5" label="已关闭">已关闭</el-option>
+            <el-option :value="6" label="退款中">退款中</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="物流方式">
-          <el-select v-model="searchInput.batch" placeholder="选择物流方式">
-              <el-option>快递发货</el-option>
-              <el-option>上门自提</el-option>
-              <el-option>同城配送</el-option>
+          <el-select v-model="searchInput.deliveryWay" placeholder="选择物流方式">
+              <el-option :value="1" label="快递发货">快递发货</el-option>
+              <el-option :value="2" label="上门自提">上门自提</el-option>
+              <el-option :value="3" label="货到付款">货到付款</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="维权状态">
-          <el-select v-model="searchInput.batch" placeholder="选择维权状态">
-            <el-option>退款处理中</el-option>
-            <el-option>退款结束</el-option>
+          <el-select v-model="searchInput.refundStatus" placeholder="选择维权状态">
+            <el-option :value="1" label="退款处理中">退款处理中</el-option>
+            <el-option :value="2" label="退款结束">退款结束</el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -71,19 +67,19 @@
     <!-- 表格 -->
     <el-table :data="tableData" @selection-change="handleSelectionChange">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="orderNum" label="订单号" min-width="100"></el-table-column>
-      <el-table-column prop="receivePerson" label="收货人" min-width="100"></el-table-column>
+      <el-table-column prop="orderNo" label="订单号" min-width="100"></el-table-column>
+      <el-table-column prop="recipient" label="收货人" min-width="100"></el-table-column>
       <el-table-column label="支付状态" width="150">
         <template scope="scope">
           <el-tag type="gray">{{ scope.row.payStatus }}</el-tag>
           <el-button @click="deliverDialog = true">发货</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="deliverStatus" label="发货状态" width="100"></el-table-column>
-      <el-table-column prop="distribution" label="配送方式" width="100"></el-table-column>
-      <el-table-column prop="payType" label="支付方式" width="200"></el-table-column>
+      <el-table-column prop="consignStatus" label="发货状态" width="100"></el-table-column>
+      <el-table-column prop="deliverytWay" label="配送方式" width="100"></el-table-column>
+      <el-table-column prop="paymentWay" label="支付方式" width="200"></el-table-column>
       <el-table-column prop="username" label="用户名" width="100"></el-table-column>
-      <el-table-column prop="orderTime" label="下单时间" min-width="200"></el-table-column>
+      <el-table-column prop="createdAt" label="下单时间" min-width="200"></el-table-column>
       <el-table-column label="操作" width="250">
         <template scope="scope">
           <el-button size="small" @click.native.prevent="orderDialog = true">查看详情</el-button>
@@ -241,18 +237,24 @@ export default {
       column: [],
       // 搜索
       searchInput: {
-        stock: '',
-        name: '',
-        batch: '',
-        status: '',
-        orderType: ''
+        orderNo: null,
+        startTime: null,
+        endTime: null,
+        orderType: null,
+        payStatus: null,
+        orderStatus: null,
+        deliveryWay: null,
+        refundStatu: null
       },
       searchKey: {
-        stock: null,
-        title: null,
-        period: null,
-        author: null,
-        column: null
+        orderNo: null,
+        startTime: null,
+        endTime: null,
+        orderType: null,
+        payStatus: null,
+        orderStatus: null,
+        deliveryWay: null,
+        refundStatu: null
       },
       // 分页
       total: 0,
@@ -261,24 +263,7 @@ export default {
       // 预览
       previewDialog: false,
       previewObj: {},
-      tableData: [{
-        productImg: 'https://img.yzcdn.cn/upload_files/2015/05/14/Fh1ZR74CpUm0s85svgQuU-MQ3oQd.png?imageView2/2/w/120/h/0/q/75/format/webp',
-        username: '日森',
-        stock: '100',
-        totalSales: '100',
-        price: '¥100',
-        createdTime: '2017-05-10',
-        orderNum: '100',
-        id: '1',
-        batchOnload: true,
-        receivePerson: '刘继辉',
-        status: '已售罄',
-        orderTime: '2017-05-19 15:45:50',
-        deliverStatus: '已发货',
-        payType: '微信公众账号支付',
-        distribution: '快递',
-        payStatus: '等待商家发货'
-      }]
+      tableData: []
     }
   },
   created() {
@@ -299,21 +284,35 @@ export default {
     },
     // 清空搜索
     emptySearch() {
-      this.searchInput.title = null
-      this.searchInput.period = null
-      this.searchInput.author = null
-      this.searchKey.title = null
-      this.searchKey.period = null
-      this.searchKey.author = null
+      this.searchKey.orderNo = null
+      this.searchKey.startTime = null
+      this.searchKey.endTime = null
+      this.searchKey.orderType = null
+      this.searchKey.payStatus = null
+      this.searchKey.orderStatus = null
+      this.searchKey.deliveryWay = null
+      this.searchKey.refundStatu = null
+      this.searchinput.orderNo = null
+      this.searchinput.startTime = null
+      this.searchinput.endTime = null
+      this.searchinput.orderType = null
+      this.searchinput.payStatus = null
+      this.searchinput.orderStatus = null
+      this.searchinput.deliveryWay = null
+      this.searchinput.refundStatus = null
       this.currentPage = 1
       this.fetchData()
     },
     // 搜索
     search() {
-      this.searchKey.title = this.searchInput.title
-      this.searchKey.period = this.searchInput.period
-      this.searchKey.author = this.searchInput.author
-      this.searchKey.column = this.searchInput.column
+      this.searchKey.orderNo = this.searchKey.orderNo
+      this.searchKey.startTime = this.searchKey.startTime
+      this.searchKey.endTime = this.searchKey.endTime
+      this.searchKey.orderType = this.searchKey.orderType
+      this.searchKey.payStatus = this.searchKey.payStatus
+      this.searchKey.orderStatus = this.searchKey.orderStatus
+      this.searchKey.deliveryWay = this.searchKey.deliveryWay
+      this.searchKey.refundStatus = this.searchKey.refundStatus
       this.currentPage = 1
       this.fetchData()
     },
@@ -324,10 +323,24 @@ export default {
     },
     // 获取数据
     async fetchData() {
-      console.log('fetchdate')
-      // this.tableData = []
+      this.tableData = []
+      const { code, data } = await api.get('/api/order/listByPaging', {
+        orderNo: this.searchKey.orderNo,
+        startTime: this.searchKey.startTime,
+        endTime: this.searchKey.endTime,
+        orderType: this.searchKey.orderType,
+        payStatus: this.searchKey.payStatus,
+        orderStatus: this.searchKey.orderStatus,
+        deliveryWay: this.searchKey.deliveryWay,
+        refundStatus: this.searchKey.refundStatus
+      })
+      if (code === 200) {
+        this.tableData = data.pagingData
+        this.total = data.totalPages
+        this.currentPage = data.page
+      }
       if (this.$route.query.type) {
-        this.searchInput.orderType = this.$route.query.type
+        this.searchInput.orderType = parseInt(this.$route.query.type, 10)
       } else {
         this.searchInput.orderType = ''
       }
@@ -348,21 +361,6 @@ export default {
       //   this.total = data.total
       //   this.currentPage = data.currentPage
       // }
-    },
-    // 删除行
-    deleteRow(index) {
-      this.$confirm('此操作将该删除该文章，是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(async () => {
-        const { code } = await api.post('/api/system/article/deleteArticle', { articleId: this.tableData[index].id })
-        if (code === 200) {
-          this.tableData.splice(index, 1)
-          this.$notify.success({ title: '成功', message: '删除成功' })
-          this.fetchData()
-        }
-      }).catch(() => {})
     },
     // 分页
     handleSizeChange(val) {

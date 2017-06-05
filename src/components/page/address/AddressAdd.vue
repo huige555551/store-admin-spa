@@ -12,7 +12,7 @@
 
     <!-- 创建文章 -->
     <div class="form-box">
-      <el-form ref="form" :model="article" label-width="100px" label-position="right">
+      <el-form ref="form" label-width="100px" label-position="right">
         <el-form-item label="发货点名称" style="width: 400px;">
           <el-input v-model="address.name"></el-input>
         </el-form-item>
@@ -24,16 +24,7 @@
           <el-radio v-model="address.consignorGender" :label="2">女士</el-radio>
         </el-form-item>
         <el-form-item label="地区" style="width: 800px;">
-          <el-select class="province" placeholder="请选择省份" v-model="address.province">
-            <el-option value="广东省">广东省</el-option>
-          </el-select>
-          <el-select class="city" placeholder="请选择市" v-model="address.city">
-            <el-option value="广州市">广州市</el-option>
-            <el-option value="珠海市">珠海市</el-option>
-          </el-select>
-          <el-select class="area" placeholder="请选择区" v-model="address.area">
-            <el-option value="白云区">白云区</el-option>
-          </el-select>
+          <CascadeAddress :address="address" :cityColumn="cityColumn" :areaColumn="areaColumn" :editing="editing ? true : false "></CascadeAddress>
         </el-form-item>
         <el-form-item label="地址" style="width: 400px;">
           <el-input v-model="address.address"></el-input>
@@ -65,12 +56,17 @@
 import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
+import city from '../../../../static/city.json'
+import CascadeAddress from '../../util/Address'
 
-// const _ = require('lodash')
+const _ = require('lodash')
 
 export default {
   data() {
     return {
+      provinceColumn: [],
+      cityColumn: [],
+      areaColumn: [],
       address: {
         name: '',
         consignor: '',
@@ -94,10 +90,15 @@ export default {
   },
   components: {
     Simditor,
-    UploadSingle
+    UploadSingle,
+    CascadeAddress
   },
   async created() {
     this.fetchData()
+    console.log('father created')
+  },
+  mounted() {
+    console.log('father amounted')
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
@@ -132,12 +133,44 @@ export default {
       this.article.content = html
     },
     async fetchData() {
+      this.provinceColumn = city.citylist
       // editing
       if (this.$route.params.id) {
         this.editing = true
         const { code, data } = await api.get('/api/address/getAddressDetails', { addressId: this.$route.params.id })
         if (code === 200) {
-          this.address = data
+          // 初始化市下拉框
+          if (data.province) {
+            city.citylist.forEach((item) => {
+              if (item.p === data.province) {
+                this.cityColumn = item.c
+              }
+            })
+          }
+          // 初始化区下拉框
+          if (data.city) {
+            this.cityColumn.forEach((item) => {
+              if (item.n === data.city) {
+                this.areaColumn = item.a
+              }
+            })
+          }
+          // 初始化地区
+          this.address = _.clone(data)
+          {
+            const innerdata = data
+            // getcity()调用后,赋值city
+            setTimeout(() => {
+              this.$set(this.address, 'city', innerdata.city)
+              {
+                const i = data
+                // getarea()调用后,赋值area
+                setTimeout(() => {
+                  this.$set(this.address, 'area', i.area)
+                }, 0)
+              }
+            }, 0)
+          }
         }
       } else {
       // new

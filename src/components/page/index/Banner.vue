@@ -38,7 +38,7 @@
     <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="顺序">
-          <el-input v-model="rowObj.rank" placeholder="输入数字，数字越大越排前"></el-input>
+          <el-input v-model="rowObj.rank" placeholder="输入数字，数字越大越排前" type="number"></el-input>
         </el-form-item>
         <el-form-item label="上传图片">
           <UploadSingle
@@ -93,7 +93,7 @@ export default {
     // 获取轮播数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/cms/showIndexSlideshow')
+      const { code, data } = await api.get('/api/cms/listAllIndexSlideshows')
       if (code === 200) {
         this.tableData = data
       }
@@ -105,11 +105,12 @@ export default {
     // 上传成功
     async handleSuccess(response) {
       const { code, data } = await api.get('/api/pic/getPrivateDownloadUrl', {
-        key: response.key
+        key: response.key,
+        fops: 'imageView2/2/w/200'
       })
       if (code === 200) {
         console.log('success', data)
-        this.imageKey = response.key
+        this.rowObj.imageKey = response.key
         this.$set(this.rowObj, 'image', data.privateDownloadUrl)
       }
     },
@@ -150,13 +151,14 @@ export default {
         return this.$notify.error({ title: '错误', message: '图片不能为空' })
       }
       if (this.editing) {
-        const { code } = await api.post('/api/system/banner/updateBanner', this.rowObj)
+        this.rowObj.image = this.rowObj.imageKey
+        const { code } = await api.post('/api/cms/updateIndexSlideshow', this.rowObj)
         if (code === 200) {
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.formDialog = false
         }
       } else {
-        this.rowObj.image = this.imageKey
+        this.rowObj.image = this.rowObj.imageKey
         const { code } = await api.post('/api/cms/addIndexSlideshow', this.rowObj)
         if (code === 200) {
           this.fetchData()
