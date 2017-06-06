@@ -12,7 +12,6 @@
         <span>编辑商品</span>
       </el-form-item>
     </el-form>
-
     <!-- 创建商品 -->
     <div class="form-box">
       <el-form ref="form" label-width="100px" label-position="left">
@@ -41,32 +40,7 @@
         <el-form-item label="序号">
           <el-input v-model="product.rank" placeholder="序号越大商品越前" style="width: 300px;" type="number"></el-input>
         </el-form-item>
-        <!--运费-->
-        <el-form-item label="运费">
-          <el-form>
-            <el-form-item>
-              <el-radio v-model="product.deliveryFeeStrategy" :label="1">
-                <span>包邮</span>
-              </el-radio>
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="product.deliveryFeeStrategy" :label="2">
-                <span>每单固定收取运费：</span>
-                <el-input style="width: 100px;" v-model="feePerOrder2" type="number"></el-input> 元
-              </el-radio>
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="product.deliveryFeeStrategy" :label="3">
-                <span>订单每消费满 </span><el-input style="width: 100px;" v-model="threshold3" type="number"></el-input><span> 元免运费，未达到条件每订单收取 </span><el-input style="width: 100px;" v-model="feePerOrder3" type="number"></el-input><span> 元运费</span>
-              </el-radio>
-            </el-form-item>
-            <el-form-item>
-              <el-radio v-model="product.deliveryFeeStrategy" :label="4">
-                <span>每订单购满 <el-input style="width: 100px;" v-model="threshold4" type="number"></el-input> 件商品免运费，未达到条件每订单收取 <el-input style="width: 100px;" v-model="feePerOrder4" type="number"></el-input> 元运费</span>
-              </el-radio>
-            </el-form-item>
-          </el-form>
-        </el-form-item>
+        
          <el-form-item label="商品推荐类型">
             <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="1">最新商品</el-checkbox>
             <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="2">特价商品</el-checkbox>

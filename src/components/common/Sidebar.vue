@@ -43,6 +43,13 @@
           <el-menu-item index="/product/brand/list">品牌列表</el-menu-item>
           <el-menu-item index="/product/brand/add">添加品牌</el-menu-item>
         </el-menu-item-group>
+
+        <!-- 运费管理 -->
+        <el-menu-item-group>
+          <template slot="title">运费管理</template>
+          <el-menu-item index="/product/express">运费设置</el-menu-item>
+        </el-menu-item-group>
+
       </el-submenu>
 
       <!-- 订单管理 -->

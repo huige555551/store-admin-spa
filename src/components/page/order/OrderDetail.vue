@@ -17,7 +17,7 @@
             <span>18988836325</span>
           </el-form-item>
           <el-form-item label="配送方式">
-            <span{{>orderObj.shipmentWay}}</span>
+            <span>{{orderObj.shipmentWay}}</span>
           </el-form-item>
           <el-form-item label="收货信息">
             <span>广东省 广州市 海珠区 阅江东路(保利天悦旁) 保利叁悦广场, 林生, 13430321224</span>
@@ -26,13 +26,6 @@
             <span>-</span>
             <span>{{orderObj.buyerRemark}}</span>
           </el-form-item>
-       <!--<el-form-item label="结算状态">
-            <el-tag v-if="orderObj.accountStatus === 1" type="gray">{{ orderObj.accountStatusDesc }}</el-tag>
-            <el-tag v-if="orderObj.accountStatus === 2" type="danger">{{ orderObj.accountStatusDesc }}</el-tag>
-          </el-form-item>
-          <el-form-item label="结算备注">
-            <span>{{ orderObj.accountRemark }}</span>
-          </el-form-item>-->
         </el-form>
       </el-tab-pane>
 

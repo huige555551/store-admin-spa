@@ -189,8 +189,13 @@ export default {
   },
   data() {
     return {
-      orderDialog: false,
-      rowObj: {},
+      orderDialog: true,
+      rowObj: {
+        orderNo: '111',
+        orderType: 1,
+        paymentWay: 1,
+        shipmentWay: 1
+      },
       deliverData: [
         {
           product: '衣服'
@@ -263,11 +268,14 @@ export default {
       // 预览
       previewDialog: false,
       previewObj: {},
-      tableData: []
+      tableData: [{
+        orderNo: '111',
+        recipient: '刘继辉'
+      }]
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
