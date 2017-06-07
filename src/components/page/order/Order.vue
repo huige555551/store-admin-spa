@@ -189,7 +189,7 @@ export default {
   },
   data() {
     return {
-      orderDialog: true,
+      orderDialog: false,
       rowObj: {
         orderNo: '111',
         orderType: 1,

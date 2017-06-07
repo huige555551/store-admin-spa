@@ -66,10 +66,16 @@
         <el-menu-item index="/address/add">添加发货地址</el-menu-item>
       </el-submenu>
 
+       <!-- 权限管理 -->
+      <el-submenu index="right">
+        <template slot="title"><i class="el-icon-date"></i>权限管理</template>
+        <el-menu-item index="/right/admin/list">管理员</el-menu-item>
+        <el-menu-item index="/right/role/list">角色</el-menu-item>
+      </el-submenu>
+
       <!-- 网站设置 -->
       <el-submenu index="setting">
         <template slot="title"><i class="el-icon-setting"></i>网站设置</template>
-        <el-menu-item index="/website/admin">权限设置</el-menu-item>
         <el-menu-item index="/website/reset">修改密码</el-menu-item>
       </el-submenu>
     </el-menu>
