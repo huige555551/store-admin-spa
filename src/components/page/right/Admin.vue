@@ -4,7 +4,7 @@
   <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>网站管理</span>
+        <span>权限管理</span>
       </el-form-item>
       <el-form-item label="菜单：">
         <span>管理员</span>

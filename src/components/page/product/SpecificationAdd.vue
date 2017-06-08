@@ -16,7 +16,7 @@
         <el-form-item label="规格名称" style="width: 400px;">
           <el-input v-model="specification.name"></el-input>
         </el-form-item>
-        <el-form-item label="显示类型">
+        <el-form-item label="显示类型" >
           <el-radio class="radio" v-model="specification.displayType" :label="1">文字</el-radio>
           <el-radio class="radio" v-model="specification.displayType" :label="2">图片</el-radio>
         </el-form-item>
@@ -28,7 +28,7 @@
         </el-form-item>
         <el-form-item label="规格列表">
           <el-table :data="specification.valueArray">
-              <el-table-column label="规格值" width="140">
+              <el-table-column label="规格值" width="300">
                 <template scope="scope">
                   <el-input style="width: 100px;" v-model="scope.row.value" v-if="specification.displayType === 1"></el-input>
                   <div v-if="specification.displayType === 2">

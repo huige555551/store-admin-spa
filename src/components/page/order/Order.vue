@@ -18,8 +18,16 @@
         <el-input placeholder="请输入订单号" v-model="searchInput.orderNo"></el-input>
        </el-form-item>
        <el-form-item label="下单时间">
-          <el-date-picker v-model="searchInput.startTime" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>至
-          <el-date-picker v-model="searchInput.endTime" type="date" placeholder="选择结束日期" :picker-options="pickerOptions0"></el-date-picker>
+         <!--<el-date-picker
+            v-model="startTime"
+            format="yyyy-MM-dd"
+            @change="handleDatePick"
+            type="date"
+            :clearable="false"
+            placeholder="选择日期">
+        </el-date-picker>-->
+          <el-date-picker v-model="searchInput.startTime" format="yyyy-MM-dd" :clearable="true" type="date" placeholder="选择开始日期"  @change="handleStartTimePick"></el-date-picker>至
+          <el-date-picker v-model="searchInput.endTime" format="yyyy-MM-dd" :clearable="true"  type="date" placeholder="选择结束日期" @change="handleEndTimePick"></el-date-picker>
        </el-form-item>
        <el-form-item label="订单类型">
         <el-select  v-model="searchInput.orderType" filterable clearable placeholder="选择订单类型">
@@ -45,13 +53,13 @@
             <el-option :value="6" label="退款中">退款中</el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="物流方式">
+        <!--<el-form-item label="物流方式">
           <el-select v-model="searchInput.deliveryWay" placeholder="选择物流方式">
               <el-option :value="1" label="快递发货">快递发货</el-option>
               <el-option :value="2" label="上门自提">上门自提</el-option>
               <el-option :value="3" label="货到付款">货到付款</el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="维权状态">
           <el-select v-model="searchInput.refundStatus" placeholder="选择维权状态">
             <el-option :value="1" label="退款处理中">退款处理中</el-option>
@@ -65,18 +73,18 @@
       </el-form>
     </el-form>
     <!-- 表格 -->
-    <el-table :data="tableData" @selection-change="handleSelectionChange">
+    <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="orderNo" label="订单号" min-width="100"></el-table-column>
       <el-table-column prop="recipient" label="收货人" min-width="100"></el-table-column>
       <el-table-column label="支付状态" width="150">
         <template scope="scope">
-          <el-tag type="gray">{{ scope.row.payStatus }}</el-tag>
+          <el-tag type="gray">{{ scope.row.payStatusDesc }}</el-tag>
           <el-button @click="deliverDialog = true">发货</el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="consignStatus" label="发货状态" width="100"></el-table-column>
-      <el-table-column prop="deliverytWay" label="配送方式" width="100"></el-table-column>
+      <el-table-column prop="orderStatusDesc" label="订单状态" width="200"></el-table-column>
+      <el-table-column prop="consignStatusDesc" label="发货状态" width="100"></el-table-column>
       <el-table-column prop="paymentWay" label="支付方式" width="200"></el-table-column>
       <el-table-column prop="username" label="用户名" width="100"></el-table-column>
       <el-table-column prop="createdAt" label="下单时间" min-width="200"></el-table-column>
@@ -101,7 +109,7 @@
     </div>
     <!--发货-->
     <el-dialog title="发货" v-model="deliverDialog">
-      <el-table :data="deliverData" @selection-change="handleSelectionChange">
+      <el-table :data="deliverData">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="商品" min-width="100" prop="product"></el-table-column>
         <el-table-column label="数量" width="100" prop="product"></el-table-column>
@@ -115,12 +123,8 @@
           <el-radio>无需物流</el-radio>
         </el-form-item>
         <el-form-item label="物流公司：">
-          <el-select>
-            <el-option>
-              申通
-            </el-option>
-            <el-option>
-              顺丰
+          <el-select v-model="rowObj.express">
+            <el-option v-for="express in expressInfo" :key="express.id" :label="express.name" :value="express.name">
             </el-option>
           </el-select>
         </el-form-item>
@@ -142,32 +146,7 @@
         <OrderDetail :orderObj="rowObj"></OrderDetail>
       </keep-alive>
     </el-dialog>
-    <!-- 预览 -->
-    <el-dialog title="文章信息" v-model="previewDialog">
-      <el-form label-width="100px">
-        <el-form-item label="封面">
-          <img :src="previewObj.coverUrl" style="max-width: 200px; max-height: 200px">
-        </el-form-item>
-        <el-form-item label="标题">
-          <span>{{previewObj.title}}</span>
-        </el-form-item>
-        <el-form-item label="栏目">
-          <span>{{previewObj.navigationName}}</span>
-        </el-form-item>
-        <el-form-item label="期数">
-          <span>{{previewObj.period}}</span>
-        </el-form-item>
-        <el-form-item label="作者">
-          <span>{{previewObj.author}}</span>
-        </el-form-item>
-        <el-form-item label="第二作者">
-          <span>{{previewObj.secondAuthor}}</span>
-        </el-form-item>
-        <el-form-item label="发布时间">
-          <span>{{previewObj.publicationDate}}</span>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+    
   </div>
 </template>
 
@@ -182,6 +161,7 @@
 <script>
 import api from '@/api'
 import OrderDetail from './OrderDetail'
+import expressInfos from '../../../../static/expressInfo.json'
 
 export default {
   components: {
@@ -189,12 +169,14 @@ export default {
   },
   data() {
     return {
+      expressInfo: [],
       orderDialog: false,
       rowObj: {
         orderNo: '111',
         orderType: 1,
         paymentWay: 1,
-        shipmentWay: 1
+        shipmentWay: 1,
+        express: ''
       },
       deliverData: [
         {
@@ -249,7 +231,7 @@ export default {
         payStatus: null,
         orderStatus: null,
         deliveryWay: null,
-        refundStatu: null
+        refundStatus: null
       },
       searchKey: {
         orderNo: null,
@@ -259,7 +241,7 @@ export default {
         payStatus: null,
         orderStatus: null,
         deliveryWay: null,
-        refundStatu: null
+        refundStatus: null
       },
       // 分页
       total: 0,
@@ -275,7 +257,8 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.expressInfo = expressInfos.common
+    this.fetchData()
   },
   // 组件复用，路由数据刷新
   /* eslint-disable */
@@ -286,6 +269,17 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    // 日期更改
+    handleStartTimePick(val) {
+      this.searchInput.startTime = val
+    },
+    handleEndTimePick(val) {
+      this.searchInput.endTime = val
+    },
+    saveRow() {
+    },
+    click() {
+    },
     // 新窗口打开轮播图
     openImg(url) {
       window.open(url)

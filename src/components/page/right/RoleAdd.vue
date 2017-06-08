@@ -17,6 +17,7 @@
           <el-input v-model="role.name"></el-input>
         </el-form-item>
         <el-form-item label="权限分配：" >
+            <!--商品模块-->
             <div class="right-item">
               <span class="title">商品：</span>
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
@@ -36,6 +37,8 @@
                 <el-checkbox>运费修改</el-checkbox>
               </el-checkbox-group>
             </div>
+            <!--END商品模块-->
+            <!--系统模块-->
             <div class="right-item">
               <span class="title">系统：</span>
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
@@ -43,7 +46,8 @@
                 <el-checkbox>修改密码</el-checkbox>
               </el-checkbox-group>
             </div>
-
+            <!--END系统模块-->
+            <!--地址模块-->
             <div class="right-item">
               <span class="title">地址：</span>
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
@@ -53,7 +57,8 @@
                 <el-checkbox>地址删除</el-checkbox>
               </el-checkbox-group>
             </div>
-
+            <!--END地址模块-->
+            <!--订单模块-->
             <div class="right-item">
               <span class="title">订单：</span>
               <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
@@ -73,6 +78,7 @@
                 <el-checkbox>退款申请单详情</el-checkbox>
               </el-checkbox-group>
             </div>
+            <!--END订单模块-->
         </el-form-item>
          <el-form>
           <el-button type="primary" @click="save">提交</el-button>
