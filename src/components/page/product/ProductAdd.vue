@@ -21,14 +21,15 @@
         </el-form-item>
         <!--所属分类-->
         <el-form-item label="所属分类">
-         <el-tree
+          <el-tree
+          :check-strictly="true"
           :data="classifyList"
-          show-checkbox
-          default-expand-all
-          node-key="id"
           ref="tree"
-          highlight-current
-          :props="defaultProps">
+          :props="defaultProps"
+          node-key="_id"
+          :show-checkbox="true"
+          default-expand-all
+          :expand-on-click-node="false">
           </el-tree>
         </el-form-item>
         <!--是否上架-->
@@ -38,44 +39,42 @@
         </el-form-item>
         <!--排序-->
         <el-form-item label="序号">
-          <el-input v-model="product.rank" placeholder="序号越大商品越前" style="width: 300px;" type="number"></el-input>
+          <el-input v-model="product.order" placeholder="序号越大商品越前" style="width: 300px;" type="number"></el-input>
         </el-form-item>
         
          <el-form-item label="商品推荐类型">
-            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="1">最新商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="2">特价商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="3">热卖商品</el-checkbox>
-            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" :label="4">推荐商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" label="1">最新商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" label="2">特价商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" label="3">热卖商品</el-checkbox>
+            <el-checkbox class="radio" v-model="product.itemRecommendTypeArray" label="4">推荐商品</el-checkbox>
         </el-form-item>
          <!--商品规格-->
         <el-form-item label="商品规格">
           <el-form>
             <el-button @click.prevent="addSpecificationItems" class="addSpecificationBtn">添加规格项目</el-button>
-            <template v-for="(standard, index) in standards">
-              <el-form-item label="" class="category-item">
-                <el-select v-model="standard.selectValue" placeholder="添加规格项目">
-                  <el-option
-                    v-for="(specification, index) in specificationColumn"
-                    :key="specification.id"
-                    :label="`${specification.name}【${specification.remark}】`"
-                    :value="index">
-                  </el-option>
-                </el-select>
-                <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
-                <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList" v-if="standard.selectValue !== null">
-                  <el-checkbox v-for="valueArray in specificationColumn[standard.selectValue].valueArray" :label="valueArray.id" @change="specificationChange">{{ valueArray.value }}</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </template>
+            <div v-for="(standard, index) in standards" :key="index" class="classify-item">
+              <el-select v-model="standard.selectValue" @change="specificationChage" placeholder="添加规格项目">
+                <el-option
+                  v-for="(specification, index) in specificationColumn"
+                  :key="specification._id"
+                  :label="`${specification.name}【${specification.remark}】`"
+                  :value="index">
+                </el-option>
+              </el-select>
+              <i class="el-icon-delete" @click.prevent="deleteSpecification(index)"></i>
+              <el-checkbox-group class="specification-checkbox-group" v-model="standard.checkboxList" v-if="standard.selectValue !== null">
+                <el-checkbox v-for="(valueArray,index) in specificationColumn[standard.selectValue].valueArray" :key="index" :label="valueArray._id" @change="specificationCheckboxChange">{{ valueArray.value }}</el-checkbox>
+              </el-checkbox-group>
+            </div>
           </el-form>
         </el-form-item>
         <!--商品库存-->
         <el-form-item label="商品库存">
          <el-table :data="itemSkus">
             <el-table-column type="index"></el-table-column>
-            <el-table-column v-for="(item, index) in itemSkusType" :label="item.name" :prop="item.key" min-width="100">
+            <el-table-column v-for="(item, index) in itemSkusType" :key="index" :label="item.name" :prop="item.key" min-width="100">
             </el-table-column>
-            <el-table-column label="价格" min-width="100">
+            <el-table-column label="价格(单位：元)" min-width="100">
               <template scope="scope">
                 <el-input v-model="scope.row.price" type="number"></el-input>
               </template>
@@ -87,7 +86,7 @@
             </el-table-column>
             <el-table-column label="商品货号" min-width="100">
                <template scope="scope">
-                <el-input v-model="scope.row.itemNo"></el-input>
+                <el-input v-model="scope.row.productNo"></el-input>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="160">
@@ -135,41 +134,62 @@ import api from '@/api'
 import Simditor from '../../util/Simditor'
 import UploadSingle from '../../util/UploadSingle'
 
-const _ = require('lodash')
+// const _ = require('lodash')
 
-let id = 1000
 export default {
   data() {
     return {
+      data3: [{
+        id: '1',
+        label: '一级 2',
+        children: [{
+          id: 3,
+          label: '二级 2-1',
+          children: [{
+            id: 4,
+            label: '三级 3-1-1'
+          }, {
+            id: 5,
+            label: '三级 3-1-2',
+            disabled: true
+          }]
+        }, {
+          id: 2,
+          label: '二级 2-2',
+          disabled: true,
+          children: [{
+            id: 6,
+            label: '三级 3-2-1'
+          }, {
+            id: 7,
+            label: '三级 3-2-2',
+            disabled: true
+          }]
+        }]
+      }],
+      specificationCheckedList: [],
       itemSkus: [],
       itemSkusType: [],
-      feePerOrder2: '',
-      feePerOrder3: '',
-      feePerOrder4: '',
-      threshold3: '',
-      threshold4: '',
-      option2: {},
-      specificationColumn: {},
+      specificationColumn: [],
       uploadParams: {},
       classifyList: [],
       defaultProps: {
-        children: 'sonCategories',
+        children: 'children',
         label: 'name'
       },
       product: {
+        classifies: ['59d4d3b6fc612a7e43930909'],
+        specifications: [],
         images: [],
-        threshold: '',
-        feePerOrder: '',
+        itemType: 1,
         details: '',
-        name: '衣服'
+        name: ''
       },
       radio: false,
-      standards: [
-        {
-          checkboxList: [],
-          selectValue: null
-        }
-      ],
+      standards: [{
+        checkboxList: [], // 选中的checkbox
+        selectValue: null // 选中的select
+      }],
       stockList: [],
       freeExpress: 'true',
       onBatch: 'true',
@@ -184,7 +204,9 @@ export default {
       options2: {},
       optionColumn: [],
       optionAuthor: [],
-      optionTag: []
+      optionTag: [],
+      result: [],
+      results: []
     }
   },
   components: {
@@ -193,18 +215,17 @@ export default {
   },
   async created() {
     // 获取所属分类
-    const { code, data } = await api.get('/api/category/layeredListAll')
+    const { code, data } = await api.get('/api/product/classify/all')
     if (code === 200) {
       this.classifyList = data
     }
     // 获取规格
-    const specification = await api.get('/api/sku/layeredListAll')
+    const specification = await api.get('/api/product/specification/all')
     if (specification.code === 200) {
-      this.specificationColumn = specification.data
+      this.specificationColumn = specification.data.pagingData
     }
     // 获取token
     api.get('/api/pic/getUploadToken').then(response => {
-      console.log(response)
       this.uploadParams = {
         unique_names: true,
         save_key: false,
@@ -222,19 +243,22 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    handleComicsRemove() {
+    },
     deleteItemSkus(index) {
       this.itemSkus.splice(index, 1)
     },
-    getCategoriesId(checkedNodes) {
-      for (let i = 0; i < checkedNodes.length; i += 1) {
-        this.product.categories.push(checkedNodes[i].id)
-        this.getCategoriesId(checkedNodes[i])
-      }
-    },
+    // getClassifiesId(checkedNodes) {
+    //   for (let i = 0; i < checkedNodes.length; i += 1) {
+    //     this.product.classifies.push(checkedNodes[i]._id)
+    //     this.getClassifiesId(checkedNodes[i])
+    //   }
+    // },
     findCheckBoxName(checkboxId) {
       for (let i = 0; i < this.specificationColumn.length; i += 1) {
         for (let j = 0; j < this.specificationColumn[i].valueArray.length; j += 1) {
-          if (this.specificationColumn[i].valueArray[j].id === checkboxId) {
+          if (this.specificationColumn[i].valueArray[j]._id === checkboxId) {
+            console.log(this.specificationColumn[i].valueArray[j].value)
             return this.specificationColumn[i].valueArray[j].value
           }
         }
@@ -243,88 +267,64 @@ export default {
     findSelectName(selectIndex) {
       return this.specificationColumn[selectIndex]
     },
-    specificationChange() {
+    doExchange(arr, depth) {
+      for (let i = 0; i < arr[depth].length; i += 1) {
+        this.result[depth] = arr[depth][i]
+        if (depth !== arr.length - 1) {
+          this.doExchange(arr, depth + 1)
+        } else {
+          this.results.push(JSON.parse(JSON.stringify(this.result)))
+        }
+      }
+    },
+    specificationChage() {
+      const stLen = this.standards.length
+      this.standards[stLen - 1].checkboxList.splice(0, this.standards[stLen - 1].checkboxList.length)
+    },
+    specificationCheckboxChange() {
+      this.result = []
+      this.results = []
       this.itemSkusType = []
+      this.itemSkus = []
       for (let i = 0; i < this.standards.length; i += 1) {
         if (this.standards[i].checkboxList.length) {
           const specificationName = this.specificationColumn[this.standards[i].selectValue]
           this.itemSkusType.push({ name: `${specificationName.name}【${specificationName.remark}】`, key: '' + this.itemSkusType.length })
         }
       }
-      this.itemSkus = []
-      const standardsLength = this.standards.length
-      for (let i = 0; i < this.standards[0].checkboxList[i]; i += 1) {
-        if (standardsLength > 1 && this.standards[1].checkboxList.length) {
-          for (let j = 0; j < this.standards[1].checkboxList[j]; j += 1) {
-            if (standardsLength > 2 && this.standards[1].checkboxList.length) {
-              for (let k = 0; k < this.standards[2].checkboxList[k]; k += 1) {
-                this.itemSkus.push({
-                  0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
-                  1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
-                  2: this.findCheckBoxName(this.standards[2].checkboxList[k]),
-                  skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j], this.standards[2].checkboxList[k]],
-                  stock: '0',
-                  price: '0',
-                  itemNo: '' })
-              }
-            } else {
-              this.itemSkus.push({
-                0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
-                1: this.findCheckBoxName(this.standards[1].checkboxList[j]),
-                skuValueGroup: [this.standards[0].checkboxList[i], this.standards[1].checkboxList[j]],
-                stock: '0',
-                price: '0',
-                itemNo: ''
-              })
-            }
-          }
-        } else {
-          this.itemSkus.push({
-            0: this.findCheckBoxName(this.standards[0].checkboxList[i]),
-            skuValueGroup: [this.standards[0].checkboxList[i]],
-            stock: '0',
-            price: '0',
-            itemNo: ''
-          })
+      const arr = []
+      for (let i = 0, len1 = this.standards.length; i < len1; i += 1) {
+        const checkboxList = []
+        for (let j = 0, len2 = this.standards[i].checkboxList.length; j < len2; j += 1) {
+          checkboxList.push(this.standards[i].checkboxList[j])
         }
+        arr.push(checkboxList)
+      }
+      this.doExchange(arr, 0)
+      for (let i = 0; i < this.results.length; i += 1) {
+        let item = { attrIdArray: [] }
+        for (let j = 0; j < this.results[0].length; j += 1) {
+          item[j] = this.findCheckBoxName(this.results[i][j])
+          item.attrIdArray.push(this.results[i][j])
+        }
+        item = Object.assign(item, { stock: '0', price: '0', productNo: '10000' })
+        this.itemSkus.push(item)
       }
     },
     deleteSpecification(index) {
       this.standards.splice(index, 1)
-      this.specificationChange()
+      this.specificationCheckboxChange()
     },
     async handleAvatarScucess(response, file, fileList) {
       const { code } = await api.get('/api/pic/getPrivateDownloadUrl', { key: response.key })
       if (code === 200) {
-        this.$set(this.product, 'productUrl', `${this.bucketPort}/${response.key}`)
-        this.$set(this.product, 'productKey', response.key)
+        // this.$set(this.product, 'productUrl', `${this.bucketPort}/${response.key}`)
+        // this.$set(this.product, 'productKey', response.key)
         this.product.images = fileList
       }
     },
     beforeAvatarUpload() {
       console.log('beforeAvatarUpload')
-    },
-    append(store, data) {
-      store.append({ id: id += 1, label: 'testtest', children: [] }, data)
-    },
-    remove(store, data) {
-      store.remove(data)
-    },
-    renderContent(h, { node }) {
-      return (
-        <span>
-          <span>
-            <span>{ node.label }</span>
-          </span>
-          <span style="float: right; margin-right: 20px">
-            <el-radio v-model="radio">选择</el-radio>
-          </span>
-        </span>)
-    },
-    add(index) {
-      this.standards[index].subItem.push()
-    },
-    handleComicsRemove() {
     },
     addSpecificationItems() {
       // 不能超过3个规格
@@ -335,7 +335,6 @@ export default {
       this.standards.push({
         checkboxList: [],
         selectValue: null
-        // item: []
       })
     },
     change(html) {
@@ -345,27 +344,55 @@ export default {
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/item/getItemDetails', { itemId: this.$route.params.id })
+        const { code, data } = await api.get(`/api/product/${this.$route.params.id}`)
         if (code === 200) {
           this.product = data
-          this.product.deliveryFeeStrategy = data.deliveryFeeStrategy.deliveryFeeStrategy
-          this.product.itemRecommendTypeArray = data.itemRecommendTypeList
-          this.product.images = []
-          data.imageMapList.forEach((item) => {
-            console.log(item, this)
-            this.product.images.push({ url: item.imageUrl, key: item.imageKey })
+          this.standards = []
+          for (let i = 0, len = data.specifications.length; i < len; i += 1) {
+            let checkboxList = []
+            for (let j = 0, len2 = data.specifications[i].specificationsItem.length; j < len2; j += 1) {
+              checkboxList.push(data.specifications[i].specificationsItem[j])
+            }
+            checkboxList = [...new Set(checkboxList)]
+            this.$nextTick(() => {
+              this.standards.push({
+                checkboxList,
+                selectValue: i
+              })
+            })
+          }
+          this.$nextTick(() => {
+            this.specificationCheckboxChange()
+            this.itemSkus = JSON.parse(JSON.stringify(this.product.productAttrs))
+            for (let i = 0, len = this.itemSkus.length; i < len; i += 1) {
+              for (let j = 0, len2 = this.itemSkus[i].attrIdArray.length; j < len2; j += 1) {
+                this.$set(this.itemSkus[i], j.toString(), this.findCheckBoxName(this.itemSkus[i].attrIdArray[j]))
+                // debugger
+                this.itemSkus[i].attrIdArray[j] = this.itemSkus[i].attrIdArray[j]
+              }
+            }
           })
-          this.product.classifyList = data.categoryIdList
-          this.itemSkus = data.itemSkuMappingList
-          data.skuList.forEach((item, index) => {
-            this.itemSkusType.push({ name: `${item.name}【${item.remark}】`, key: '' + index })
-          })
+          // for (let i = 0, len = this.product.classifies.length; i < len; i += 1) {
+          //   // console.log(this.product.classifies[i].toString())
+          //   this.defaultClassifies.push(this.product.classifies[i])
+          // }
+          this.$refs.tree.setCheckedKeys(this.product.classifies)
+          // this.product.itemRecommendTypeArray = data.itemRecommendTypeList
+          // this.product.images = []
+          // data.imageMapList.forEach((item) => {
+          //   this.product.images.push({ url: item.imageUrl, key: item.imageKey })
+          // })
+          // this.product.classifyList = data.categoryIdList
+          // this.itemSkus = data.itemSkuMappingList
+          // data.attrIdArray.forEach((item, index) => {
+          //   this.itemSkusType.push({ name: `${item.name}【${item.remark}】`, key: '' + index })
+          // })
           $('.simditor-body').html(this.product.details)
         }
       } else {
         // new
         this.editing = false
-        this.product = { name: ' ', onSale: true, preSale: false, deliveryFeeStrategy: 1, threshold: null, feePerOrder: null, itemType: 1, itemRecommendTypeArray: [], categories: [], images: [], itemSkuMappings: [] }
+        this.product = { name: 'test', onSale: true, order: 1, preSale: false, itemType: 1, itemRecommendTypeArray: ['1'], classifies: [], images: [], productAttrs: [], specifications: [] }
       }
     },
     handleRemove(name) {
@@ -413,27 +440,37 @@ export default {
       default:
         console.log('免邮')
       }
+      // 商品分类
+      this.product.classifies = this.$refs.tree.getCheckedKeys()
       // 商品推荐类型
-      this.product.itemRecommendTypeArray = JSON.stringify(this.product.itemRecommendTypeArray)
+      this.product.itemRecommendTypeArray = this.product.itemRecommendTypeArray
       this.$set(this.product, 'details', $('.simditor-body').html())
+      this.product.productAttrs = this.itemSkus
       // editing
       if (this.editing) {
-        this.product.images = JSON.stringify((_.clone(this.product.images)))
-        const { code } = await api.post('/api/item/update', this.product)
-        if (code === 200) {
-          this.$notify.success({ title: '成功', message: '保存成功' })
+        // this.product.images = JSON.stringify((_.clone(this.product.images)))
+        const { code } = await api.put(`/api/product/edit/${this.product._id}`, this.product)
+        if (code === 201) {
+          this.$notify.success({ title: '成功', message: '编辑成功' })
           this.$router.push('/product/list')
         } else {
-          return this.$notify.error({ title: '失败', message: code + '保存失败' })
+          return this.$notify.error({ title: '失败', message: code + '编辑成功' })
         }
       } else {
         // new
-        this.getCategoriesId(this.$refs.tree.getCheckedNodes())
-        this.product.categories = JSON.stringify(this.product.categories)
-        this.product.images = JSON.stringify((_.clone(this.product.images)))
-        this.product.itemSkuMappings = JSON.stringify((_.clone(this.itemSkus)))
-        const { code } = await api.post('/api/item/add', this.product)
-        if (code === 200) {
+        this.product.classifies = this.$refs.tree.getCheckedKeys()
+        this.$set(this.product, 'specificationIdArray', this.product.result)
+        for (let i = 0, len = this.standards.length; i < len; i += 1) {
+          this.product.specifications.push({
+            specificationsItemId: this.specificationColumn[i]._id,
+            specificationsItem: []
+          })
+          for (let j = 0, len2 = this.standards[i].checkboxList.length; j < len2; j += 1) {
+            this.product.specifications[i].specificationsItem.push(this.standards[i].checkboxList[j])
+          }
+        }
+        const { code } = await api.post('/api/product/add', this.product)
+        if (code === 201) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/product/list')
         }
@@ -477,7 +514,7 @@ export default {
    .el-select-dropdown__wrap {
     max-height: 180px;
   }
-  .el-form .category-item {
+  .el-form .classify-item {
     margin-bottom: 22px;
     .el-button {
       margin-bottom: 22px;

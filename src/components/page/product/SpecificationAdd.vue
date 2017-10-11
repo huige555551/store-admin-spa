@@ -49,7 +49,7 @@
               </el-table-column>
               <el-table-column label="序号" width="140">
                 <template scope="scope">
-                  <el-input style="width: 100px;" v-model="scope.row.rank" type="number"></el-input>
+                  <el-input style="width: 100px;" v-model="scope.row.order" type="number"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" min-width="160">
@@ -61,7 +61,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
-          <el-button @click="$router.push('/product/specification')">取消</el-button>
+          <el-button @click="$router.push('/product/specification/list')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -80,10 +80,14 @@ export default {
   data() {
     return {
       specification: {
-        name: '',
-        remark: '',
+        name: '1',
+        remark: '1',
         displayType: 1,
-        valueArray: []
+        valueArray: [{
+          order: '1',
+          value: '1',
+          valueHint: '1'
+        }]
       },
       standards: [
         {
@@ -143,24 +147,19 @@ export default {
   async created() {
     this.fetchData()
   },
-  // 组件复用，路由数据刷新
-  /* eslint-disable */
   watch: {
+    // eslint-disable-next-line
     '$route'() {
       this.fetchData()
     }
   },
-  /* eslint-enable */
   methods: {
     // 删除规格
     deleteRow(index) {
-      const { code } = api.post('/api/sku/deleteSku', { skuId: this.specification.id })
-      if (code === 200) {
-        this.specification.valueArray.splice(index, 1)
-      }
+      this.specification.valueArray.splice(index, 1)
     },
     addSpecification() {
-      this.specification.valueArray.push({ value: '', valueHint: '', rank: '' })
+      this.specification.valueArray.push({ value: '', valueHint: '', order: '' })
     },
     add(index) {
       this.standards[index].subItem.push({})
@@ -189,7 +188,7 @@ export default {
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/sku/getSkuDetails', { skuId: this.$route.params.id })
+        const { code, data } = await api.get(`/api/product/specification/${this.$route.params.id}`)
         if (code === 200) {
           this.specification = data
         }
@@ -228,7 +227,7 @@ export default {
       }
       let isFormComplete = true
       this.specification.valueArray.forEach((item) => {
-        if (!item.value || !item.valueHint || !item.rank) {
+        if (!item.value || !item.valueHint || !item.order) {
           isFormComplete = false
         }
       })
@@ -237,13 +236,13 @@ export default {
         return
       }
       if (!this.editing) {
-        const { code } = await api.post('/api/sku/batchAdd', { name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
+        const { code } = await api.post('/api/product/specification/add', { name: this.specification.name, remark: this.specification.remark, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
         if (code === 200) {
           this.$notify.success({ title: '添加分类成功' })
           this.$router.push('/product/specification/list')
         }
       } else {
-        const { code } = await api.post('/api/sku/updateSku', { id: this.specification.id, name: this.specification.name, remark: this.specification.name, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
+        const { code } = await api.put(`/api/product/specification/edit/${this.specification._id}`, { _id: this.specification._id, name: this.specification.name, remark: this.specification.remark, displayType: this.specification.displayType, valueArray: JSON.stringify(this.specification.valueArray) })
         if (code === 200) {
           this.$notify.success({ title: '修改分类成功' })
           this.$router.push('/product/specification/list')

@@ -3,25 +3,32 @@
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
-        <span>商品</span>
+        <span>商品管理</span>
       </el-form-item>
-      <el-form-item label="菜单：" v-if="!editing">
-        <span>添加分类</span>
+      <el-form-item label="菜单：">
+        <span>分类列表</span>
       </el-form-item>
     </el-form>
 
-    <!-- 创建文章 -->
+    <!-- 创建商品分类 -->
     <div class="form-box">
+      <el-table>
+        <el-table-column align="center" label=""></el-table-column>
+        <el-table-column align="center" label="首页是否展示" width="300"></el-table-column>
+        <el-table-column align="center" label="层级" width="300"></el-table-column>
+        <el-table-column align="center" label="排序"  width="300"></el-table-column>
+        <el-table-column label="操作" width="100"></el-table-column>
+        <div slot="empty"></div>
+      </el-table>
       <el-tree
         :data="classifyList"
         :props="defaultProps"
-        node-key="id"
+        node-key="_id"
         default-expand-all
         :expand-on-click-node="false"
         :render-content="renderContent">
       </el-tree>
     </div>
-
     <el-dialog title="选择商品分类" label-position="left">
       <el-form>
       </el-form>
@@ -40,12 +47,58 @@ const _ = require('lodash')
 export default {
   data() {
     return {
-      editing: false,
-      classifyList: [],
+      data2: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }],
       defaultProps: {
-        children: 'sonCategories',
+        children: 'children',
         label: 'name'
-      }
+      },
+      editing: false,
+      classifyList: [
+        {
+          label: 't1'
+        },
+        {
+          label: 't2'
+        }
+      ]
+      // defaultProps: {
+      //   children: 'sonCategories',
+      //   label: 'name'
+      // }
     }
   },
   components: {
@@ -64,15 +117,26 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    async remove(store, data) {
+      const { code } = await api.delete(`/api/product/classify/delete/${data._id}`)
+      if (code === 200) {
+        store.remove(data)
+      }
+    },
     renderContent(h, { node, data, store }) {
       return (
         <span>
           <span>
             <span>{ node.label }</span>
           </span>
-          <span style="float: right; margin-right: 20px">
-            <el-button size="mini" on-click={ () => this.deleteClassify(data.id) }>删除</el-button>
-            <el-button size="mini" on-click={ () => this.$router.push(`/product/classify/edit/${data.id}`, store) }>编辑</el-button>
+          <span style="float: right;">
+            <span class="showIndex">{ data.showIndex ? '是' : '否' }</span>
+            <span class="level">{ data.level }</span>
+            <span class="order">{ data.order }</span>
+            <span class="btn-group">
+              <el-button size="mini" on-click={ () => this.remove(store, data) }>删除</el-button>
+              <el-button size="mini" on-click={ () => this.$router.push(`/product/classify/edit/${data._id}`) }>编辑</el-button>
+            </span>
           </span>
         </span>)
     },
@@ -82,7 +146,7 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/category/delete', { categoryId: index })
+        const { code } = await api.post('/api/product/category/delete', { categoryId: index })
         if (code === 200) {
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
@@ -90,12 +154,10 @@ export default {
       }).catch(() => {})
     },
     async fetchData() {
-      const { code, data } = await api.get('/api/category/layeredListAll')
+      const { code, data } = await api.get('/api/product/classify/all')
       if (code === 200) {
         if (data) {
           this.classifyList = data
-        } else {
-          this.classifyList = []
         }
       }
     },
@@ -129,10 +191,21 @@ export default {
 }
 </script>
 <style lang="scss">
+  .el-table__empty-block {
+    display: none;
+  }
   .fade-enter-active, .fade-leave-active {
     transition: opacity .5s
   }
-
+  .level, .order, .showIndex {
+    width: 300px;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-group {
+    width: 100px;
+    display: inline-block;
+  }
   .fade-enter, .fade-leave-active {
     opacity: 0
   }

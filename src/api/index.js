@@ -34,7 +34,7 @@ function checkStatus(response) {
   // 如果 http 状态码正常, 则直接返回数据
   if (response.status === 200 || response.status === 304) {
     // 这里, 如果不需要除 data 外的其他数据, 可以直接 return response.data, 这样可以让后面的代码精简一些
-    if (response.data.status.errCode === 200) {
+    if (response.data.status.errCode === 200 || response.data.status.errCode === 201 || response.data.status.errCode === 204) {
       return {
         code: response.data.status.errCode,
         data: response.data.data,
@@ -59,7 +59,7 @@ function checkStatus(response) {
 function checkCode(res) {
   if (res.code === 503) {
     return router.replace('login')
-  } else if (res.code !== 200) {
+  } else if (res.code !== 200 && res.code !== 201 && res.code !== 204) {
     if (window.location.href.indexOf('login') !== -1) {
       return false
     }
@@ -93,6 +93,31 @@ export default {
       withCredentials: false,
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
+      }
+    }).then(checkStatus).then(checkCode)
+  },
+  delete(url, params) {
+    return axios({
+      method: 'delete',
+      url: serverHost + url,
+      params,
+      timeout: 30000,
+      withCredentials: false,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    }).then(checkStatus).then(checkCode)
+  },
+  put(url, data) {
+    return axios({
+      method: 'put',
+      url: serverHost + url,
+      data: qs.stringify(data),
+      timeout: 30000,
+      withCredentials: false,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
       }
     }).then(checkStatus).then(checkCode)
   }

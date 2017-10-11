@@ -18,14 +18,6 @@
         <el-input placeholder="请输入订单号" v-model="searchInput.orderNo"></el-input>
        </el-form-item>
        <el-form-item label="下单时间">
-         <!--<el-date-picker
-            v-model="startTime"
-            format="yyyy-MM-dd"
-            @change="handleDatePick"
-            type="date"
-            :clearable="false"
-            placeholder="选择日期">
-        </el-date-picker>-->
           <el-date-picker v-model="searchInput.startTime" format="yyyy-MM-dd" :clearable="true" type="date" placeholder="选择开始日期"  @change="handleStartTimePick"></el-date-picker>至
           <el-date-picker v-model="searchInput.endTime" format="yyyy-MM-dd" :clearable="true"  type="date" placeholder="选择结束日期" @change="handleEndTimePick"></el-date-picker>
        </el-form-item>
@@ -77,10 +69,10 @@
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="orderNo" label="订单号" min-width="100"></el-table-column>
       <el-table-column prop="recipient" label="收货人" min-width="100"></el-table-column>
-      <el-table-column label="支付状态" width="150">
+      <el-table-column  label="支付状态" width="150">
         <template scope="scope">
           <el-tag type="gray">{{ scope.row.payStatusDesc }}</el-tag>
-          <el-button @click="deliverDialog = true">发货</el-button>
+          <el-button class="column-express-btn" @click="getDeliveryItems(scope.row.orderNo)">发货</el-button>
         </template>
       </el-table-column>
       <el-table-column prop="orderStatusDesc" label="订单状态" width="200"></el-table-column>
@@ -118,12 +110,12 @@
         <el-table-column label="状态" width="100" prop="product"></el-table-column>
       </el-table>
       <el-form>
-        <el-form-item label="发货方式：">
+        <!--<el-form-item label="发货方式：">
           <el-radio>物流发货</el-radio>
           <el-radio>无需物流</el-radio>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="物流公司：">
-          <el-select v-model="rowObj.express">
+          <el-select v-model="expressObj.name">
             <el-option v-for="express in expressInfo" :key="express.id" :label="express.name" :value="express.name">
             </el-option>
           </el-select>
@@ -132,7 +124,7 @@
           <el-input></el-input>
         </el-form-item>
         <span>*请仔细填写物流公司及快递单号，发货后24小时内仅支持做一次更正，逾期不可修改</span>
-        <el-form-item label="收货信息：广东省 广州市 海珠区 阅江东路(保利天悦旁) 保利叁悦广场, 林生, 13430321224">
+        <el-form-item label=`${expressObj.orderDeliveryAddress.recipient}${expressObj.orderDeliveryAddress.phone}${expressObj.orderDeliveryAddress.address}`>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,11 +142,14 @@
   </div>
 </template>
 
-<style type="text/css">
+<style lang="scss">
   .articleImg {
     display: inline-block;
     width: 200px;
     height: 100px;
+  }
+  .column-express-btn{
+    margin-top: 10px;
   }
 </style>
 
@@ -169,7 +164,16 @@ export default {
   },
   data() {
     return {
-      expressInfo: [],
+      expressObj: {
+        name: '',
+        orderItemList: [],
+        orderDeliveryAddress: {
+          recipient: null,
+          phone: null,
+          address: null
+        }
+      },
+      expressInfo: {},
       orderDialog: false,
       rowObj: {
         orderNo: '111',
@@ -250,10 +254,7 @@ export default {
       // 预览
       previewDialog: false,
       previewObj: {},
-      tableData: [{
-        orderNo: '111',
-        recipient: '刘继辉'
-      }]
+      tableData: []
     }
   },
   created() {
@@ -269,6 +270,15 @@ export default {
   },
   /* eslint-enable */
   methods: {
+    async getDeliveryItems(id) {
+      this.deliverDialog = true
+      const { code, data } = await api.get('/api/order/showConsign', {
+        orderNo: id
+      })
+      if (code === 200) {
+        this.expressObj = data
+      }
+    },
     // 日期更改
     handleStartTimePick(val) {
       this.searchInput.startTime = val
@@ -294,27 +304,27 @@ export default {
       this.searchKey.orderStatus = null
       this.searchKey.deliveryWay = null
       this.searchKey.refundStatu = null
-      this.searchinput.orderNo = null
-      this.searchinput.startTime = null
-      this.searchinput.endTime = null
-      this.searchinput.orderType = null
-      this.searchinput.payStatus = null
-      this.searchinput.orderStatus = null
-      this.searchinput.deliveryWay = null
-      this.searchinput.refundStatus = null
+      this.searchInput.orderNo = null
+      this.searchInput.startTime = null
+      this.searchInput.endTime = null
+      this.searchInput.orderType = null
+      this.searchInput.payStatus = null
+      this.searchInput.orderStatus = null
+      this.searchInput.deliveryWay = null
+      this.searchInput.refundStatus = null
       this.currentPage = 1
       this.fetchData()
     },
     // 搜索
     search() {
-      this.searchKey.orderNo = this.searchKey.orderNo
-      this.searchKey.startTime = this.searchKey.startTime
-      this.searchKey.endTime = this.searchKey.endTime
-      this.searchKey.orderType = this.searchKey.orderType
-      this.searchKey.payStatus = this.searchKey.payStatus
-      this.searchKey.orderStatus = this.searchKey.orderStatus
-      this.searchKey.deliveryWay = this.searchKey.deliveryWay
-      this.searchKey.refundStatus = this.searchKey.refundStatus
+      this.searchKey.orderNo = this.searchInput.orderNo
+      this.searchKey.startTime = this.searchInput.startTime
+      this.searchKey.endTime = this.searchInput.endTime
+      this.searchKey.orderType = this.searchInput.orderType
+      this.searchKey.payStatus = this.searchInput.payStatus
+      this.searchKey.orderStatus = this.searchInput.orderStatus
+      this.searchKey.deliveryWay = this.searchInput.deliveryWay
+      this.searchKey.refundStatus = this.searchInput.refundStatus
       this.currentPage = 1
       this.fetchData()
     },
@@ -341,11 +351,11 @@ export default {
         this.total = data.totalPages
         this.currentPage = data.page
       }
-      if (this.$route.query.type) {
-        this.searchInput.orderType = parseInt(this.$route.query.type, 10)
-      } else {
-        this.searchInput.orderType = ''
-      }
+      // if (this.$route.query.type) {
+      //   this.searchInput.orderType = parseInt(this.$route.query.type, 10)
+      // } else {
+      //   this.searchInput.orderType = ''
+      // }
       // const getNavigation = await api.get('/api/system/article/listNavigation')
       // if (getNavigation.code === 200) {
       //   this.column = getNavigation.data

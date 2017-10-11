@@ -53,7 +53,6 @@ export default {
     }
   },
   created() {
-    console.log('uploadsingle created')
     return api.get('/api/pic/getUploadToken').then(response => {
       // this.bucketPort = response.data.bucketPort
       this.uploadParams = {

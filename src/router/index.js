@@ -43,7 +43,6 @@ export default new Router({
         { path: '/product/classify/edit/:id', component: resolve => require(['@/components/page/product/ClassifyAdd.vue'], resolve) },
         // 运费管理
         { path: '/product/express', component: resolve => require(['@/components/page/product/Express.vue'], resolve) },
-
          // 订单管理
         { path: '/order/list', component: resolve => require(['@/components/page/order/Order.vue'], resolve) },
         { path: '/order/right', component: resolve => require(['@/components/page/order/Right.vue'], resolve) },

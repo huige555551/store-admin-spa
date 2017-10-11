@@ -13,7 +13,7 @@
     <!-- 表格 -->
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
-      <el-table-column prop="rank" label="顺序" width="70"></el-table-column>
+      <el-table-column prop="order" label="顺序" width="70"></el-table-column>
       <el-table-column label="图片" width="200">
         <template scope="scope">
           <img :src="scope.row.image" width="200" max-height="200" @click="openImg(scope.row.image)" style="cursor: pointer">
@@ -38,7 +38,7 @@
     <el-dialog title="添加轮播" v-model="formDialog">
       <el-form :model="rowObj" label-width="100px">
         <el-form-item label="顺序">
-          <el-input v-model="rowObj.rank" placeholder="输入数字，数字越大越排前" type="number"></el-input>
+          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前" type="number"></el-input>
         </el-form-item>
         <el-form-item label="上传图片">
           <UploadSingle
@@ -76,16 +76,24 @@ export default {
       },
       imageKey: null,
       // 表格
-      tableData: []
+      tableData: [],
+      token: ''
     }
   },
   components: {
     UploadSingle
   },
-  created() {
+  async created() {
+    // this.getUploadToken()
     this.fetchData()
   },
   methods: {
+    // async getUploadToken() {
+    //   const { code, data } = await api.get('/api/pic/getUploadToken')
+    //   if (code === 200) {
+    //     this.token = data.uploadToken
+    //   }
+    // },
     // 新窗口打开轮播图
     openImg(url) {
       window.open(url)
@@ -93,7 +101,7 @@ export default {
     // 获取轮播数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/cms/listAllIndexSlideshows')
+      const { code, data } = await api.get('/api/carousel/all')
       if (code === 200) {
         this.tableData = data
       }
@@ -138,8 +146,8 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/cms/deleteIndexSlideshow', { slideshowId: this.tableData[index].id })
-        if (code === 200) {
+        const { code } = await api.delete(`/api/carousel/delete/${this.tableData[index]._id}`)
+        if (code === 204) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
         }
@@ -152,15 +160,15 @@ export default {
       }
       if (this.editing) {
         this.rowObj.image = this.rowObj.imageKey
-        const { code } = await api.post('/api/cms/updateIndexSlideshow', this.rowObj)
-        if (code === 200) {
-          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
+        const { code } = await api.put(`/api/carousel/edit/${this.rowObj._id}`, this.rowObj)
+        if (code === 201) {
           this.formDialog = false
+          this.fetchData()
         }
       } else {
         this.rowObj.image = this.rowObj.imageKey
-        const { code } = await api.post('/api/cms/addIndexSlideshow', this.rowObj)
-        if (code === 200) {
+        const { code } = await api.post('/api/carousel/add', this.rowObj)
+        if (code === 201) {
           this.fetchData()
           this.formDialog = false
         }

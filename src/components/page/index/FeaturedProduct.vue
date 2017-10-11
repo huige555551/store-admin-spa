@@ -29,23 +29,22 @@
     <!-- 添加按钮 -->
     <el-form style="margin-top: 20px">
       <el-form-item>
-        <el-button @click="addRow">添加文章</el-button> 最多{{max}}篇
+        <el-button @click="addRow">添加精选商品</el-button> 最多{{max}}个
       </el-form-item>
     </el-form>
 
     <!-- 添加表单 -->
-    <el-dialog title="添加精选文章" v-model="formDialog">
+    <el-dialog title="添加精选商品" v-model="formDialog">
       <el-form label-width="100px">
-        <el-form-item label="选择文章" >
-          <el-select v-model="rowObj.targetArticleId"
-            filterable remote
-            placeholder="请输入文章标题搜索"
-            :remote-method="searchArticle">
+        <el-form-item label="选择商品" >
+          <el-select v-model="rowObj.targetProductId"
+            filterable
+            placeholder="请输入商品名称搜索">
             <el-option
               v-for="item in results"
-              :key="item.id"
-              :label="item.title"
-              :value="item.id">
+              :key="item._id"
+              :label="item.name"
+              :value="item._id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -74,7 +73,10 @@ export default {
       formDialog: false,
       editing: false,
       editingIndex: null,
-      rowObj: { targetArticleId: null },
+      rowObj: {
+        targetProductId: null,
+        order: 1
+      },
       results: [],
       // 表格
       tableData: [{
@@ -90,18 +92,24 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.getAllProduct()
+    this.fetchData()
   },
   methods: {
     async fetchData() {
-      this.tableData = []
-      const { code, data } = await api.get('/api/system/article/listExquisiteArticle')
+      const { code, data } = await api.get('/api/featuredProduct/all')
       if (code === 200) {
         this.tableData = data
       }
     },
-    async searchArticle(val) {
-      const { code, data } = await api.get('/api/system/article/searchArticle', { title: val })
+    async getAllProduct() {
+      const { code, data } = await api.get('/api/product/all')
+      if (code === 200) {
+        this.results = data
+      }
+    },
+    async search(val) {
+      const { code, data } = await api.get('/api/product/searchName', { name: val })
       if (code === 200) {
         this.results = data
         if (this.results.length > 10) {
@@ -112,7 +120,7 @@ export default {
     // 添加精选
     addRow() {
       if (this.tableData.length >= this.max) {
-        return this.$notify.info({ title: '提示', message: `最多创建${this.max}篇精选文章` })
+        return this.$notify.info({ title: '提示', message: `最多创建${this.max}个精选商品` })
       }
       this.editing = false
       this.rowObj = {
@@ -126,7 +134,7 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = { targetArticleId: this.tableData[index].title }
+      this.rowObj = { targetProductId: this.tableData[index].title }
       this.rowObj.articleId = this.tableData[index].id
       this.rowObj.order = this.tableData[index].order
       this.rowObj.title = this.tableData[index].title
@@ -142,8 +150,8 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(async () => {
-        const { code } = await api.post('/api/system/article/deleteExquisiteArticle', { articleId: this.tableData[index].id })
-        if (code === 200) {
+        const { code } = await api.post(`/api/featuredProduct/delete/${this.tableData[index]._id}`)
+        if (code === 204) {
           this.tableData.splice(index, 1)
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
@@ -152,15 +160,15 @@ export default {
     },
     // 保存行
     async saveRow() {
-      if (!this.rowObj.targetArticleId || !this.rowObj.order) {
+      if (!this.rowObj.targetProductId || !this.rowObj.order) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {
-        if (this.rowObj.targetArticleId === this.rowObj.title) {
-          this.rowObj.targetArticleId = this.rowObj.articleId
+        if (this.rowObj.targetProductId === this.rowObj.title) {
+          this.rowObj.targetProductId = this.rowObj.articleId
         }
-        const { code } = await api.post('/api/system/article/updateExquisiteArticle', this.rowObj)
-        if (code === 200) {
+        const { code } = await api.post(`/api/featuredProduct/edit/${this.rowObj._id}`, this.rowObj)
+        if (code === 201) {
           this.$notify.success({ title: '成功', message: '修改成功' })
           this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
           this.rowObj = {
@@ -172,9 +180,9 @@ export default {
           this.fetchData()
         }
       } else {
-        this.rowObj.articleId = this.rowObj.targetArticleId
+        this.rowObj.articleId = this.rowObj.targetProductId
         const { code } = await api.post('/api/system/article/addExquisiteArticle', this.rowObj)
-        if (code === 200) {
+        if (code === 201) {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.fetchData()
           this.formDialog = false

@@ -5,8 +5,9 @@
       <el-form-item label="网站：">
         <span>地址管理</span>
       </el-form-item>
-      <el-form-item label="菜单：" v-if="!editing">
-        <span>添加发货地址</span>
+      <el-form-item label="菜单：">
+        <span v-if="!editing">添加发货地址</span>
+        <span v-else>编辑发货地址</span>
       </el-form-item>
     </el-form>
 
@@ -17,20 +18,20 @@
           <el-input v-model="address.name"></el-input>
         </el-form-item>
         <el-form-item label="发货人姓名" style="width: 400px;">
-          <el-input v-model="address.consignor"></el-input>
+          <el-input v-model="address.username"></el-input>
         </el-form-item>
         <el-form-item label="性别" style="width: 400px;">
-          <el-radio v-model="address.consignorGender" :label="1">先生</el-radio>
-          <el-radio v-model="address.consignorGender" :label="2">女士</el-radio>
+          <el-radio v-model="address.gender" label="1">先生</el-radio>
+          <el-radio v-model="address.gender" label="2">女士</el-radio>
         </el-form-item>
         <el-form-item label="地区" style="width: 800px;">
           <CascadeAddress :address="address" :cityColumn="cityColumn" :areaColumn="areaColumn" :editing="editing ? true : false "></CascadeAddress>
         </el-form-item>
         <el-form-item label="地址" style="width: 400px;">
-          <el-input v-model="address.address"></el-input>
+          <el-input v-model="address.detailArea"></el-input>
         </el-form-item>
          <el-form-item label="邮编" style="width: 400px;">
-          <el-input type="number" v-model="address.postcode"></el-input>
+          <el-input type="number" v-model="address.zipCode"></el-input>
         </el-form-item>
          <el-form-item label="手机" style="width: 400px;">
           <el-input type="number" v-model="address.mobilePhone"></el-input>
@@ -68,17 +69,18 @@ export default {
       cityColumn: [],
       areaColumn: [],
       address: {
-        name: '',
-        consignor: '',
-        consignorGender: 1,
-        province: '',
-        city: '',
-        area: '',
-        address: '',
-        postcode: '',
-        phone: '',
-        mobilePhone: '',
-        defaultUse: false
+        type: 1,
+        name: '大学',
+        username: '刘继辉',
+        gender: '1',
+        province: '广东',
+        city: '广州',
+        area: '番禺区',
+        detailArea: '中山大学',
+        zipCode: '510000',
+        phone: '110',
+        mobilePhone: '15989066480',
+        defaultUse: true
       },
       // 图片上传七牛参考: https://my.oschina.net/u/1760791/blog/643768
       // http://blog.csdn.net/jiangtianhao13269230/article/details/50699737
@@ -137,7 +139,7 @@ export default {
       // editing
       if (this.$route.params.id) {
         this.editing = true
-        const { code, data } = await api.get('/api/address/getAddressDetails', { addressId: this.$route.params.id })
+        const { code, data } = await api.get(`/api/address/${this.$route.params.id}`)
         if (code === 200) {
           // 初始化市下拉框
           if (data.province) {
@@ -200,13 +202,13 @@ export default {
       }
     },
     async save() {
-      if (!this.address.name || !this.address.consignor || !this.address.consignorGender || !this.address.province || !this.address.city || !this.address.area || !this.address.address || !this.address.postcode || !this.address.phone || !this.address.mobilePhone) {
+      if (!this.address.name || !this.address.username || !this.address.gender || !this.address.province || !this.address.city || !this.address.area || !this.address.detailArea || !this.address.zipCode || !this.address.phone || !this.address.mobilePhone) {
         return this.$notify.error({ title: '错误', message: '表单信息不完整' })
       }
       // this.article.labelList = JSON.stringify((_.clone(this.article.labels)))
       if (this.editing) {
-        const { code } = await api.post('/api/address/update', this.address)
-        if (code === 200) {
+        const { code } = await api.put(`/api/address/edit/${this.address._id}`, this.address)
+        if (code === 201) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/address/list')
         } else {
@@ -214,7 +216,7 @@ export default {
         }
       } else {
         const { code } = await api.post('/api/address/add', this.address)
-        if (code === 200) {
+        if (code === 201) {
           this.$notify.success({ title: '成功', message: '保存成功' })
           this.$router.push('/address/list')
         }

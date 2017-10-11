@@ -52,6 +52,7 @@ module.exports = {
     "arrow-body-style": "off", // 关闭要求箭头函数体使用大括号
     "default-case": "off", // 关闭要求 Switch 语句中有 Default 分支
     "no-case-declarations": "off", // 关闭禁止在 case 或 default 子句中出现词法声明
-    "space-in-parens": ["error", "never"] //关闭参数中的空格校验
+    "space-in-parens": ["error", "never"], //关闭参数中的空格校验
+    "no-underscore-dangle": "off"
   }
 }

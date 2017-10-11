@@ -12,7 +12,7 @@
     </el-form>
 
     <!-- 表格 -->
-    <el-table :data="tableData" @selection-change="handleSelectionChange">
+    <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column label="规格名称" min-width="100">
         <template scope="scope">
@@ -27,15 +27,14 @@
      </el-table-column>
      <el-table-column label="规格数据" width="400">
        <template scope="scope">
-        <span v-for="item in scope.row.valueArray">
-          {{'【' + item.value + '】'}}
-        </span>
-        
+          <span v-for="(item,index) in scope.row.valueArray" :key="index">
+            {{'【' + item.value + '】'}}
+          </span>
        </template>
      </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row._id)">编辑</el-button>
           <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -72,42 +71,6 @@ export default {
   data() {
     return {
       stock: '',
-      optionStock: [{
-        name: '无货',
-        id: 0
-      },
-      {
-        name: '低于10',
-        id: 1
-      },
-      {
-        name: '10-100',
-        id: 2
-      },
-      {
-        name: '100以上',
-        id: 3
-      }],
-      optionStatus: [{
-        name: '已售罄',
-        id: 0
-      },
-      {
-        name: '在仓库',
-        id: 1
-      },
-      {
-        name: '出售中',
-        id: 2
-      }],
-      optionBatch: [{
-        name: '上架',
-        id: 0
-      },
-      {
-        name: '下架',
-        id: 1
-      }],
       column: [],
       // 搜索
       searchInput: {
@@ -173,10 +136,10 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/sku/layeredListByPaging')
+      const { code, data } = await api.get('/api/product/specification/list', { page: this.currentPage, perPage: this.perPage })
       if (code === 200) {
         this.tableData = data.pagingData
-        this.total = data.totalRecords
+        this.total = data.total
         this.currentPage = data.page
       }
       // const getNavigation = await api.get('/api/system/article/listNavigation')
@@ -199,15 +162,13 @@ export default {
     },
     // 删除行
     deleteRow(index) {
-      console.log(this.tableData)
       this.$confirm('此操作将该删除该规格，是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const { code } = await api.post('/api/sku/deleteSku', { skuId: this.tableData[index].id })
-        if (code === 200) {
-          // this.tableData.splice(index, 1)
+        const { code } = await api.delete(`/api/product/specification/delete/${this.tableData[index]._id}`)
+        if (code === 204) {
           this.$notify.success({ title: '成功', message: '删除成功' })
           this.fetchData()
         }

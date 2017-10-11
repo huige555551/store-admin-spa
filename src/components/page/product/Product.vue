@@ -42,14 +42,13 @@
       <el-table-column prop="name" label="名称" min-width="100"></el-table-column>
       <el-table-column label="商品" width="200">
         <template scope="scope">
-          <img class="articleImg" :src="scope.row.image" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
+          <img class="articleImg" :src="scope.row.cover" width="200" max-height="200" @click="openImg(scope.row.coverUrl)" style="cursor: pointer">
         </template>
       </el-table-column>
-     <el-table-column prop="price" label="价格" width="100"></el-table-column>
       <el-table-column prop="stock" label="库存" width="80"></el-table-column>
-      <el-table-column prop="salesVolume" label="总销量" min-width="90"></el-table-column>
-      <el-table-column prop="createdAt" label="创建时间" min-width="150"></el-table-column>
-      <el-table-column prop="rank" label="序号" width="160"></el-table-column>
+      <el-table-column prop="sales" label="总销量" min-width="90"></el-table-column>
+      <el-table-column prop="create_at" label="创建时间" min-width="150"></el-table-column>
+      <el-table-column prop="order" label="序号" width="160"></el-table-column>
       <el-table-column  label="上/下架" width="160">
         <template scope="scope">
           <el-tag type="success" v-if="scope.row.onSale">上架</el-tag>
@@ -63,7 +62,7 @@
       </el-table-column>-->
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/product/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" @click.native.prevent="$router.push('/product/edit/'+scope.row._id)">编辑</el-button>
           <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
@@ -94,6 +93,7 @@
 
 <script>
 import api from '@/api'
+import moment from 'moment'
 
 export default {
   data() {
@@ -209,17 +209,20 @@ export default {
     // 获取数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/item/listByPaging', {
+      const { code, data } = await api.get('/api/product/list', {
         page: this.currentPage,
-        pageRows: this.perPage,
+        perPage: this.perPage,
         name: this.searchKey.name,
         onSale: this.searchKey.onSale,
         stock: this.searchKey.stock,
         itemRecommendType: this.searchKey.itemRecommendType
       })
       if (code === 200) {
+        for (let i = 0, len = data.pagingData.length; i < len; i += 1) {
+          data.pagingData[i].create_at = moment(data.pagingData[i].create_at).format('YYYY/MM/DD HH:MM:SS')
+        }
         this.tableData = data.pagingData
-        this.total = data.totalRecords
+        this.total = data.total
         this.currentPage = data.page
       }
     },
