@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-select class="province" placeholder="请选择省份" @change="getcity" v-model="address.province">
-      <el-option v-for="item in provinceColumn" :label="item.p" :value="item.p"></el-option>
+      <el-option v-for="(item, index) in provinceColumn" :key="index" :label="item.p" :value="item.p"></el-option>
     </el-select>
     <el-select class="city" placeholder="请选择市" @change="getarea" v-model="address.city">
-      <el-option v-for="item in cityColumn" :label="item.n" :value="item.n"></el-option>
+      <el-option v-for="(item, index) in cityColumn" :key="index" :label="item.n" :value="item.n"></el-option>
     </el-select>
     <el-select class="area" placeholder="请选择区" v-model="address.area">
-      <el-option v-for="item in areaColumn" :label="item.s" :value="item.s"></el-option>
+      <el-option v-for="(item, index) in areaColumn" :key="index" :label="item.s" :value="item.s"></el-option>
     </el-select>
   </div>
 </template>

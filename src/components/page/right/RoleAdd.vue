@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="m-role-add">
     <!-- 面包屑 -->
     <el-form :inline="true">
       <el-form-item label="网站：">
@@ -16,74 +16,26 @@
         <el-form-item label="角色名称" style="width: 400px;">
           <el-input v-model="role.name"></el-input>
         </el-form-item>
-        <el-form-item label="权限分配：" >
-            <!--商品模块-->
-            <div class="right-item">
-              <span class="title">商品：</span>
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
-              <el-checkbox-group>
-                <el-checkbox>商品列表</el-checkbox>
-                <el-checkbox>商品添加修改</el-checkbox>
-                <el-checkbox>商品删除</el-checkbox>
-                <el-checkbox>分类列表</el-checkbox>
-                <el-checkbox>分类添加修改</el-checkbox>
-                <el-checkbox>分类删除</el-checkbox>
-                <el-checkbox>规格列表</el-checkbox>
-                <el-checkbox>规格添加修改</el-checkbox>
-                <el-checkbox>规格删除</el-checkbox>
-                <el-checkbox>品牌列表</el-checkbox>
-                <el-checkbox>品牌添加修改</el-checkbox>
-                <el-checkbox>品牌删除</el-checkbox>
-                <el-checkbox>运费修改</el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <!--END商品模块-->
-            <!--系统模块-->
-            <div class="right-item">
-              <span class="title">系统：</span>
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
-              <el-checkbox-group>
-                <el-checkbox>修改密码</el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <!--END系统模块-->
-            <!--地址模块-->
-            <div class="right-item">
-              <span class="title">地址：</span>
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
-              <el-checkbox-group>
-                <el-checkbox>地址列表</el-checkbox>
-                <el-checkbox>地址添加修改</el-checkbox>
-                <el-checkbox>地址删除</el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <!--END地址模块-->
-            <!--订单模块-->
-            <div class="right-item">
-              <span class="title">订单：</span>
-              <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll">全选</el-checkbox>
-              <el-checkbox-group>
-                <el-checkbox>快递单列表</el-checkbox>
-                <el-checkbox>快递单添加修改</el-checkbox>
-                <el-checkbox>快递单删除</el-checkbox>
-                <el-checkbox>订单列表</el-checkbox>
-                <el-checkbox>订单添加修改</el-checkbox>
-                <el-checkbox>订单状态修改</el-checkbox>
-                <el-checkbox>订单详情</el-checkbox>
-                <el-checkbox>订单退款操作</el-checkbox>
-                <el-checkbox>退款单列表</el-checkbox>
-                <el-checkbox>退款单详情</el-checkbox>
-                <el-checkbox>退款申请单修改</el-checkbox>
-                <el-checkbox>退款申请单列表</el-checkbox>
-                <el-checkbox>退款申请单详情</el-checkbox>
-              </el-checkbox-group>
-            </div>
-            <!--END订单模块-->
+        <el-form-item :key="item.moduleName" v-for="item in tableData" class="table-item" style="width: 800px;">
+          <div class="table-title">{{item.moduleName}}</div>
+          <el-table :data="item.array">
+            <el-table-column align="left" label="权限模块" width="200px">
+              <template scope="scope">
+                <el-checkbox v-show="scope.row.sonAuthorityList" @change="chooseAll(scope.row)" v-model="scope.row.have">{{scope.row.name}}</el-checkbox>
+                <div class="no-checkbox" v-show="!scope.row.sonAuthorityList">{{scope.row.name}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column align="left" label="具体权限" min-width="80">
+              <template scope="scope">
+                <el-checkbox @change="addId(authorityItem._id, authorityItem.have, scope.row)" v-model="authorityItem.have" v-for="authorityItem in scope.row.sonAuthorityList" :label="authorityItem" :key="authorityItem._id">{{authorityItem.name}}</el-checkbox>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
-         <el-form>
+        <el-form-item>
           <el-button type="primary" @click="save">提交</el-button>
           <el-button @click="$router.push('/product/classify/list')">取消</el-button>
-        </el-form>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -111,6 +63,7 @@ const _ = require('lodash')
 export default {
   data() {
     return {
+      idArray: [],
       // 表单
       role: {},
       classify: {},
@@ -135,18 +88,38 @@ export default {
     UploadSingle
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
+    handleCheckAllChange(event, type) {
+      this[`checked${type}`] = event.target.checked ? this[`checked${type}Options`] : []
+      this[`is${type}Indeterminate`] = false
+    },
+    handleCheckedChange(value, type) {
+      const checkedCount = value.length
+      this[`checkAll${type}`] = checkedCount === this[`checked${type}Options`].length
+      this[`checkAll${type}`] = checkedCount === this[`checked${type}Options`].length
+      this[`is${type}Indeterminate`] = checkedCount > 0 && checkedCount < this[`checked${type}Options`].length
+    },
     openImg(url) {
       window.open(url)
     },
     // 获取分类数据
     async fetchData() {
       this.tableData = []
-      const { code, data } = await api.get('/api/system/advertisment/listAdvertisment')
+      const { code, data } = await api.get('/api/permission/all')
       if (code === 200) {
         this.tableData = data
+        if (!this.editing) {
+          for (let i = 0, len = this.tableData.length; i < len; i += 1) {
+            for (let j = 0, len2 = this.tableData[i].array.length; j < len2; j += 1) {
+              this.$set(this.tableData[i].array[j], 'have', false)
+              for (let k = 0, len3 = this.tableData[i].array[j].sonAuthorityList.length; k < len3; k += 1) {
+                this.$set(this.tableData[i].array[j].sonAuthorityList[k], 'have', false)
+              }
+            }
+          }
+        }
       }
     },
     editRow(index, size) {
@@ -163,6 +136,81 @@ export default {
       this.newAd.imgKey = this.tableData[index].imgKey
       this.size = size
       this.formDialog = true
+    },
+     /*
+    *控制全选
+    */
+    chooseAll(item) {
+      if (!item.sonAuthorityList) {
+        this.$notify({
+          title: '提示',
+          message: '该分组下没有权限选项，全选功能不可用',
+          type: 'info'
+        })
+        return false
+      }
+      // debugger
+      for (let i = 0; i < item.sonAuthorityList.length; i += 1) {
+        if (item.have === true) {
+          this.$set(item.sonAuthorityList[i], 'have', true)
+          this.idArray.push(item.sonAuthorityList[i]._id)
+          // 添加全选框的id
+          this.idArray.push(item._id)
+        } else {
+          this.$set(item.sonAuthorityList[i], 'have', false)
+          for (let j = 0; j < this.idArray.length; j += 1) {
+            if (this.idArray[j] === item.sonAuthorityList[i]._id) {
+              this.idArray.splice(j, 1)
+              j -= 1
+            }
+            // 去掉全选的id
+            if (this.idArray[j] === item.id) {
+              this.idArray.splice(j, 1)
+              j -= 1
+            }
+          }
+        }
+      }
+      // 去重
+      this.idArray = [...new Set(this.idArray)]
+      // debugger
+    },
+    /*
+   *添加权限id到id数组内
+   *@params: id number ID值
+   *@params: checked boolean 是否勾选
+   *@params: parent obj 模块对象
+   */
+    addId(id, checked, parent) {
+      if (checked === true) {
+        if (!this.idArray.includes(id)) {
+          this.idArray.push(id)
+        } else {
+          return false
+        }
+        let all = true
+        for (let i = 0; i < parent.sonAuthorityList.length; i += 1) {
+          if (parent.sonAuthorityList[i].have === false) {
+            all = false
+          }
+        }
+        if (all === true) {
+          this.idArray.push(parent.id)
+        }
+        this.$set(parent, 'have', all)
+      } else {
+        // 关联全选
+        this.$set(parent, 'have', false)
+        for (let j = 0; j < this.idArray.length; j += 1) {
+          if (this.idArray[j] === id) {
+            this.idArray.splice(j, 1)
+          }
+          // 去掉全选的id
+          if (this.idArray[j] === parent.id) {
+            this.idArray.splice(j, 1)
+          }
+        }
+      }
     },
     addRow() {
       this.editing = false
@@ -237,15 +285,21 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.el-checkbox-group {
-  .el-checkbox {
-    width: 300px;
-    margin-left: 0;
+.m-role-add {
+  form.upload .el-form-item {
+    width: 500px;
   }
-}
-.right-item:not(last-child) {
-  margin-bottom: 30px;
-}
-.title {
+
+  .table-title {
+    text-align: center;
+  }
+
+  .table-item {
+    width: 100%!important;
+  }
+
+  .no-checkbox {
+    text-indent: 23px;
+  }
 }
 </style>

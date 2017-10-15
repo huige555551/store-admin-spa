@@ -84,4 +84,8 @@ a {
 .flex{
   display: flex;
 }
+.articleImg {
+  width: 200px;
+  height: 100px;
+}
 </style>

@@ -58,7 +58,7 @@ function checkStatus(response) {
 // 处理来自后端的错误
 function checkCode(res) {
   if (res.code === 503) {
-    return router.replace('login')
+    return router.replace('/login')
   } else if (res.code !== 200 && res.code !== 201 && res.code !== 204) {
     if (window.location.href.indexOf('login') !== -1) {
       return false

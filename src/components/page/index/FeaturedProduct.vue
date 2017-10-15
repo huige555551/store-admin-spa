@@ -13,9 +13,10 @@
     <el-table :data="tableData">
       <el-table-column type="index" label="#" width="60"></el-table-column>
       <el-table-column prop="name" label="名称" width="80"></el-table-column>
+      <el-table-column prop="order" label="顺序" width="80"></el-table-column>
       <el-table-column label="商品" width="200">
         <template scope="scope">
-          <img :src="scope.row.productImg" width="200" max-height="200" @click="openImg(scope.row.productImg)" style="cursor:pointer">
+          <img class="articleImg":src="scope.row.image" width="200" max-height="200" @click="openImg(scope.row.productImg)" style="cursor:pointer">
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="160">
@@ -37,7 +38,7 @@
     <el-dialog title="添加精选商品" v-model="formDialog">
       <el-form label-width="100px">
         <el-form-item label="选择商品" >
-          <el-select v-model="rowObj.targetProductId"
+          <el-select v-model="rowObj.productId"
             filterable
             placeholder="请输入商品名称搜索">
             <el-option
@@ -49,7 +50,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="顺序">
-          <el-input v-model="rowObj.order" placeholder="输入数字，数字越大越排前"></el-input>
+          <el-input v-model="rowObj.order" type="number" placeholder="输入数字，数字越大越排前"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -74,21 +75,12 @@ export default {
       editing: false,
       editingIndex: null,
       rowObj: {
-        targetProductId: null,
+        productId: null,
         order: 1
       },
       results: [],
       // 表格
-      tableData: [{
-        order: '1',
-        name: '衣服',
-        productImg: 'https://img.yzcdn.cn/upload_files/2015/05/14/Fh1ZR74CpUm0s85svgQuU-MQ3oQd.png?imageView2/2/w/120/h/0/q/75/format/webp'
-      },
-      {
-        order: '2',
-        name: '拖鞋',
-        productImg: 'https://img.yzcdn.cn/upload_files/2015/05/14/Fh1ZR74CpUm0s85svgQuU-MQ3oQd.png?imageView2/2/w/120/h/0/q/75/format/webp'
-      }]
+      tableData: []
     }
   },
   created() {
@@ -124,7 +116,7 @@ export default {
       }
       this.editing = false
       this.rowObj = {
-        articleId: null,
+        productId: null,
         title: null,
         order: null
       }
@@ -134,13 +126,7 @@ export default {
     editRow(index) {
       this.editing = true
       this.editingIndex = index
-      this.rowObj = { targetProductId: this.tableData[index].title }
-      this.rowObj.articleId = this.tableData[index].id
-      this.rowObj.order = this.tableData[index].order
-      this.rowObj.title = this.tableData[index].title
-      this.rowObj.navigationName = this.tableData[index].navigationName
-      this.rowObj.author = this.tableData[index].author
-      this.rowObj.period = this.tableData[index].period
+      this.rowObj = _.clone(this.tableData[index])
       this.formDialog = true
     },
     // 删除行
@@ -160,28 +146,19 @@ export default {
     },
     // 保存行
     async saveRow() {
-      if (!this.rowObj.targetProductId || !this.rowObj.order) {
+      if (!this.rowObj.productId || !this.rowObj.order) {
         return this.$notify.error({ title: '失败', message: '表单信息不完整' })
       }
       if (this.editing) {
-        if (this.rowObj.targetProductId === this.rowObj.title) {
-          this.rowObj.targetProductId = this.rowObj.articleId
-        }
-        const { code } = await api.post(`/api/featuredProduct/edit/${this.rowObj._id}`, this.rowObj)
+        const { code } = await api.put(`/api/featuredProduct/edit/${this.rowObj._id}`, this.rowObj)
         if (code === 201) {
           this.$notify.success({ title: '成功', message: '修改成功' })
-          this.tableData.splice(this.editingIndex, 1, _.clone(this.rowObj))
-          this.rowObj = {
-            articleId: null,
-            title: null,
-            order: null
-          }
           this.formDialog = false
           this.fetchData()
         }
       } else {
-        this.rowObj.articleId = this.rowObj.targetProductId
-        const { code } = await api.post('/api/system/article/addExquisiteArticle', this.rowObj)
+        this.rowObj.productId = this.rowObj.productId
+        const { code } = await api.post('/api/featuredProduct/add', this.rowObj)
         if (code === 201) {
           this.$notify.success({ title: '成功', message: '添加成功' })
           this.fetchData()

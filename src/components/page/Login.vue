@@ -3,8 +3,8 @@
     <div class="ms-title">小程序管理后台</div>
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
-        <el-form-item prop="account">
-          <el-input v-model="ruleForm.account" placeholder="用户名"></el-input>
+        <el-form-item prop="username">
+          <el-input v-model="ruleForm.username" placeholder="用户名"></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input type="password" placeholder="密码" v-model="ruleForm.password"></el-input>
@@ -25,11 +25,11 @@ export default {
   data() {
     return {
       ruleForm: {
-        account: '',
+        username: '',
         password: ''
       },
       rules: {
-        account: [
+        username: [
           { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
@@ -39,7 +39,7 @@ export default {
     }
   },
   async created() {
-    const { code } = await api.get('/api/system/sysUser/isLogin')
+    const { code } = await api.get('/api/auth/isLogin')
     if (code === 200) {
       this.$router.replace('/')
     }
@@ -48,7 +48,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const { code } = await api.post('/api/system/login', this.ruleForm)
+          const { code } = await api.post('/api/auth/login', this.ruleForm)
           if (code === 200) {
             this.$notify.success({ title: '成功', message: '登录成功' })
             this.$router.replace('/')
