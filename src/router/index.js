@@ -56,7 +56,8 @@ export default new Router({
         { path: '/right/admin/list', component: resolve => require(['@/components/page/right/Admin.vue'], resolve) },
         { path: '/right/role/list', component: resolve => require(['@/components/page/right/Role.vue'], resolve) },
         { path: '/right/role/add', component: resolve => require(['@/components/page/right/RoleAdd.vue'], resolve) },
-
+        { path: '/right/role/edit/:id', component: resolve => require(['@/components/page/right/RoleAdd.vue'], resolve) },
+        
         // 网站设置
         { path: '/website/ad', component: resolve => require(['@/components/page/website/Ad.vue'], resolve) },
         { path: '/website/reset', component: resolve => require(['@/components/page/website/Reset.vue'], resolve) },
