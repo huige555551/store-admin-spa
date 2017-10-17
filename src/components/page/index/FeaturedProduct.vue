@@ -21,14 +21,14 @@
       </el-table-column>
       <el-table-column label="操作" min-width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" v-if="$isAllowUser('精选商品修改')" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
+          <el-button size="small" v-if="$isAllowUser('精选商品删除')" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加按钮 -->
-    <el-form style="margin-top: 20px">
+    <el-form style="margin-top: 20px" v-if="$isAllowUser('精选商品添加')">
       <el-form-item>
         <el-button @click="addRow">添加精选商品</el-button> 最多{{max}}个
       </el-form-item>

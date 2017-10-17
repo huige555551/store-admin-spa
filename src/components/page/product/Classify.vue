@@ -134,8 +134,8 @@ export default {
             <span class="level">{ data.level }</span>
             <span class="order">{ data.order }</span>
             <span class="btn-group">
-              <el-button size="mini" on-click={ () => this.remove(store, data) }>删除</el-button>
-              <el-button size="mini" on-click={ () => this.$router.push(`/product/classify/edit/${data._id}`) }>编辑</el-button>
+              <el-button size="mini" v-if="$isAllowUser('分类删除')" on-click={ () => this.remove(store, data) }>删除</el-button>
+              <el-button size="mini" v-if="$isAllowUser('分类修改')" on-click={ () => this.$router.push(`/product/classify/edit/${data._id}`) }>编辑</el-button>
             </span>
           </span>
         </span>)

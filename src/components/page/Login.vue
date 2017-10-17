@@ -24,6 +24,13 @@ import api from '@/api'
 export default {
   data() {
     return {
+      // 存储用户模块权限的临时数组
+      user: {},
+      moduleAuthorityArray: [],
+      // 存储用户具体权限的临时数组
+      userAuthorityArray: [],
+      adminId: '',
+      authorityArray: [],
       ruleForm: {
         username: '',
         password: ''
@@ -39,24 +46,47 @@ export default {
     }
   },
   async created() {
-    const { code } = await api.get('/api/auth/isLogin')
-    if (code === 200) {
-      this.$router.replace('/')
-    }
+    // const { code } = await api.get('/api/auth/isLogin')
+    // if (code === 200) {
+    //   this.$router.replace('/')
+    // }
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          const { code } = await api.post('/api/auth/login', this.ruleForm)
+          const { code, data } = await api.post('/api/auth/login', this.ruleForm)
           if (code === 200) {
+            this.user = data
             this.$notify.success({ title: '成功', message: '登录成功' })
+            this.getAdminId()
             this.$router.replace('/')
           } else {
             this.$notify.error({ title: '失败', message: '登录失败，账号或密码错误' })
           }
         }
       })
+    },
+    // 获取已登录用户的id
+    async getAdminId() {
+      const { code, data } = await api.get('/api/auth/isLogin')
+      if (code === 200) {
+        this.adminId = data._id
+        this.getListAdminAuthorityGroups(this.adminId)
+      }
+    },
+    async getListAdminAuthorityGroups(id) {
+      const { code, data } = await api.get(`/api/permission/admin/${id}`)
+      if (code === 200) {
+        this.authorityArray = []
+        this.authorityArray = data.role.permissionList
+        this.moduleAuthorityArray = this.authorityArray.map(item => item.moduleName)
+        this.moduleAuthorityArray = [...new Set(this.moduleAuthorityArray)]
+        this.userAuthorityArray = this.authorityArray.map(item => item.identification)
+        this.user.useraAuthorityArray = this.authorityArray.map(item => item.name)
+        this.user.moduleAuthorityArray = this.moduleAuthorityArray
+        localStorage.setItem('user', JSON.stringify(this.user))
+      }
     }
   }
 }

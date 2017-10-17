@@ -136,7 +136,7 @@ export default {
         } else {
           this.$set(item.sonAuthorityList[i], 'have', false)
           for (let j = 0; j < this.idArray.length; j += 1) {
-            if (this.idArray[j] === item.sonAuthorityList[i]._id || this.idArray[j] === item.id) {
+            if (this.idArray[j] === item.sonAuthorityList[i]._id || this.idArray[j] === item._id) {
               this.idArray.splice(j, 1)
               j -= 1
             }
@@ -166,7 +166,7 @@ export default {
           }
         }
         if (all === true) {
-          this.idArray.push(parent.id)
+          this.idArray.push(parent._id)
         }
         this.$set(parent, 'have', all)
       } else {
@@ -177,7 +177,7 @@ export default {
             this.idArray.splice(j, 1)
           }
           // 去掉全选的id
-          if (this.idArray[j] === parent.id) {
+          if (this.idArray[j] === parent._id) {
             this.idArray.splice(j, 1)
           }
         }
@@ -222,7 +222,7 @@ export default {
             message: '修改角色成功'
           })
         }
-        // this.$router.push('/right/role/list')
+        this.$router.push('/right/role/list')
       }
     }
   }

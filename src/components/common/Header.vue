@@ -7,8 +7,8 @@
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand">
         <span class="el-dropdown-link">
-          <img class="user-logo" src="../../assets/logo2.jpg">
-          {{username}}
+          <img class="user-logo" :src="user.avatar">
+          {{user.username}}
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="reset">修改密码</el-dropdown-item>
@@ -26,15 +26,20 @@ import api from '@/api'
 export default {
   data() {
     return {
-      username: '管理员'
+      user: {}
     }
+  },
+  mounted() {
+    this.user = JSON.parse(localStorage.getItem('user'))
   },
   methods: {
     async handleCommand(command) {
       if (command === 'loginout') {
         // $.cookie('name', null, { path: '/' })
-        const { code } = await api.post('/api/system/sysUser/logout')
+        const { code } = await api.post('/api/auth/logout')
         if (code === 200) {
+          delete localStorage.user
+          this.$clearRbacUser()
           this.$router.push('/login')
         }
       } else if (command === 'reset') {

@@ -31,8 +31,8 @@
       </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/address/edit/'+scope.row._id)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" v-if="$isAllowUser('地址修改')" @click.native.prevent="$router.push('/address/edit/'+scope.row._id)">编辑</el-button>
+          <el-button size="small" v-if="$isAllowUser('地址删除')" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

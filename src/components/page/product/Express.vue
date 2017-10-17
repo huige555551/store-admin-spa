@@ -16,7 +16,7 @@
       <el-form-item label="邮费策略">
         <span>免邮</span>
       </el-form-item>
-        <el-button type="primary" @click.native.prevent="edit">修改</el-button>
+        <el-button type="primary" v-if="$isAllowUser('运费修改')" @click.native.prevent="edit">修改</el-button>
       </el-form-item>
     </el-form>
     <el-dialog title="邮费设置" v-model="formDialog">

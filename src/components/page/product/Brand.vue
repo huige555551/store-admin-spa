@@ -20,8 +20,8 @@
      
       <el-table-column label="操作" min-width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/product/edit/'+scope.row.id)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" v-if="$isAllowUser('品牌修改')" @click.native.prevent="$router.push('/product/edit/'+scope.row.id)">编辑</el-button>
+          <el-button size="small" v-if="$isAllowUser('品牌删除')" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

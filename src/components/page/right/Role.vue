@@ -16,14 +16,14 @@
       <el-table-column prop="name" label="名字" width="120"></el-table-column>
       <el-table-column label="操作" min-width="160">
         <template scope="scope">
-          <el-button type="default" size="small" @click="$router.push(`/right/role/edit/${scope.row._id}`)">编辑</el-button>
-          <el-button type="default" size="small" @click="deleteRow(scope.$index)">删除</el-button>
+          <el-button type="default" v-if="$isAllowUser('管理员修改')" size="small" @click="$router.push(`/right/role/edit/${scope.row._id}`)">编辑</el-button>
+          <el-button type="default" v-if="$isAllowUser('管理员删除')" size="small" @click="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加按钮 -->
-    <el-form style="margin-top: 20px">
+    <el-form style="margin-top: 20px" v-if="$isAllowUser('角色添加')">
       <el-form-item>
         <el-button @click="$router.push('/right/role/add')">添加角色</el-button>
       </el-form-item>
@@ -100,13 +100,6 @@ export default {
       const { code, data } = await api.get('/api/system/advertisment/getLocation')
       if (code === 200) {
         this.positionResults = data
-      }
-    },
-    // 添加广告时更新建议图片的尺寸提示
-    async selectItem(selected) {
-      const { code, data } = await api.get('/api/system/advertisment/getLocation')
-      if (code === 200) {
-        this.newAd.size = data[selected - 1].size
       }
     },
     // 删除广告

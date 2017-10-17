@@ -34,8 +34,8 @@
      </el-table-column>
       <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button size="small" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row._id)">编辑</el-button>
-          <el-button size="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button size="small" v-if="$isAllowUser('规格修改')" @click.native.prevent="$router.push('/product/specification/edit/'+scope.row._id)">编辑</el-button>
+          <el-button size="small" v-if="$isAllowUser('规格删除')"@click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -21,14 +21,14 @@
       </el-table-column>
       <el-table-column label="操作" min-width="160">
         <template scope="scope">
-          <el-button type="small" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
-          <el-button type="small" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
+          <el-button type="small" v-if="$isAllowUser('轮播修改')" @click.native.prevent="editRow(scope.$index)">编辑</el-button>
+          <el-button type="small" v-if="$isAllowUser('轮播删除')" @click.native.prevent="deleteRow(scope.$index)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 添加按钮 -->
-    <el-form style="margin-top: 20px">
+    <el-form style="margin-top: 20px" v-if="$isAllowUser('轮播添加')">
       <el-form-item>
         <el-button @click="addRow">添加轮播</el-button> 最多{{max}}张
       </el-form-item>
